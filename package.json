@@ -17,13 +17,16 @@
     "eslint": "10.14.0",
     "prettier": "3.9.10",
     "typescript": "5.9.3",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "yaml": "2.9.1"
   },
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspaces --if-present",
+    "ci:validate": "node scripts/validate-ci.mjs"
   }
 }
