@@ -1,0 +1,23 @@
+{
+  "name": "@tpl/config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Konfigurasi bersama: tema CSS, tsconfig, ESLint, Prettier, Vitest, Playwright",
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint": "./eslint.config.mjs",
+    "./prettier": "./prettier.config.mjs",
+    "./vitest": "./vitest.config.base.mjs",
+    "./playwright": "./playwright.config.base.mjs"
+  },
+  "dependencies": {
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "4.3.3"
+  },
+  "devDependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}
