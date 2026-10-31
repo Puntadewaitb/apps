@@ -36,13 +36,13 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
    2. ada `in_progress` dengan timestamp **> 55 menit** (run sebelumnya mati) → ambil alih;
    3. ada `in_progress` dengan timestamp ≤ 55 menit → run lain masih jalan → **stop**;
    4. selain itu: `todo` pertama yang semua dependensinya (kolom `deps`) `done`.
-7. **Klaim.** Ubah status jadi `in_progress` + timestamp WIB, commit `[<ID>] claim`, `git push`. Kalau push ditolak (non-fast-forward): `git pull --rebase`, evaluasi ulang sekali; kalau step itu sudah diklaim run lain → stop.
+7. **Klaim.** Ubah status jadi `in_progress` + timestamp WIB (**wajib** dari `TZ=Asia/Jakarta date '+%Y-%m-%d %H:%M'`; jangan menebak atau membulatkan), commit `[<ID>] claim`, `git push`. Kalau push ditolak (non-fast-forward): `git pull --rebase`, evaluasi ulang sekali; kalau step itu sudah diklaim run lain → stop.
 8. **Siapkan environment.** Node 22 sudah ada. Jalankan `npm ci` (bila `package.json` sudah ada). Untuk Playwright: `export PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`. **Jangan** `npx playwright install`.
 9. **Kerjakan** step sesuai deskripsi. Hanya satu step per run. Commit + push `[<ID>] WIP: <ringkas>` setelah tiap kelompok sub-bullet selesai (bukan cuma di akhir), supaya run yang mati tidak kehilangan pekerjaan.
 10. **Batas waktu.** Jam kerja efektif per run ±50 menit sejak mulai. Kalau mendekati batas atau kena usage limit: commit pekerjaan, set status `wip`, catat apa yang sudah/belum di kolom catatan, push, **stop**.
 11. **Verifikasi:** semua poin "Selesai jika" milik step + `npm run lint` + `npm run typecheck` (+ `npm test` bila ada unit test) untuk app/package yang disentuh.
 12. **Kalau gagal:** perbaiki maksimal 2 kali. Masih gagal → status `blocked` + ringkasan error di catatan, commit, push, stop.
-13. **Kalau lolos:** status `done` + timestamp WIB, commit `[<ID>] <judul step>`, push.
+13. **Kalau lolos:** status `done` + timestamp WIB (dari perintah `date` yang sama, diambil saat itu juga), commit `[<ID>] <judul step>`, push.
 
 **Push gagal:** non-fast-forward → `git pull --rebase` lalu push ulang (maks 3x). Error jaringan → retry dengan backoff 2s/4s/8s/16s.
 
