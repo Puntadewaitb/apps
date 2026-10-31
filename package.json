@@ -24,6 +24,6 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run --passWithNoTests"
+    "test": "npm run test --workspaces --if-present"
   }
 }

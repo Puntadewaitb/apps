@@ -1,0 +1,60 @@
+/*
+ * Design tokens + 3 palet tema. Pakai di app:
+ *   @import "tailwindcss";
+ *   @import "@tpl/config/theme.css";
+ *   @import "@tpl/ui/theme.css";
+ *   @source "../../../packages/ui/src";
+ * Ganti palet dengan atribut: <html data-theme="netral|hangat|hijau">
+ */
+:root,
+[data-theme="netral"] {
+  --primary: #1d4ed8;
+  --primary-fg: #ffffff;
+  --accent: #0ea5e9;
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --success: #15803d;
+  --danger: #b91c1c;
+}
+
+[data-theme="hangat"] {
+  --primary: #c2410c;
+  --primary-fg: #ffffff;
+  --accent: #d97706;
+  --bg: #fffaf5;
+  --surface: #fff1e6;
+  --fg: #3b2a20;
+  --muted: #7c6455;
+  --border: #f1d9c6;
+  --success: #3f7d20;
+  --danger: #b42318;
+}
+
+[data-theme="hijau"] {
+  --primary: #166534;
+  --primary-fg: #ffffff;
+  --accent: #b8860b;
+  --bg: #fbfdf9;
+  --surface: #ecf5ec;
+  --fg: #12301e;
+  --muted: #4d6b57;
+  --border: #cfe3d3;
+  --success: #166534;
+  --danger: #b91c1c;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+}
