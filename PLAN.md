@@ -24,24 +24,25 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
 | `blocked` | gagal setelah 2 kali perbaikan; **tidak dicoba ulang otomatis** |
 
 ### Urutan kerja
-1. **Siapkan repo.** Kalau repo belum ada di container: `add_repo` (`puntadewaitb/apps`, `access=push`), clone, `register_repo_root`. Lalu `git fetch origin claude/determined-turing-qzp8w9 && git checkout claude/determined-turing-qzp8w9 && git pull --ff-only`.
+1. **Siapkan repo.** Run berjalan sebagai Routine claude.ai dengan repo `puntadewaitb/apps` sudah ter-clone otomatis (default branch repo = branch kerja). Pastikan `git branch --show-current` = `claude/determined-turing-qzp8w9`; kalau bukan: `git fetch origin claude/determined-turing-qzp8w9 && git checkout claude/determined-turing-qzp8w9`. Lalu `git pull --ff-only`. **Kalau repo tidak ada di container: stop dan laporkan.** Jangan `git clone` manual (token tidak valid) dan jangan cari tool `add_repo` (tidak tersedia di Routine).
 2. **Baca** `PLAN.md`, `PROGRESS.md`, `config.json`.
-3. **Hitung kuota malam ini.** "Malam ini" = sejak **23:00 WIB terakhir yang sudah lewat** (jadi run jam 00–04 tetap menghitung dari 23:00 hari sebelumnya). Hitung step `done` dengan timestamp ≥ itu. Kalau ≥ `max_steps_per_night` → **stop**.
-4. **Kondisi berhenti lain** (tulis satu baris di bagian "Log Run" `PROGRESS.md`, commit, push, stop):
-   - semua step `done` → tulis `ALL DONE`, lalu nonaktifkan trigger (lihat §4, "Setelah selesai");
+3. **Cek window.** Kalau jam WIB sekarang di luar `window` (23:00–05:00) → **stop** tanpa mengubah apa pun, kecuali prompt Routine memuat kata `ABAIKAN-WINDOW` (dipakai untuk uji manual).
+4. **Hitung kuota malam ini.** "Malam ini" = sejak **23:00 WIB terakhir yang sudah lewat** (jadi run jam 00–04 tetap menghitung dari 23:00 hari sebelumnya). Hitung step `done` dengan timestamp ≥ itu. Kalau ≥ `max_steps_per_night` → **stop**.
+5. **Kondisi berhenti lain** (tulis satu baris di bagian "Log Run" `PROGRESS.md`, commit, push, stop):
+   - semua step `done` → tulis `ALL DONE` (lihat §4, "Setelah selesai");
    - tidak ada step yang eligible (semua sisa `blocked` atau dependensinya `blocked`) → tulis `STUCK: <daftar blocked>`; **jangan** mengerjakan apa pun.
-5. **Pilih step** (urut sesuai tabel `PROGRESS.md`):
+6. **Pilih step** (urut sesuai tabel `PROGRESS.md`):
    1. ada `wip` → ambil itu;
    2. ada `in_progress` dengan timestamp **> 55 menit** (run sebelumnya mati) → ambil alih;
    3. ada `in_progress` dengan timestamp ≤ 55 menit → run lain masih jalan → **stop**;
    4. selain itu: `todo` pertama yang semua dependensinya (kolom `deps`) `done`.
-6. **Klaim.** Ubah status jadi `in_progress` + timestamp WIB, commit `[<ID>] claim`, `git push`. Kalau push ditolak (non-fast-forward): `git pull --rebase`, evaluasi ulang sekali; kalau step itu sudah diklaim run lain → stop.
-7. **Siapkan environment.** Node 22 sudah ada. Jalankan `npm ci` (bila `package.json` sudah ada). Untuk Playwright: `export PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`. **Jangan** `npx playwright install`.
-8. **Kerjakan** step sesuai deskripsi. Hanya satu step per run. Commit + push `[<ID>] WIP: <ringkas>` setelah tiap kelompok sub-bullet selesai (bukan cuma di akhir), supaya run yang mati tidak kehilangan pekerjaan.
-9. **Batas waktu.** Jam kerja efektif per run ±50 menit sejak mulai. Kalau mendekati batas atau kena usage limit: commit pekerjaan, set status `wip`, catat apa yang sudah/belum di kolom catatan, push, **stop**.
-10. **Verifikasi:** semua poin "Selesai jika" milik step + `npm run lint` + `npm run typecheck` (+ `npm test` bila ada unit test) untuk app/package yang disentuh.
-11. **Kalau gagal:** perbaiki maksimal 2 kali. Masih gagal → status `blocked` + ringkasan error di catatan, commit, push, stop.
-12. **Kalau lolos:** status `done` + timestamp WIB, commit `[<ID>] <judul step>`, push.
+7. **Klaim.** Ubah status jadi `in_progress` + timestamp WIB, commit `[<ID>] claim`, `git push`. Kalau push ditolak (non-fast-forward): `git pull --rebase`, evaluasi ulang sekali; kalau step itu sudah diklaim run lain → stop.
+8. **Siapkan environment.** Node 22 sudah ada. Jalankan `npm ci` (bila `package.json` sudah ada). Untuk Playwright: `export PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`. **Jangan** `npx playwright install`.
+9. **Kerjakan** step sesuai deskripsi. Hanya satu step per run. Commit + push `[<ID>] WIP: <ringkas>` setelah tiap kelompok sub-bullet selesai (bukan cuma di akhir), supaya run yang mati tidak kehilangan pekerjaan.
+10. **Batas waktu.** Jam kerja efektif per run ±50 menit sejak mulai. Kalau mendekati batas atau kena usage limit: commit pekerjaan, set status `wip`, catat apa yang sudah/belum di kolom catatan, push, **stop**.
+11. **Verifikasi:** semua poin "Selesai jika" milik step + `npm run lint` + `npm run typecheck` (+ `npm test` bila ada unit test) untuk app/package yang disentuh.
+12. **Kalau gagal:** perbaiki maksimal 2 kali. Masih gagal → status `blocked` + ringkasan error di catatan, commit, push, stop.
+13. **Kalau lolos:** status `done` + timestamp WIB, commit `[<ID>] <judul step>`, push.
 
 **Push gagal:** non-fast-forward → `git pull --rebase` lalu push ulang (maks 3x). Error jaringan → retry dengan backoff 2s/4s/8s/16s.
 
@@ -141,11 +142,14 @@ Playwright config bersama (`packages/config`): hanya project `chromium`; `launch
 
 ## 4. Jadwal
 
-- Trigger: **cloud scheduled task**, sesi baru tiap fire (jalan tanpa HP/laptop terhubung).
-- Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00).
-- Prompt tiap run: *"Repo puntadewaitb/apps, branch claude/determined-turing-qzp8w9. Jika repo belum ada di container, add_repo (access=push), clone, register_repo_root. Checkout branch tersebut dan ikuti 'Protokol Run' di PLAN.md. Kerjakan tepat satu step. Jangan push ke branch lain, jangan buat PR."*
-- **Prasyarat sebelum jadwal aktif:** dry-run satu kali (commit file `.dryrun/*.txt` ke branch kerja dari sesi terjadwal) harus berhasil — membuktikan repo ter-clone & push diizinkan.
-- **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE`, lalu menonaktifkan trigger bernama **"5 Template Website – Nightly"** lewat `update_trigger(enabled=false)`. Kalau tool tidak tersedia, cukup stop (pemilik repo menghapus trigger manual).
+- Jadwal = **Routine claude.ai** (cloud, sesi baru tiap fire, jalan tanpa HP/laptop terhubung), **dibuat lewat UI** claude.ai/code/routines dengan repo `puntadewaitb/apps` dipilih sebagai source dan environment `Bawaan`.
+  - Kenapa bukan lewat tool `create_trigger` dari sesi lain: terbukti di dry-run 2026-10-31 bahwa trigger buatan tool itu tidak membawa repo (`sources: []`, tag `no-git-repo`), tidak punya tool `add_repo`, dan `GH_TOKEN`-nya invalid. Parameter `connectors` ditolak organisasi.
+- Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00). Kalau UI hanya menerima preset: pakai **hourly**; protokol (langkah 3) otomatis stop di luar window 23:00–05:00 WIB.
+- **Default branch repo harus tetap `claude/determined-turing-qzp8w9`** selama pengerjaan (Routine meng-clone default branch). Jangan buat/merge ke `main` atau ganti default branch sebelum semua step `done`.
+- Pengaturan Routine: izinkan push hanya ke branch `claude/*` (default). Jangan aktifkan push tak terbatas.
+- Prompt tiap run: *"Repo puntadewaitb/apps sudah ter-clone. Ikuti 'Protokol Run' di PLAN.md (§1) dan baca CLAUDE.md. Kerjakan tepat satu step. Branch kerja: claude/determined-turing-qzp8w9. Jangan push ke branch lain, jangan buat PR."*
+- **Prasyarat sebelum jadwal aktif:** satu kali "Run now" dengan prompt uji (memuat `ABAIKAN-WINDOW`) yang hanya meng-commit `.dryrun/*.txt` ke branch kerja — membuktikan repo ter-clone & push diizinkan.
+- **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE` di `PROGRESS.md` dan stop. Pemilik repo menonaktifkan/menghapus Routine secara manual (run berikutnya akan langsung stop dengan biaya minimal).
 
 ### Perkiraan per malam (urutan eksekusi mengikuti `PROGRESS.md`, bukan tabel ini)
 | Malam | Step |
