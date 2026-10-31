@@ -6,7 +6,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 
 | id | judul | deps | status | waktu WIB | catatan |
 |---|---|---|---|---|---|
-| 0.1 | Inisialisasi monorepo | - | in_progress | 2026-11-01 00:09 | |
+| 0.1 | Inisialisasi monorepo | - | done | 2026-11-01 00:14 | npm ci bersih OK; apps/ dan packages/ berisi .gitkeep (hapus saat diisi) |
 | 0.2 | packages/config | 0.1 | todo | | |
 | 0.3 | packages/ui | 0.2 | todo | | |
 | 0.4 | packages/core | 0.2 | todo | | |

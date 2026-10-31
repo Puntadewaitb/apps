@@ -1,0 +1,22 @@
+{
+  "name": "lima-template-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo 5 template website siap jual (Indonesia)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.5",
+    "concurrently": "10.0.6",
+    "eslint": "10.14.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}
