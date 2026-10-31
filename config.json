@@ -1,0 +1,8 @@
+{
+  "timezone": "Asia/Jakarta",
+  "branch": "claude/determined-turing-qzp8w9",
+  "window": { "start": "23:00", "end": "05:00" },
+  "max_steps_per_night": 6,
+  "stale_claim_minutes": 55,
+  "run_budget_minutes": 50
+}

@@ -1,0 +1,27 @@
+# dependencies & build
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# database & uploads
+*.db
+*.db-journal
+uploads/
+
+# test output
+playwright-report/
+test-results/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
