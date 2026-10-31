@@ -8,7 +8,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 |---|---|---|---|---|---|
 | 0.1 | Inisialisasi monorepo | - | done | 2026-11-01 00:14 | npm ci bersih OK; apps/ dan packages/ berisi .gitkeep (hapus saat diisi) |
 | 0.2 | packages/config | 0.1 | done | 2026-11-01 01:20 | lint+typecheck+prettier OK; next/react jadi devDep @tpl/config (peer eslint-config-next); rule no-html-link-for-pages dimatikan |
-| 0.3 | packages/ui | 0.2 | todo | | |
+| 0.3 | packages/ui | 0.2 | in_progress | 2026-11-01 02:08 | |
 | 0.4 | packages/core | 0.2 | todo | | |
 | 0.5 | Testing & CI | 0.3, 0.4 | todo | | |
 | 0.6 | Script & dokumentasi | 0.5 | todo | | |
