@@ -27,7 +27,7 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
 1. **Siapkan repo.** Kamu adalah **worker session** (`session_018KHqGbbH4XiAuYR3s9DrdD`) yang dibangunkan scheduled task; repo `puntadewaitb/apps` sudah menjadi source session ini. Container bisa saja baru. Pastikan `git branch --show-current` = `claude/determined-turing-qzp8w9`; kalau bukan: `git fetch origin claude/determined-turing-qzp8w9 && git checkout claude/determined-turing-qzp8w9`. **Selalu** `git pull --ff-only` sebelum membaca file. **Kalau repo tidak ada di container: stop dan laporkan.** Jangan `git clone` manual (token tidak valid). Jangan mengandalkan `node_modules`/file lokal lama: jalankan `npm ci`.
 2. **Baca** `PLAN.md`, `PROGRESS.md`, `config.json`.
 3. **Cek window.** Kalau jam WIB sekarang di luar `window` (23:00–05:00) → **stop** tanpa mengubah apa pun, kecuali pesan yang membangunkanmu memuat kata `ABAIKAN-WINDOW` (dipakai untuk uji manual).
-4. **Hitung kuota malam ini.** "Malam ini" = sejak **23:00 WIB terakhir yang sudah lewat** (jadi run jam 00–04 tetap menghitung dari 23:00 hari sebelumnya). Hitung step `done` dengan timestamp ≥ itu. Kalau ≥ `max_steps_per_night` → **stop**.
+4. **Hitung kuota malam ini.** "Malam ini" = sejak **23:00 WIB terakhir yang sudah lewat** (jadi run jam 00–04 tetap menghitung dari 23:00 hari sebelumnya). Hitung step `done` dengan timestamp ≥ itu **yang catatannya tidak diawali `catchup:`** (step hasil Mode Catch-up tidak memakan kuota malam). Kalau ≥ `max_steps_per_night` → **stop**.
 5. **Kondisi berhenti lain** (tulis satu baris di bagian "Log Run" `PROGRESS.md`, commit, push, stop):
    - semua step `done` → tulis `ALL DONE` (lihat §4, "Setelah selesai");
    - tidak ada step yang eligible (semua sisa `blocked` atau dependensinya `blocked`) → tulis `STUCK: <daftar blocked>`; **jangan** mengerjakan apa pun.
@@ -45,6 +45,15 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
 13. **Kalau lolos:** status `done` + timestamp WIB (dari perintah `date` yang sama, diambil saat itu juga), commit `[<ID>] <judul step>`, push.
 
 **Push gagal:** non-fast-forward → `git pull --rebase` lalu push ulang (maks 3x). Error jaringan → retry dengan backoff 2s/4s/8s/16s.
+
+### Mode Catch-up (run harian ±22:00 WIB; pesan berawalan `CATCH-UP`)
+Tujuan: menutup step yang **seharusnya selesai di malam kemarin (H-1) tapi belum jalan** (slot terlewat, `wip`, usage limit, run mati). Berbeda dengan run malam, satu run catch-up **boleh mengerjakan lebih dari satu step**.
+1. Siapkan repo & baca file seperti Protokol Run langkah 1–2. Cek window (langkah 3) **diabaikan**.
+2. Hitung `K` **sekali di awal**: `K = max_steps_per_night − N`, dengan `N` = jumlah step `done` yang catatannya **tidak** diawali `catchup:` dan timestamp WIB-nya di dalam [23:00 kemarin, 23:00 hari ini). Kalau `K ≤ 0` → stop (tidak ada backlog). Kondisi `ALL DONE` / `STUCK` (langkah 5) tetap berlaku.
+3. Ulangi sampai `K` step selesai: jalankan langkah 6–13 Protokol Run (pilih → klaim → kerjakan → verifikasi → `done`) untuk **satu** step, lalu lanjut ke step eligible berikutnya. Catatan step diawali `catchup:`; commit `[<ID>] <judul> (catch-up)`. Tiap step punya batas `run_budget_minutes` sendiri. Gagal 2x → `blocked`, lalu lanjut ke step eligible berikutnya.
+4. Batas total run catch-up = `catchup.budget_minutes`. Kena usage limit / batas waktu → step berjalan jadi `wip`, commit, push, stop.
+5. Run malam (23:07 dst) yang jatuh saat catch-up masih berjalan **mengantre** di session yang sama dan jalan setelahnya. Itu normal, bukan kesalahan.
+6. Akhiri dengan ringkasan: `K`, step yang selesai, step `wip`/`blocked`.
 
 ### Aturan umum
 - Satu run = maksimal satu step.
@@ -147,6 +156,7 @@ Playwright config bersama (`packages/config`): hanya project `chromium`; `launch
   - Alternatif bila worker bermasalah: Routine via UI claude.ai/code/routines (pilih repo `puntadewaitb/apps`, environment `Bawaan`, push hanya `claude/*`).
 - Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00). Run yang terlambat tidak berbahaya: protokol langkah 3 stop di luar window 23:00–05:00 WIB.
 - **Default branch repo tetap `claude/determined-turing-qzp8w9`** selama pengerjaan. Jangan buat/merge ke `main` atau ganti default branch sebelum semua step `done`.
+- **Scheduled task kedua — Catch-up:** `CRON_TZ=Asia/Jakarta 52 21 * * *` (≈22:00 WIB; digeser 8 menit lebih awal agar tidak di menit :00). Ke worker session yang sama. Pesan: *"CATCH-UP. Ikuti 'Mode Catch-up' di PLAN.md (§1) dan CLAUDE.md. Hitung K, lalu kerjakan semua backlog malam kemarin (boleh lebih dari satu step), satu per satu sesuai protokol. Jangan push ke branch lain, jangan buat PR."*
 - Pesan pembangun tiap run: *"RUN BARU. Ikuti 'Protokol Run' di PLAN.md (§1) dan CLAUDE.md. Mulai dengan git pull --ff-only di branch claude/determined-turing-qzp8w9. Kerjakan tepat satu step. Jangan push ke branch lain, jangan buat PR."*
 - **Risiko yang belum terbukti:** container worker bisa direclaim saat idle dan konteks session menumpuk lintas malam. Bukti sesungguhnya = fire pertama setelah worker idle; periksa `PROGRESS.md`/log commit setelah malam 1.
 - **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE` di `PROGRESS.md` dan stop. Pemilik repo menghapus scheduled task secara manual (run berikutnya langsung stop dengan biaya minimal).

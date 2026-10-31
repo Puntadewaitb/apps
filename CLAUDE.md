@@ -6,6 +6,7 @@ Repo ini dikerjakan bertahap oleh sesi Claude Code terjadwal (container baru tia
 
 Ringkasan yang tidak boleh terlewat:
 - Run = pesan "RUN BARU" ke worker session (repo sudah jadi source session). Container bisa baru: selalu `git pull --ff-only` dulu, lalu `npm ci`. Kalau repo tidak ada, stop dan laporkan (jangan `git clone` manual, token tidak valid).
+- Pesan berawalan `CATCH-UP` = Mode Catch-up (PLAN.md §1): tutup backlog malam kemarin, boleh >1 step, window diabaikan.
 - Di luar window 23:00–05:00 WIB → stop, kecuali prompt memuat `ABAIKAN-WINDOW`.
 - Satu run = satu step. Branch kerja: `claude/determined-turing-qzp8w9`. Jangan push ke branch lain, jangan buat PR.
 - Satu-satunya memori antar-run adalah git: klaim step & status di `PROGRESS.md`, commit WIP sering.
