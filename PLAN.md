@@ -24,9 +24,9 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
 | `blocked` | gagal setelah 2 kali perbaikan; **tidak dicoba ulang otomatis** |
 
 ### Urutan kerja
-1. **Siapkan repo.** Run berjalan sebagai Routine claude.ai dengan repo `puntadewaitb/apps` sudah ter-clone otomatis (default branch repo = branch kerja). Pastikan `git branch --show-current` = `claude/determined-turing-qzp8w9`; kalau bukan: `git fetch origin claude/determined-turing-qzp8w9 && git checkout claude/determined-turing-qzp8w9`. Lalu `git pull --ff-only`. **Kalau repo tidak ada di container: stop dan laporkan.** Jangan `git clone` manual (token tidak valid) dan jangan cari tool `add_repo` (tidak tersedia di Routine).
+1. **Siapkan repo.** Kamu adalah **worker session** (`session_018KHqGbbH4XiAuYR3s9DrdD`) yang dibangunkan scheduled task; repo `puntadewaitb/apps` sudah menjadi source session ini. Container bisa saja baru. Pastikan `git branch --show-current` = `claude/determined-turing-qzp8w9`; kalau bukan: `git fetch origin claude/determined-turing-qzp8w9 && git checkout claude/determined-turing-qzp8w9`. **Selalu** `git pull --ff-only` sebelum membaca file. **Kalau repo tidak ada di container: stop dan laporkan.** Jangan `git clone` manual (token tidak valid). Jangan mengandalkan `node_modules`/file lokal lama: jalankan `npm ci`.
 2. **Baca** `PLAN.md`, `PROGRESS.md`, `config.json`.
-3. **Cek window.** Kalau jam WIB sekarang di luar `window` (23:00–05:00) → **stop** tanpa mengubah apa pun, kecuali prompt Routine memuat kata `ABAIKAN-WINDOW` (dipakai untuk uji manual).
+3. **Cek window.** Kalau jam WIB sekarang di luar `window` (23:00–05:00) → **stop** tanpa mengubah apa pun, kecuali pesan yang membangunkanmu memuat kata `ABAIKAN-WINDOW` (dipakai untuk uji manual).
 4. **Hitung kuota malam ini.** "Malam ini" = sejak **23:00 WIB terakhir yang sudah lewat** (jadi run jam 00–04 tetap menghitung dari 23:00 hari sebelumnya). Hitung step `done` dengan timestamp ≥ itu. Kalau ≥ `max_steps_per_night` → **stop**.
 5. **Kondisi berhenti lain** (tulis satu baris di bagian "Log Run" `PROGRESS.md`, commit, push, stop):
    - semua step `done` → tulis `ALL DONE` (lihat §4, "Setelah selesai");
@@ -142,14 +142,14 @@ Playwright config bersama (`packages/config`): hanya project `chromium`; `launch
 
 ## 4. Jadwal
 
-- Jadwal = **Routine claude.ai** (cloud, sesi baru tiap fire, jalan tanpa HP/laptop terhubung), **dibuat lewat UI** claude.ai/code/routines dengan repo `puntadewaitb/apps` dipilih sebagai source dan environment `Bawaan`.
-  - Kenapa bukan lewat tool `create_trigger` dari sesi lain: terbukti di dry-run 2026-10-31 bahwa trigger buatan tool itu tidak membawa repo (`sources: []`, tag `no-git-repo`), tidak punya tool `add_repo`, dan `GH_TOKEN`-nya invalid. Parameter `connectors` ditolak organisasi.
-- Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00). Kalau UI hanya menerima preset: pakai **hourly**; protokol (langkah 3) otomatis stop di luar window 23:00–05:00 WIB.
-- **Default branch repo harus tetap `claude/determined-turing-qzp8w9`** selama pengerjaan (Routine meng-clone default branch). Jangan buat/merge ke `main` atau ganti default branch sebelum semua step `done`.
-- Pengaturan Routine: izinkan push hanya ke branch `claude/*` (default). Jangan aktifkan push tak terbatas.
-- Prompt tiap run: *"Repo puntadewaitb/apps sudah ter-clone. Ikuti 'Protokol Run' di PLAN.md (§1) dan baca CLAUDE.md. Kerjakan tepat satu step. Branch kerja: claude/determined-turing-qzp8w9. Jangan push ke branch lain, jangan buat PR."*
-- **Prasyarat sebelum jadwal aktif:** satu kali "Run now" dengan prompt uji (memuat `ABAIKAN-WINDOW`) yang hanya meng-commit `.dryrun/*.txt` ke branch kerja — membuktikan repo ter-clone & push diizinkan.
-- **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE` di `PROGRESS.md` dan stop. Pemilik repo menonaktifkan/menghapus Routine secara manual (run berikutnya akan langsung stop dengan biaya minimal).
+- Jadwal = **scheduled task yang membangunkan satu worker session tetap** (`session_018KHqGbbH4XiAuYR3s9DrdD`, source repo + branch kerja terpasang sejak dibuat). Jalan di cloud, tanpa HP/laptop terhubung.
+  - Kenapa bukan trigger "sesi baru tiap fire": dry-run 2026-10-31 membuktikan trigger buatan tool `create_trigger` tidak membawa repo (`sources: []`, tag `no-git-repo`), tanpa tool `add_repo`, dan `GH_TOKEN` invalid; parameter `connectors` ditolak organisasi. Worker session dengan repo sebagai source **terbukti** bisa clone + push (commit `30429c6`).
+  - Alternatif bila worker bermasalah: Routine via UI claude.ai/code/routines (pilih repo `puntadewaitb/apps`, environment `Bawaan`, push hanya `claude/*`).
+- Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00). Run yang terlambat tidak berbahaya: protokol langkah 3 stop di luar window 23:00–05:00 WIB.
+- **Default branch repo tetap `claude/determined-turing-qzp8w9`** selama pengerjaan. Jangan buat/merge ke `main` atau ganti default branch sebelum semua step `done`.
+- Pesan pembangun tiap run: *"RUN BARU. Ikuti 'Protokol Run' di PLAN.md (§1) dan CLAUDE.md. Mulai dengan git pull --ff-only di branch claude/determined-turing-qzp8w9. Kerjakan tepat satu step. Jangan push ke branch lain, jangan buat PR."*
+- **Risiko yang belum terbukti:** container worker bisa direclaim saat idle dan konteks session menumpuk lintas malam. Bukti sesungguhnya = fire pertama setelah worker idle; periksa `PROGRESS.md`/log commit setelah malam 1.
+- **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE` di `PROGRESS.md` dan stop. Pemilik repo menghapus scheduled task secara manual (run berikutnya langsung stop dengan biaya minimal).
 
 ### Perkiraan per malam (urutan eksekusi mengikuti `PROGRESS.md`, bukan tabel ini)
 | Malam | Step |
