@@ -18,6 +18,7 @@ export const site = {
     { label: "Beranda", href: "#beranda" },
     { label: "Masalah", href: "#masalah" },
     { label: "Keunggulan", href: "#keunggulan" },
+    { label: "Paket", href: "#paket" },
     { label: "Kontak", href: "#kontak" },
   ],
   hero: {
@@ -28,6 +29,110 @@ export const site = {
     cta: { label: "Coba Gratis 14 Hari", href: "#kontak" },
     secondaryCta: { label: "Lihat Keunggulan", href: "#keunggulan" },
     image: { src: "/img/hero.svg", alt: "Ilustrasi dasbor laporan keuangan Catatin Kas" },
+  },
+  problem: {
+    title: "Masalah yang sering bikin usaha kecil jalan di tempat",
+    subtitle: "Kalau salah satu ini terasa akrab, Anda tidak sendirian.",
+    items: [
+      {
+        icon: "📒",
+        title: "Catatan tercecer",
+        text: "Nota di laci, catatan di buku, transaksi di chat. Akhir bulan bingung uangnya ke mana.",
+      },
+      {
+        icon: "❓",
+        title: "Tidak tahu untung sebenarnya",
+        text: "Omzet ramai, tapi saldo tipis. Tanpa laporan, sulit tahu produk mana yang benar-benar untung.",
+      },
+      {
+        icon: "⏳",
+        title: "Pembukuan makan waktu",
+        text: "Rekap manual berjam-jam tiap akhir pekan, padahal waktunya lebih berguna untuk melayani pelanggan.",
+      },
+    ],
+  },
+  solution: {
+    title: "Catatin Kas merapikan semuanya di satu tempat",
+    text: "Catat tiap transaksi dalam hitungan detik. Laporan untung-rugi, arus kas, dan stok tersusun otomatis, siap dibaca atau dikirim ke akuntan.",
+    points: [
+      "Catat pemasukan & pengeluaran dari HP",
+      "Laporan harian, mingguan, bulanan otomatis",
+      "Ekspor ke Excel dan PDF dalam sekali klik",
+    ],
+  },
+  features: {
+    title: "Keunggulan yang terasa di pekerjaan sehari-hari",
+    subtitle: "Dibuat khusus untuk pemilik usaha, bukan akuntan.",
+    items: [
+      {
+        icon: "⚡",
+        title: "Catat 10 detik",
+        text: "Form ringkas dengan kategori siap pakai, cukup tiga ketukan per transaksi.",
+      },
+      {
+        icon: "📊",
+        title: "Laporan otomatis",
+        text: "Untung-rugi dan arus kas langsung terhitung, tanpa rumus.",
+      },
+      {
+        icon: "📦",
+        title: "Stok terpantau",
+        text: "Notifikasi saat stok menipis supaya tidak kehabisan barang laris.",
+      },
+      {
+        icon: "👥",
+        title: "Banyak pengguna",
+        text: "Ajak kasir dan partner dengan hak akses yang bisa diatur.",
+      },
+      {
+        icon: "🔒",
+        title: "Data aman",
+        text: "Data terenkripsi dan dicadangkan otomatis setiap hari.",
+      },
+      {
+        icon: "💬",
+        title: "Bantuan berbahasa Indonesia",
+        text: "Tim kami siap membantu lewat WhatsApp pada jam kerja.",
+      },
+    ],
+  },
+  showcase: {
+    title: "Pilih paket sesuai ukuran usaha Anda",
+    subtitle: "Semua paket termasuk uji coba gratis 14 hari.",
+    items: [
+      {
+        name: "Warung",
+        price: "Rp 0",
+        period: "selamanya",
+        badge: "Gratis",
+        image: { src: "/img/paket-warung.svg", alt: "Ilustrasi paket Warung" },
+        text: "Untuk usaha yang baru mulai merapikan catatan.",
+        points: ["1 pengguna", "100 transaksi/bulan", "Laporan dasar"],
+      },
+      {
+        name: "Toko",
+        price: "Rp 59.000",
+        period: "/bulan",
+        badge: "Terlaris",
+        image: { src: "/img/paket-toko.svg", alt: "Ilustrasi paket Toko" },
+        text: "Untuk toko dengan transaksi harian dan stok barang.",
+        points: ["3 pengguna", "Transaksi tanpa batas", "Stok & laporan lengkap"],
+      },
+      {
+        name: "Cabang",
+        price: "Rp 149.000",
+        period: "/bulan",
+        badge: "Multi-outlet",
+        image: { src: "/img/paket-cabang.svg", alt: "Ilustrasi paket Cabang" },
+        text: "Untuk usaha dengan beberapa cabang dan tim.",
+        points: ["10 pengguna", "Banyak cabang", "Dukungan prioritas"],
+      },
+    ],
+    note: "Harga contoh (fiktif) untuk demo template.",
+  },
+  contact: {
+    title: "Mulai catat hari ini",
+    text: "Tanya dulu atau langsung coba. Kami balas di jam kerja.",
   },
   footer: {
     description: "Aplikasi pembukuan sederhana untuk usaha kecil Indonesia.",

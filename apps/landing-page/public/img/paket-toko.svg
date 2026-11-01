@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" role="img" aria-label="Ilustrasi paket toko">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#5eead4"/></linearGradient></defs>
+  <rect width="400" height="240" fill="url(#g)"/>
+  <g fill="#fff" fill-opacity=".9"><rect x="110" y="95" width="180" height="75" rx="8"/><path d="M100 95 L125 55 H275 L300 95Z"/><rect x="185" y="125" width="30" height="45" fill="#0f766e"/></g>
+  <g fill="#fff" fill-opacity=".35"><circle cx="340" cy="40" r="60"/><circle cx="50" cy="210" r="48"/></g>
+</svg>
