@@ -19,6 +19,8 @@ export const site = {
     { label: "Masalah", href: "#masalah" },
     { label: "Keunggulan", href: "#keunggulan" },
     { label: "Paket", href: "#paket" },
+    { label: "Testimoni", href: "#testimoni" },
+    { label: "FAQ", href: "#faq" },
     { label: "Kontak", href: "#kontak" },
   ],
   hero: {
@@ -129,6 +131,83 @@ export const site = {
       },
     ],
     note: "Harga contoh (fiktif) untuk demo template.",
+  },
+  /** Countdown promo (opsional). enabled=false atau endsAt lewat → banner tidak tampil. endsAt: ISO 8601 dengan zona waktu. */
+  promo: {
+    enabled: true,
+    endsAt: "2026-12-31T23:59:59+07:00",
+    text: "Promo akhir tahun: diskon 30% paket Toko & Cabang",
+    cta: { label: "Ambil Promo", href: "#paket" },
+  },
+  testimonials: {
+    title: "Kata mereka yang sudah memakai",
+    subtitle: "Cerita pemilik usaha yang pembukuannya kini lebih tenang.",
+    note: "Nama dan testimoni di bawah adalah contoh fiktif untuk demo template.",
+    items: [
+      {
+        name: "Bu Ratna",
+        role: "Pemilik warung makan, Yogyakarta",
+        quote:
+          "Dulu akhir bulan saya pusing hitung nota. Sekarang laporan untung-rugi sudah jadi sendiri, tinggal dibaca.",
+        rating: 5,
+      },
+      {
+        name: "Pak Dedi",
+        role: "Toko bangunan, Medan",
+        quote:
+          "Notifikasi stok menipis bikin saya tidak pernah kehabisan semen lagi. Kasir juga gampang belajarnya.",
+        rating: 5,
+      },
+      {
+        name: "Mbak Sinta",
+        role: "Usaha kue rumahan, Bandung",
+        quote:
+          "Akhirnya tahu produk mana yang paling untung. Harga jual saya atur ulang dan margin naik.",
+        rating: 4,
+      },
+    ],
+  },
+  faq: {
+    title: "Pertanyaan yang sering diajukan",
+    subtitle: "Belum menemukan jawabannya? Tanyakan lewat WhatsApp.",
+    items: [
+      {
+        id: "gratis",
+        q: "Apakah benar bisa dicoba gratis?",
+        a: "Ya. Semua paket punya uji coba 14 hari tanpa kartu kredit. Paket Warung gratis selamanya dengan batas 100 transaksi per bulan.",
+      },
+      {
+        id: "hp",
+        q: "Apakah bisa dipakai di HP biasa?",
+        a: "Bisa. Catatin Kas berjalan di browser HP maupun komputer, tidak perlu memasang aplikasi tambahan.",
+      },
+      {
+        id: "aman",
+        q: "Bagaimana keamanan data usaha saya?",
+        a: "Data terenkripsi saat dikirim dan disimpan, serta dicadangkan otomatis setiap hari. Anda bisa mengekspor semua data kapan saja.",
+      },
+      {
+        id: "pindah",
+        q: "Saya sudah punya catatan di Excel. Bisa dipindahkan?",
+        a: "Bisa. Unggah berkas Excel/CSV dan transaksi lama akan masuk otomatis. Tim kami membantu lewat WhatsApp bila ada yang kurang pas.",
+      },
+      {
+        id: "batal",
+        q: "Kalau tidak cocok, bisa berhenti kapan saja?",
+        a: "Bisa. Tidak ada kontrak. Berhenti langganan kapan saja dari menu pengaturan, dan data Anda tetap bisa diunduh.",
+      },
+      {
+        id: "pajak",
+        q: "Apakah laporannya bisa untuk keperluan pajak?",
+        a: "Laporan untung-rugi dan arus kas bisa diekspor ke PDF/Excel sebagai bahan untuk akuntan atau konsultan pajak Anda.",
+      },
+    ],
+  },
+  closing: {
+    title: "Siap merapikan pembukuan usaha Anda?",
+    text: "Mulai uji coba gratis 14 hari. Tanpa kartu kredit, bisa berhenti kapan saja.",
+    cta: { label: "Coba Gratis Sekarang", href: "#kontak" },
+    secondaryCta: { label: "Lihat Paket", href: "#paket" },
   },
   contact: {
     title: "Mulai catat hari ini",

@@ -1,14 +1,19 @@
 import { ButtonLink, Footer, Navbar, WhatsAppButton } from "@tpl/ui";
+import { ClosingCta } from "../components/ClosingCta";
 import { ContactCta } from "../components/ContactCta";
+import { Faq } from "../components/Faq";
 import { Features } from "../components/Features";
 import { Hero } from "../components/Hero";
 import { ProblemSolution } from "../components/ProblemSolution";
+import { PromoBanner } from "../components/PromoBanner";
 import { Showcase } from "../components/Showcase";
+import { Testimonials } from "../components/Testimonials";
 import { site } from "../content/site";
 
 export default function HomePage() {
   return (
     <>
+      <PromoBanner />
       <Navbar
         brand={site.brand}
         links={site.nav}
@@ -23,6 +28,9 @@ export default function HomePage() {
         <ProblemSolution />
         <Features />
         <Showcase />
+        <Testimonials />
+        <Faq />
+        <ClosingCta />
         <ContactCta />
       </main>
       <Footer
