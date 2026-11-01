@@ -7,12 +7,14 @@ import { Hero } from "../components/Hero";
 import { ProblemSolution } from "../components/ProblemSolution";
 import { PromoBanner } from "../components/PromoBanner";
 import { Showcase } from "../components/Showcase";
+import { StructuredData } from "../components/StructuredData";
 import { Testimonials } from "../components/Testimonials";
 import { site } from "../content/site";
 
 export default function HomePage() {
   return (
     <>
+      <StructuredData />
       <PromoBanner />
       <Navbar
         brand={site.brand}

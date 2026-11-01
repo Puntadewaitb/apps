@@ -15,6 +15,8 @@ export function Showcase() {
                 alt={item.image.alt}
                 width={400}
                 height={240}
+                loading="lazy"
+                decoding="async"
                 className="h-auto w-full"
               />
               <div className="flex flex-1 flex-col p-5">

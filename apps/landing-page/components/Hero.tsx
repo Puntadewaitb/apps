@@ -27,6 +27,8 @@ export function Hero() {
           alt={hero.image.alt}
           width={640}
           height={480}
+          fetchPriority="high"
+          decoding="async"
           className="h-auto w-full rounded-xl border border-border"
         />
       </Container>

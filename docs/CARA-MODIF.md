@@ -138,6 +138,12 @@ export const prisma = new PrismaClient({ adapter });
 - IP klien untuk rate limit diambil dari `X-Forwarded-For` (entri ke-`TRUSTED_PROXIES` dari kanan; default 1) lalu `X-Real-IP`. **Pasang app di belakang reverse proxy yang menimpa header ini**; bila app terekspos langsung ke internet, klien bisa memalsukan header dan menghindari batas. Tanpa header sama sekali semua klien berbagi satu bucket (`unknown`).
 - Setelah `npm ci` jalankan `npm run setup -w @tpl/landing-page` (generate client + migrasi). `generated/` tidak di-commit.
 
+### Landing page: SEO, tema, tracking
+
+- Metadata, canonical, Open Graph/Twitter, `robots.txt`, `sitemap.xml`, dan JSON-LD (Organization, WebSite, SoftwareApplication+Offer, FAQPage) dibangun dari `content/site.ts`. Set `NEXT_PUBLIC_SITE_URL` ke domain produksi sebelum build. Gambar OG dibuat saat build di `app/opengraph-image.tsx` (tanpa fetch eksternal). JSON-LD sengaja tanpa `aggregateRating` — testimoni demo fiktif; jangan menambah rating palsu.
+- Tema: `site.theme` atau env `NEXT_PUBLIC_THEME` (`netral` / `hangat` / `hijau`).
+- GA4 / Meta Pixel: isi `NEXT_PUBLIC_GA_ID` / `NEXT_PUBLIC_META_PIXEL_ID` lalu build ulang. Kosong = tidak ada skrip pihak ketiga dan CSP tetap ketat. Pastikan kebijakan privasi & persetujuan pengunjung sesuai aturan yang berlaku (UU PDP) sebelum mengaktifkan.
+
 ## 8. Keamanan yang sudah tersedia
 
 Dari `packages/core` (lihat `packages/core/README.md`): security headers + CSP, validasi Zod (nama, HP Indonesia, email), sanitasi teks, honeypot, rate limiter, validator upload (magic bytes), token acak.

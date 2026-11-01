@@ -16,7 +16,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | L2 | Landing: Section utama | L1 | done | 2026-11-02 00:11 | 9 tes e2e (overflow 360/768/1280 + asersi overflow dibuktikan bisa mendeteksi, section, gambar termuat, menu mobile); bagian kontak sementara CTA WA — form lead di L4 |
 | L3 | Landing: Social proof & konversi | L2 | done | 2026-11-02 01:11 | testimoni, FAQ (Accordion), CTA penutup, countdown promo via site.promo (jam dikunci pakai page.clock); 4 unit + 15 e2e; "paket harga" = section #paket dari L2 (tidak diduplikasi); label countdown h/j/m/d |
 | L4 | Landing: Form lead | L3 | done | 2026-11-02 02:15 | Prisma 7 + better-sqlite3; /api/leads (Zod, honeypot, rate limit, cek Origin), redirect WA; /admin/leads (cookie HMAC, password env, fail-closed) + CSV anti-formula-injection; 14 unit + 29 e2e (DB e2e terpisah); root typecheck dibatasi ke packages, app via script sendiri (butuh prisma generate); rate limit bergantung X-Forwarded-For (lihat CARA-MODIF) |
-| L5 | Landing: SEO & tema | L4 | in_progress | 2026-11-02 03:09 | |
+| L5 | Landing: SEO & tema | L4 | done | 2026-11-02 03:14 | metadata+OG PNG (next/og, lokal)+robots+sitemap+JSON-LD (tanpa aggregateRating); tracking GA4/Pixel via env tervalidasi + CSP dinamis (jalur aktif diuji manual, e2e hanya jalur mati); tema via site.theme/NEXT_PUBLIC_THEME; 24 unit + 40 e2e; gambar SVG: lazy/fetchpriority/cache 7 hari (tanpa svgo) |
 | L6 | Landing: QA | L5 | todo | | |
 | U1 | Undangan: Scaffold & data | 0.6 | todo | | |
 | U2 | Undangan: Cover & nama tamu | U1 | todo | | |
