@@ -13,7 +13,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | 0.5 | Testing & CI | 0.3, 0.4 | done | 2026-11-01 04:25 | ci.yml valid (npm run ci:validate, yaml@2.9.1); job check dijalankan lokal OK incl. smoke Playwright @tpl/config (PW_CHROMIUM_PATH); job app (build/e2e) belum bisa diuji lokal — belum ada app |
 | 0.6 | Script & dokumentasi | 0.5 | done | 2026-11-01 21:56 | catchup: dev:all/setup/build:all/test:all lewat scripts/apps.mjs (skip app kosong; diuji dengan app palsu sementara, sudah dihapus); docs/CARA-MODIF.md; cuplikan adapter pg/mariadb belum diuji end-to-end (diuji di step app ber-DB) |
 | L1 | Landing: Scaffold | 0.6 | done | 2026-11-01 23:12 | next build OK; 3 tes e2e (hero 200, href wa.me, security headers); Tailwind/tema terverifikasi via computed style; app/page.tsx baru hero+navbar+footer+WA — section lain di L2 |
-| L2 | Landing: Section utama | L1 | todo | | |
+| L2 | Landing: Section utama | L1 | in_progress | 2026-11-02 00:08 | |
 | L3 | Landing: Social proof & konversi | L2 | todo | | |
 | L4 | Landing: Form lead | L3 | todo | | |
 | L5 | Landing: SEO & tema | L4 | todo | | |
