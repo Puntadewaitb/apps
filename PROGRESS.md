@@ -11,7 +11,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | 0.3 | packages/ui | 0.2 | done | 2026-11-01 02:25 | 18 tes (renderToStaticMarkup, tanpa jsdom); oxc jsx automatic di vitest base; app wajib @source ke packages/ui/src (lihat packages/ui/README.md); test root = npm test --workspaces |
 | 0.4 | packages/core | 0.2 | done | 2026-11-01 03:25 | 27 tes; CSP tanpa nonce masih pakai unsafe-inline script (syarat hidrasi Next) — nonce via proxy.ts opsional; rate limiter in-memory (Redis lewat RateLimitStore) |
 | 0.5 | Testing & CI | 0.3, 0.4 | done | 2026-11-01 04:25 | ci.yml valid (npm run ci:validate, yaml@2.9.1); job check dijalankan lokal OK incl. smoke Playwright @tpl/config (PW_CHROMIUM_PATH); job app (build/e2e) belum bisa diuji lokal — belum ada app |
-| 0.6 | Script & dokumentasi | 0.5 | todo | | |
+| 0.6 | Script & dokumentasi | 0.5 | in_progress | 2026-11-01 21:53 | catchup: |
 | L1 | Landing: Scaffold | 0.6 | todo | | |
 | L2 | Landing: Section utama | L1 | todo | | |
 | L3 | Landing: Social proof & konversi | L2 | todo | | |
