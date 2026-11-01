@@ -25,3 +25,6 @@ test-results/
 .DS_Store
 .vscode/
 .idea/
+
+# generated (prisma client) — dibuat ulang oleh `npm run db:generate`
+generated/

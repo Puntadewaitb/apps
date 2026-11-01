@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Lead {
+  id        Int      @id @default(autoincrement())
+  name      String
+  /// Nomor HP ternormalisasi: 62xxxxxxxxxx
+  phone     String
+  message   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
