@@ -15,10 +15,14 @@ Paket bersama: `packages/config`, `packages/ui`, `packages/core`.
 ## Memulai
 
 ```bash
-nvm use        # Node 22
+nvm use          # Node 22
 npm ci
+npm run setup    # prisma generate + migrate + seed (app ber-DB)
+npm run dev:all  # jalankan semua app (3001–3005)
 ```
 
-Skrip `setup` dan `dev:all` akan tersedia setelah step 0.6 selesai. Rencana lengkap ada di `PLAN.md`, status pengerjaan di `PROGRESS.md`.
+Skrip lain: `build:all`, `test`, `test:e2e`, `test:all`, `lint`, `typecheck`. Semuanya melewati app yang belum ada.
+
+Panduan memodifikasi template: [`docs/CARA-MODIF.md`](docs/CARA-MODIF.md). Rencana pengerjaan di `PLAN.md`, status di `PROGRESS.md`.
 
 > Semua brand dan data pada template ini fiktif.

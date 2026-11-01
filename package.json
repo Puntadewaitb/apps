@@ -27,6 +27,10 @@
     "format:check": "prettier --check .",
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e --workspaces --if-present",
-    "ci:validate": "node scripts/validate-ci.mjs"
+    "ci:validate": "node scripts/validate-ci.mjs",
+    "dev:all": "node scripts/apps.mjs dev",
+    "setup": "node scripts/apps.mjs setup",
+    "build:all": "node scripts/apps.mjs build",
+    "test:all": "npm test && npm run test:e2e"
   }
 }
