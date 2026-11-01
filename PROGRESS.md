@@ -12,7 +12,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | 0.4 | packages/core | 0.2 | done | 2026-11-01 03:25 | 27 tes; CSP tanpa nonce masih pakai unsafe-inline script (syarat hidrasi Next) — nonce via proxy.ts opsional; rate limiter in-memory (Redis lewat RateLimitStore) |
 | 0.5 | Testing & CI | 0.3, 0.4 | done | 2026-11-01 04:25 | ci.yml valid (npm run ci:validate, yaml@2.9.1); job check dijalankan lokal OK incl. smoke Playwright @tpl/config (PW_CHROMIUM_PATH); job app (build/e2e) belum bisa diuji lokal — belum ada app |
 | 0.6 | Script & dokumentasi | 0.5 | done | 2026-11-01 21:56 | catchup: dev:all/setup/build:all/test:all lewat scripts/apps.mjs (skip app kosong; diuji dengan app palsu sementara, sudah dihapus); docs/CARA-MODIF.md; cuplikan adapter pg/mariadb belum diuji end-to-end (diuji di step app ber-DB) |
-| L1 | Landing: Scaffold | 0.6 | todo | | |
+| L1 | Landing: Scaffold | 0.6 | in_progress | 2026-11-01 23:09 | |
 | L2 | Landing: Section utama | L1 | todo | | |
 | L3 | Landing: Social proof & konversi | L2 | todo | | |
 | L4 | Landing: Form lead | L3 | todo | | |
