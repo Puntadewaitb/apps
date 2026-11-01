@@ -131,6 +131,13 @@ export const prisma = new PrismaClient({ adapter });
 - Salin `.env.example` → `.env` per app. **Jangan commit `.env`** (sudah di `.gitignore`).
 - Kredensial admin di seed hanya untuk development. **Ganti sebelum produksi**: set password kuat dan `NEXTAUTH_SECRET` acak (`node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`).
 
+### Landing page: form lead & `/admin/leads`
+
+- Form kontak → `POST /api/leads` (Zod, honeypot, rate limit 5/10 menit/IP) → tersimpan di tabel `Lead` → pengunjung diarahkan ke WhatsApp dengan pesan terisi. Nomor tujuan & teks diatur di `content/site.ts`.
+- Admin: `/admin/login` → `/admin/leads` (daftar + **Ekspor CSV**). Diatur lewat `ADMIN_PASSWORD` dan `ADMIN_SESSION_SECRET` (≥ 32 karakter); bila salah satu kosong, login dinonaktifkan. Ganti nilai contoh di `.env.example` sebelum produksi.
+- IP klien untuk rate limit diambil dari `X-Forwarded-For` (entri ke-`TRUSTED_PROXIES` dari kanan; default 1) lalu `X-Real-IP`. **Pasang app di belakang reverse proxy yang menimpa header ini**; bila app terekspos langsung ke internet, klien bisa memalsukan header dan menghindari batas. Tanpa header sama sekali semua klien berbagi satu bucket (`unknown`).
+- Setelah `npm ci` jalankan `npm run setup -w @tpl/landing-page` (generate client + migrasi). `generated/` tidak di-commit.
+
 ## 8. Keamanan yang sudah tersedia
 
 Dari `packages/core` (lihat `packages/core/README.md`): security headers + CSP, validasi Zod (nama, HP Indonesia, email), sanitasi teks, honeypot, rate limiter, validator upload (magic bytes), token acak.

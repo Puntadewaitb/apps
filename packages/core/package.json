@@ -4,7 +4,8 @@
   "private": true,
   "description": "Util keamanan & validasi bersama (headers, Zod, sanitasi, rate limit, upload, token)",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./honeypot": "./src/honeypot.ts"
   },
   "scripts": {
     "test": "vitest run"
