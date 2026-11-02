@@ -21,7 +21,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U1 | Undangan: Scaffold & data | 0.6 | done | 2026-11-03 00:09 | Prisma Event/Guest/Rsvp/Wish (status RSVP = String, divalidasi app); seed idempotent via Node type-stripping (generator importFileExtension=ts + package type=module); halaman utama dinamis dari DB; 3 unit + 5 e2e; setup = generate+migrate+seed |
 | U2 | Undangan: Cover & nama tamu | U1 | done | 2026-11-03 00:14 | cover dialog + ?to= (sanitasi, maks 60, XSS diuji) + Buka Undangan (scroll/inert dibuka, fokus ke konten) + toggle musik; audio = placeholder senyap WAV (petunjuk ganti di README); 9 unit + 14 e2e; musik hanya diuji state play/pause (headless, tanpa suara) |
 | U3 | Undangan: Detail acara | U2 | done | 2026-11-03 00:33 | profil mempelai, akad&resepsi (lokasi terpisah; migrasi resepsiVenue*), Maps (iframe diuji src/title, jaringan Google diblok), countdown (pad/remaining dipindah ke @tpl/core), .ics (/api/kalender, RFC5545 escape+folding); URL Maps dari DB wajib embed www.google.com HTTPS; 17 unit + 25 e2e |
-| U4 | Undangan: Galeri & cerita | U3 | todo | | |
+| U4 | Undangan: Galeri & cerita | U3 | in_progress | 2026-11-03 00:34 | |
 | U5 | Undangan: RSVP & ucapan | U4 | todo | | |
 | U6 | Undangan: Amplop digital | U5 | todo | | |
 | U7 | Undangan: Multi-tema & admin | U6 | todo | | |
