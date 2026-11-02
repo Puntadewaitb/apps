@@ -58,7 +58,14 @@ test.describe("navigasi", () => {
         if (a !== "#") await expect(page.locator(a), `${path} ${a}`).toHaveCount(1);
     }
     // semua halaman inti + semua detail layanan terjangkau dari navigasi
-    for (const p of ["/", "/tentang", "/layanan", ...layanan.map((l) => `/layanan/${l.slug}`)]) {
+    for (const p of [
+      "/",
+      "/tentang",
+      "/layanan",
+      "/portofolio",
+      ...layanan.map((l) => `/layanan/${l.slug}`),
+      ...konten.portofolio.proyek.map((x) => `/portofolio/${x.slug}`),
+    ]) {
       expect(dikunjungi, p).toContain(p);
     }
     void request;

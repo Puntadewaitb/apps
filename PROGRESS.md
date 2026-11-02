@@ -28,7 +28,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U8 | Undangan: QA | U7 | done | 2026-11-03 02:31 | qa.spec (ponsel 390x844): alur tamu penuh tanpa error konsol/CSP, XSS (?to=, ucapan, data kotor langsung di DB → publik+admin tetap teks; detektor diuji dengan kontrol positif), a11y dasar, keyboard, ukuran sentuh; README + 14 screenshot (SCREENSHOTS=1); 58 unit + 83 e2e (3 skip = screenshot) |
 | C1 | Company: Scaffold | 0.6 | done | 2026-11-03 03:15 | port 3002; konten file-based (content/id.ts) + skema Zod (href aman, WA 62…) + getKonten(lang) siap i18n (EN di C5); hero/kontak/WA; 5 unit + 10 e2e; tanpa MDX/DB dulu (blog di C4: pilih parser Markdown saat itu) |
 | C2 | Company: Halaman inti | C1 | done | 2026-11-03 03:23 | Beranda (layanan ringkas + keunggulan), Tentang (visi-misi, nilai, timeline, tim), Layanan (daftar + detail dinamis via generateStaticParams, dynamicParams=false → slug tak dikenal 404), konten/skema Zod terintegrasi (slug unik, terkait valid); e2e termasuk crawler tautan internal; 9 unit + 23 e2e. Form kontak masih info statis di beranda — halaman kontak penuh di C4 |
-| C3 | Company: Portofolio & kredibilitas | C2 | in_progress | 2026-11-03 04:08 | |
+| C3 | Company: Portofolio & kredibilitas | C2 | done | 2026-11-03 04:16 | portofolio 6 proyek: filter kategori berbasis URL (?kategori=, nilai tak dikenal diabaikan; jalan tanpa JS) + detail dinamis (404 slug tak dikenal) + proyek serupa; angka pencapaian, 8 logo klien (SVG placeholder), testimoni; beranda diperkaya; 14 unit + 43 e2e. Semua klien/angka fiktif (ditandai di UI) |
 | C4 | Company: Blog & kontak | C3 | todo | | |
 | C5 | Company: SEO & bahasa | C4 | todo | | |
 | C6 | Company: QA | C5 | todo | | |
