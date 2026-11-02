@@ -6,6 +6,9 @@ export default createPlaywrightConfig({
   serverEnv: {
     DATABASE_URL: "file:./e2e.db",
     EVENT_SLUG: "raka-anisa",
+    // Kredensial HANYA untuk tes (DB e2e sekali pakai) — bukan rahasia.
+    ADMIN_PASSWORD: "e2e-password-bukan-rahasia",
+    ADMIN_SESSION_SECRET: "e2e-session-secret-0123456789abcdef-xyz",
     NEXT_TELEMETRY_DISABLED: "1",
   },
 });
