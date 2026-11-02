@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Ilustrasi diskusi tim">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
+    <linearGradient id="pn" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <rect x="70" y="60" width="500" height="260" rx="18" fill="#fff" stroke="#cbd5e1"/>
+  <rect x="100" y="92" width="150" height="16" rx="8" fill="#0f172a" opacity=".85"/>
+  <rect x="100" y="122" width="260" height="10" rx="5" fill="#94a3b8"/>
+  <g fill="url(#pn)"><rect x="110" y="250" width="40" height="40" rx="6"/><rect x="170" y="220" width="40" height="70" rx="6"/><rect x="230" y="190" width="40" height="100" rx="6"/><rect x="290" y="160" width="40" height="130" rx="6"/></g>
+  <circle cx="470" cy="190" r="62" fill="none" stroke="#e2e8f0" stroke-width="22"/>
+  <path d="M470 128a62 62 0 0 1 58 84" fill="none" stroke="url(#pn)" stroke-width="22" stroke-linecap="round"/>
+  <g><circle cx="190" cy="388" r="30" fill="#fff"/><path d="M142 460c0-34 22-56 48-56s48 22 48 56z" fill="#fff"/>
+  <circle cx="320" cy="388" r="30" fill="#fff" fill-opacity=".9"/><path d="M272 460c0-34 22-56 48-56s48 22 48 56z" fill="#fff" fill-opacity=".9"/>
+  <circle cx="450" cy="388" r="30" fill="#fff" fill-opacity=".8"/><path d="M402 460c0-34 22-56 48-56s48 22 48 56z" fill="#fff" fill-opacity=".8"/></g>
+</svg>
