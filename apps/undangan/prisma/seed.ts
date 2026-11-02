@@ -10,6 +10,8 @@ const prisma = new PrismaClient({ adapter: new PrismaBetterSqlite3({ url }) });
 
 const event = {
   slug: DEMO_SLUG,
+  jenis: "pernikahan",
+  tema: "floral",
   title: "Pernikahan Raka & Anisa",
   groomName: "Raka Pratama",
   brideName: "Anisa Putri",
@@ -39,6 +41,43 @@ try {
     create: event,
     update: event,
   });
+
+  // Acara demo lain (jenis & tema berbeda) — bisa dipilih lewat EVENT_SLUG atau dilihat di /admin/pratinjau.
+  const lain = [
+    {
+      slug: "aqiqah-demo",
+      jenis: "aqiqah",
+      tema: "islami",
+      title: "Aqiqah Zahra",
+      groomName: "Zahra Kamila Putri",
+      brideName: "",
+      groomParents: "Putri dari Bapak Rizal Firmansyah & Ibu Nadia Safitri",
+      brideParents: "",
+      akadAt: new Date("2027-03-06T09:00:00+07:00"),
+      resepsiAt: new Date("2027-03-06T09:00:00+07:00"),
+      venueName: "Kediaman Keluarga Firmansyah",
+      venueAddress: "Jl. Kenanga No. 3, Bandung (alamat fiktif untuk demo)",
+      quote: "Setiap anak tergadai dengan aqiqahnya. (HR. Tirmidzi)",
+    },
+    {
+      slug: "khitan-demo",
+      jenis: "khitan",
+      tema: "elegan",
+      title: "Khitanan Fatih",
+      groomName: "Fatih Alamsyah",
+      brideName: "",
+      groomParents: "Putra dari Bapak Teguh Alamsyah & Ibu Ratna Dewi",
+      brideParents: "",
+      akadAt: new Date("2027-03-13T10:00:00+07:00"),
+      resepsiAt: new Date("2027-03-13T10:00:00+07:00"),
+      venueName: "Aula Masjid Al-Hikmah",
+      venueAddress: "Jl. Anggrek No. 20, Surabaya (alamat fiktif untuk demo)",
+      quote: "",
+    },
+  ];
+  for (const e of lain) {
+    await prisma.event.upsert({ where: { slug: e.slug }, create: e, update: e });
+  }
 
   for (const g of guests) {
     await prisma.guest.upsert({

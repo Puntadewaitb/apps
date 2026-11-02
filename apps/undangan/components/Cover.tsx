@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@tpl/ui";
+import { NamaAcara } from "./NamaAcara";
 
 type Props = {
   guestName: string;
-  groom: string;
-  bride: string;
+  /** Judul sampul, mis. "Undangan Pernikahan" */
+  judul: string;
+  /** Nama acara, mis. "Raka & Anisa" atau "Zahra" */
+  nama: string;
   dateText: string;
   /** Sumber audio latar (file lokal di /public/audio). */
   audioSrc?: string;
@@ -17,7 +20,7 @@ type Props = {
  * musik latar mulai (aksi pengguna → lolos kebijakan autoplay) dan tombol musik tampil.
  * Konten undangan (#isi) di-`inert` selama cover tampil agar fokus/pembaca layar tidak "bocor".
  */
-export function Cover({ guestName, groom, bride, dateText, audioSrc = "/audio/latar.wav" }: Props) {
+export function Cover({ guestName, judul, nama, dateText, audioSrc = "/audio/latar.wav" }: Props) {
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -72,9 +75,9 @@ export function Cover({ guestName, groom, bride, dateText, audioSrc = "/audio/la
         hidden={open}
         className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface px-6 text-center motion-safe:transition-opacity"
       >
-        <p className="text-sm uppercase tracking-widest text-muted">Undangan Pernikahan</p>
+        <p className="text-sm uppercase tracking-widest text-muted">{judul}</p>
         <h2 className="mt-4 font-serif text-4xl font-bold text-fg sm:text-6xl">
-          {groom} <span className="text-primary">&amp;</span> {bride}
+          <NamaAcara nama={nama} />
         </h2>
         <p className="mt-3 text-muted">{dateText}</p>
 

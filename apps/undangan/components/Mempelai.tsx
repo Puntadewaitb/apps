@@ -1,17 +1,21 @@
 import { Container, Section } from "@tpl/ui";
 
-type Person = { name: string; parents: string; photo: string; role: string };
+export type Orang = { name: string; parents: string; photo: string; role: string };
 
-export function Mempelai({ quote, groom, bride }: { quote: string; groom: Person; bride: Person }) {
+type Props = { judul: string; quote: string; orang: Orang[] };
+
+export function Mempelai({ judul, quote, orang }: Props) {
   return (
-    <Section id="mempelai" tone="surface" title="Mempelai">
+    <Section id="mempelai" tone="surface" title={judul}>
       {quote && (
         <blockquote className="mb-10 max-w-2xl border-l-4 border-primary pl-4 italic text-muted">
           {quote}
         </blockquote>
       )}
-      <Container className="grid gap-8 px-0 sm:grid-cols-2 sm:px-0 lg:px-0">
-        {[groom, bride].map((p) => (
+      <Container
+        className={`grid gap-8 px-0 sm:px-0 lg:px-0 ${orang.length > 1 ? "sm:grid-cols-2" : "max-w-sm"}`}
+      >
+        {orang.map((p) => (
           <figure key={p.role} className="text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

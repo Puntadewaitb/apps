@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@tpl/config/theme.css";
 @import "@tpl/ui/theme.css";
+@import "./tema.css";
 @source "../../../packages/ui/src";
 
 html {

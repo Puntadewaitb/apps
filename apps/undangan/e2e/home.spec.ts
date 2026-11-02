@@ -12,15 +12,16 @@ test("beranda menampilkan data acara dari database (seed)", async ({ page }) => 
   await expect(page.getByText("11.00 WIB")).toBeVisible();
   await expect(page.getByText("Gedung Serbaguna Melati")).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "id");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "hangat");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "floral");
 });
 
-test("seed lengkap: 1 acara, 3 tamu demo, RSVP & ucapan demo", async () => {
+test("seed lengkap: 3 acara demo (pernikahan/aqiqah/khitan), 3 tamu, RSVP & ucapan", async () => {
   const { default: Database } = await import("better-sqlite3");
   const d = new Database("e2e.db", { readonly: true, fileMustExist: true });
   const n = (sql: string) => (d.prepare(sql).get() as { c: number }).c;
   // Tes lain menambah RSVP/ucapan secara paralel, jadi periksa data seed — bukan total baris.
-  expect(n("SELECT COUNT(*) c FROM Event")).toBe(1);
+  expect(n("SELECT COUNT(*) c FROM Event")).toBe(3);
+  expect(n("SELECT COUNT(*) c FROM Event WHERE jenis IN ('pernikahan','aqiqah','khitan')")).toBe(3);
   expect(n("SELECT COUNT(*) c FROM Guest WHERE code LIKE 'DEMO-%'")).toBe(3);
   expect(n("SELECT COUNT(*) c FROM Rsvp WHERE name = 'Ibu Dewi Lestari'")).toBeGreaterThanOrEqual(
     1,

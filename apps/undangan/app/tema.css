@@ -1,0 +1,36 @@
+/*
+ * Tema undangan (menimpa token @tpl/ui). Dipilih per acara lewat atribut data-theme.
+ * Semua pasangan teks/latar lolos WCAG AA (≥ 4.5:1).
+ */
+[data-theme="elegan"] {
+  --primary: #1f2a44;
+  --primary-fg: #ffffff;
+  --accent: #8a6a1f;
+  --bg: #fbfaf7;
+  --surface: #f1eee6;
+  --fg: #1c2333;
+  --muted: #5f6575;
+  --border: #e3dccb;
+}
+
+[data-theme="floral"] {
+  --primary: #be185d;
+  --primary-fg: #ffffff;
+  --accent: #9d174d;
+  --bg: #fff8fa;
+  --surface: #ffeef3;
+  --fg: #3b1d2a;
+  --muted: #7a5163;
+  --border: #f6d3df;
+}
+
+[data-theme="islami"] {
+  --primary: #166534;
+  --primary-fg: #ffffff;
+  --accent: #8a6508;
+  --bg: #fbfdf9;
+  --surface: #ecf5ec;
+  --fg: #12301e;
+  --muted: #456252;
+  --border: #cfe3d3;
+}

@@ -12,6 +12,10 @@ datasource db {
 model Event {
   id            Int      @id @default(autoincrement())
   slug          String   @unique
+  /// Jenis acara: pernikahan | aqiqah | khitan (lihat lib/jenis.ts)
+  jenis         String   @default("pernikahan")
+  /// Tema tampilan: elegan | floral | islami (lihat lib/tema.ts)
+  tema          String   @default("floral")
   title         String
   groomName     String
   brideName     String
