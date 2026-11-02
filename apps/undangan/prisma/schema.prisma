@@ -1,0 +1,81 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// Satu acara (mis. pernikahan). Template ini memakai satu acara aktif berdasarkan `slug`.
+model Event {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  title         String
+  groomName     String
+  brideName     String
+  groomParents  String   @default("")
+  brideParents  String   @default("")
+  /// Waktu akad / pemberkatan
+  akadAt        DateTime
+  /// Waktu resepsi
+  resepsiAt     DateTime
+  venueName     String
+  venueAddress  String
+  /// URL embed/tautan peta (opsional)
+  mapsUrl       String   @default("")
+  /// Kutipan/ayat pembuka (opsional)
+  quote         String   @default("")
+  createdAt     DateTime @default(now())
+
+  guests Guest[]
+  rsvps  Rsvp[]
+  wishes Wish[]
+}
+
+/// Tamu undangan. `code` = kode acak untuk tautan pribadi (/?to=<nama> tetap didukung untuk tamu umum).
+model Guest {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name      String
+  code      String   @unique
+  phone     String   @default("")
+  /// Jumlah maksimal orang yang boleh hadir
+  maxPax    Int      @default(2)
+  createdAt DateTime @default(now())
+
+  rsvps Rsvp[]
+
+  @@index([eventId])
+}
+
+/// Konfirmasi kehadiran. `status`: HADIR | TIDAK_HADIR | RAGU (divalidasi di aplikasi).
+model Rsvp {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  guestId   Int?
+  guest     Guest?   @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  name      String
+  status    String
+  pax       Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@index([eventId, createdAt])
+}
+
+/// Ucapan & doa dari tamu.
+model Wish {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name      String
+  message   String
+  /// Moderasi: false = disembunyikan dari publik
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([eventId, createdAt])
+}

@@ -18,7 +18,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | L4 | Landing: Form lead | L3 | done | 2026-11-02 02:15 | Prisma 7 + better-sqlite3; /api/leads (Zod, honeypot, rate limit, cek Origin), redirect WA; /admin/leads (cookie HMAC, password env, fail-closed) + CSV anti-formula-injection; 14 unit + 29 e2e (DB e2e terpisah); root typecheck dibatasi ke packages, app via script sendiri (butuh prisma generate); rate limit bergantung X-Forwarded-For (lihat CARA-MODIF) |
 | L5 | Landing: SEO & tema | L4 | done | 2026-11-02 03:14 | metadata+OG PNG (next/og, lokal)+robots+sitemap+JSON-LD (tanpa aggregateRating); tracking GA4/Pixel via env tervalidasi + CSP dinamis (jalur aktif diuji manual, e2e hanya jalur mati); tema via site.theme/NEXT_PUBLIC_THEME; 24 unit + 40 e2e; gambar SVG: lazy/fetchpriority/cache 7 hari (tanpa svgo) |
 | L6 | Landing: QA | L5 | done | 2026-11-02 04:12 | 47 e2e + 24 unit lolos, build OK; temuan QA: 404 bawaan Next berbahasa Inggris → app/not-found.tsx + error.tsx Bahasa Indonesia; qa.spec (tanpa error konsol, a11y dasar, anchor valid, keyboard); README + 5 screenshot (SCREENSHOTS=1, jam dikunci) |
-| U1 | Undangan: Scaffold & data | 0.6 | in_progress | 2026-11-03 00:05 | |
+| U1 | Undangan: Scaffold & data | 0.6 | done | 2026-11-03 00:09 | Prisma Event/Guest/Rsvp/Wish (status RSVP = String, divalidasi app); seed idempotent via Node type-stripping (generator importFileExtension=ts + package type=module); halaman utama dinamis dari DB; 3 unit + 5 e2e; setup = generate+migrate+seed |
 | U2 | Undangan: Cover & nama tamu | U1 | todo | | |
 | U3 | Undangan: Detail acara | U2 | todo | | |
 | U4 | Undangan: Galeri & cerita | U3 | todo | | |
