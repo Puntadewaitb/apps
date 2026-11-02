@@ -1,5 +1,9 @@
 import { Badge, ButtonLink, Card, Container, Section } from "@tpl/ui";
 import { Ajakan } from "../components/Ajakan";
+import { Angka } from "../components/Angka";
+import { KlienLogo } from "../components/KlienLogo";
+import { ProyekKartu } from "../components/ProyekKartu";
+import { TestimoniKlien } from "../components/TestimoniKlien";
 import { LayananKartu } from "../components/LayananKartu";
 import { getKonten, resolveHref } from "../lib/konten";
 
@@ -44,6 +48,8 @@ export default function HomePage() {
         </Container>
       </section>
 
+      <Angka />
+
       <Section id="layanan" title={k.layananRingkas.judul} subtitle={k.layananRingkas.subjudul}>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {k.layanan.map((l) => (
@@ -77,6 +83,26 @@ export default function HomePage() {
           ))}
         </ul>
       </Section>
+
+      <Section
+        id="portofolio"
+        title="Proyek Pilihan"
+        subtitle="Contoh pekerjaan terbaru kami bersama klien."
+      >
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {k.portofolio.proyek.slice(0, 3).map((p) => (
+            <li key={p.slug}>
+              <ProyekKartu p={p} />
+            </li>
+          ))}
+        </ul>
+        <ButtonLink href="/portofolio" variant="secondary" className="mt-8">
+          Lihat semua proyek
+        </ButtonLink>
+      </Section>
+
+      <KlienLogo />
+      <TestimoniKlien />
 
       <Section id="kontak" title="Hubungi Kami">
         <ul className="space-y-1 text-muted">

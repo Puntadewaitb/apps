@@ -70,6 +70,65 @@ export const tentangSchema = z.object({
   }),
 });
 
+const idKategori = z.string().regex(/^[a-z0-9-]+$/);
+
+export const portofolioSchema = z.object({
+  judul: z.string().min(1),
+  pengantar: z.string().min(10),
+  catatan: z.string().min(10),
+  filter: z.object({
+    semua: z.string().min(1),
+    label: z.string().min(5),
+    kosong: z.string().min(5),
+  }),
+  kategori: z.array(z.object({ id: idKategori, nama: z.string().min(3), layanan: slug })).min(2),
+  proyek: z
+    .array(
+      z.object({
+        slug,
+        judul: z.string().min(5),
+        klien: z.string().min(3),
+        kategori: idKategori,
+        tahun: z.number().int().min(2000).max(2100),
+        ringkas: z.string().min(20),
+        tantangan: z.string().min(20),
+        solusi: z.string().min(20),
+        hasil: z.array(z.string().min(5)).min(2),
+        teknologi: z.array(z.string().min(2)).min(1),
+        gambar: gambarPath,
+      }),
+    )
+    .min(2),
+});
+
+export const kredibilitasSchema = z.object({
+  angka: z.object({
+    judul: z.string().min(1),
+    butir: z.array(z.object({ nilai: z.string().min(1), label: z.string().min(3) })).min(3),
+    catatan: z.string().min(5),
+  }),
+  klien: z.object({
+    judul: z.string().min(1),
+    subjudul: z.string().min(1),
+    daftar: z.array(z.object({ nama: z.string().min(2), logo: gambarPath })).min(3),
+  }),
+  testimoni: z.object({
+    judul: z.string().min(1),
+    catatan: z.string().min(5),
+    daftar: z
+      .array(
+        z.object({
+          nama: z.string().min(3),
+          jabatan: z.string().min(3),
+          perusahaan: z.string().min(3),
+          teks: z.string().min(30),
+          rating: z.number().int().min(1).max(5),
+        }),
+      )
+      .min(1),
+  }),
+});
+
 export const kontenSchema = z.object({
   tema: z.enum(["netral", "hangat", "hijau"]),
   perusahaan: z.object({
@@ -122,6 +181,8 @@ export const kontenSchema = z.object({
   }),
   tentang: tentangSchema,
   layanan: z.array(layananSchema).min(1),
+  portofolio: portofolioSchema,
+  kredibilitas: kredibilitasSchema,
   ajakan: z.object({ judul: z.string().min(1), teks: z.string().min(1) }),
   footer: z.object({ deskripsi: z.string().min(1), tautan: z.array(tautan) }),
 });

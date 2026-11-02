@@ -24,3 +24,27 @@ export function semuaLayanan(lang: Lang = "id"): Layanan[] {
 export function cariLayanan(slug: string, lang: Lang = "id"): Layanan | undefined {
   return semuaLayanan(lang).find((l) => l.slug === slug);
 }
+
+export type Proyek = Konten["portofolio"]["proyek"][number];
+export type KategoriProyek = Konten["portofolio"]["kategori"][number];
+
+export function semuaProyek(lang: Lang = "id"): Proyek[] {
+  return getKonten(lang).portofolio.proyek;
+}
+
+export function cariProyek(slug: string, lang: Lang = "id"): Proyek | undefined {
+  return semuaProyek(lang).find((p) => p.slug === slug);
+}
+
+/** ID kategori valid dari query string; nilai tak dikenal/ganda → undefined (tampilkan semua). */
+export function kategoriValid(
+  param: string | string[] | undefined,
+  lang: Lang = "id",
+): string | undefined {
+  const v = Array.isArray(param) ? param[0] : param;
+  return getKonten(lang).portofolio.kategori.find((k) => k.id === v)?.id;
+}
+
+export function proyekPerKategori(kategori: string | undefined, lang: Lang = "id"): Proyek[] {
+  return kategori ? semuaProyek(lang).filter((p) => p.kategori === kategori) : semuaProyek(lang);
+}

@@ -2,7 +2,9 @@
  * SEMUA konten website ada di folder `content/`. Nama perusahaan, alamat, kontak, dan angka di bawah FIKTIF —
  * ganti dengan milik Anda. Struktur divalidasi oleh `lib/konten-schema.ts` (dijalankan di unit test).
  */
+import { kredibilitas } from "./kredibilitas.id";
 import { layanan } from "./layanan.id";
+import { portofolio } from "./portofolio.id";
 import { tentang } from "./tentang.id";
 
 export const konten = {
@@ -20,6 +22,7 @@ export const konten = {
     { label: "Beranda", href: "/" },
     { label: "Tentang", href: "/tentang" },
     { label: "Layanan", href: "/layanan" },
+    { label: "Portofolio", href: "/portofolio" },
   ],
   kontak: {
     telepon: "(021) 5551 2345",
@@ -90,6 +93,8 @@ export const konten = {
   },
   tentang,
   layanan,
+  portofolio,
+  kredibilitas,
   ajakan: {
     judul: "Siap membahas kebutuhan perusahaan Anda?",
     teks: "Ceritakan tantangan Anda. Kami balas dalam 1 hari kerja dengan langkah awal yang konkret.",

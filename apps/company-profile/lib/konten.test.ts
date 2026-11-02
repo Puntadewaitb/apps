@@ -2,7 +2,16 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { konten } from "../content/id";
-import { cariLayanan, getKonten, resolveHref, semuaLayanan } from "./konten";
+import {
+  cariLayanan,
+  cariProyek,
+  getKonten,
+  kategoriValid,
+  proyekPerKategori,
+  resolveHref,
+  semuaLayanan,
+  semuaProyek,
+} from "./konten";
 import { kontenSchema } from "./konten-schema";
 
 describe("konten website", () => {
@@ -76,5 +85,58 @@ describe("integritas konten layanan & tentang", () => {
   it("href navigasi hanya ke halaman yang ada / anchor", () => {
     const hrefs = konten.nav.map((n) => n.href);
     expect(hrefs).toEqual(expect.arrayContaining(["/", "/tentang", "/layanan"]));
+  });
+});
+
+describe("portofolio & kredibilitas", () => {
+  const { portofolio, kredibilitas } = konten;
+  const publik = (src: string) => join(__dirname, "..", "public", src);
+
+  it("slug proyek unik; kategori & layanan terkait valid; gambar ada", () => {
+    const slugs = portofolio.proyek.map((p) => p.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    const idKat = portofolio.kategori.map((k) => k.id);
+    expect(new Set(idKat).size).toBe(idKat.length);
+    for (const k of portofolio.kategori) {
+      expect(
+        semuaLayanan().map((l) => l.slug),
+        `kategori ${k.id}`,
+      ).toContain(k.layanan);
+    }
+    for (const p of portofolio.proyek) {
+      expect(idKat, p.slug).toContain(p.kategori);
+      expect(existsSync(publik(p.gambar)), p.gambar).toBe(true);
+    }
+  });
+
+  it("setiap kategori punya minimal satu proyek (filter tidak pernah kosong)", () => {
+    for (const k of portofolio.kategori)
+      expect(proyekPerKategori(k.id).length, k.id).toBeGreaterThan(0);
+  });
+
+  it("kategoriValid: hanya id yang dikenal; lainnya undefined", () => {
+    expect(kategoriValid("sistem")).toBe("sistem");
+    expect(kategoriValid(["data", "sistem"])).toBe("data");
+    for (const bad of [undefined, "", "SISTEM", "xyz", "__proto__", "sistem'; DROP"]) {
+      expect(kategoriValid(bad as string | undefined), String(bad)).toBeUndefined();
+    }
+  });
+
+  it("proyekPerKategori & cariProyek", () => {
+    expect(proyekPerKategori(undefined)).toHaveLength(semuaProyek().length);
+    expect(proyekPerKategori("sistem").every((p) => p.kategori === "sistem")).toBe(true);
+    expect(cariProyek("portal-pemesanan-sentosa")?.klien).toBe("CV Sentosa Abadi");
+    expect(cariProyek("tidak-ada")).toBeUndefined();
+  });
+
+  it("logo klien ada, testimoni berperingkat 1–5, ada catatan fiktif", () => {
+    for (const k of kredibilitas.klien.daftar)
+      expect(existsSync(publik(k.logo)), k.logo).toBe(true);
+    for (const t of kredibilitas.testimoni.daftar) {
+      expect(t.rating).toBeGreaterThanOrEqual(1);
+      expect(t.rating).toBeLessThanOrEqual(5);
+    }
+    expect(kredibilitas.testimoni.catatan.toLowerCase()).toContain("fiktif");
+    expect(portofolio.catatan.toLowerCase()).toContain("fiktif");
   });
 });
