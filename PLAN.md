@@ -38,7 +38,7 @@ Tiap sesi = **container baru** (tidak ada file/state tersisa dari run sebelumnya
    4. selain itu: `todo` pertama yang semua dependensinya (kolom `deps`) `done`.
 7. **Klaim.** Ubah status jadi `in_progress` + timestamp WIB (**wajib** dari `TZ=Asia/Jakarta date '+%Y-%m-%d %H:%M'`; jangan menebak atau membulatkan), commit `[<ID>] claim`, `git push`. Kalau push ditolak (non-fast-forward): `git pull --rebase`, evaluasi ulang sekali; kalau step itu sudah diklaim run lain → stop.
 8. **Siapkan environment.** Node 22 sudah ada. Jalankan `npm ci` (bila `package.json` sudah ada). Untuk Playwright: `export PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`. **Jangan** `npx playwright install`.
-9. **Kerjakan** step sesuai deskripsi. Hanya satu step per run. Commit + push `[<ID>] WIP: <ringkas>` setelah tiap kelompok sub-bullet selesai (bukan cuma di akhir), supaya run yang mati tidak kehilangan pekerjaan.
+9. **Kerjakan** step sesuai deskripsi. Maksimal `steps_per_run` step per run (`config.json`); setelah satu step selesai (langkah 13) dan kuota malam (langkah 4) masih tersisa, ulangi dari langkah 5 untuk step berikutnya. Tiap step punya batas `run_budget_minutes` sendiri. Commit + push `[<ID>] WIP: <ringkas>` setelah tiap kelompok sub-bullet selesai (bukan cuma di akhir), supaya run yang mati tidak kehilangan pekerjaan.
 10. **Batas waktu.** Jam kerja efektif per run ±50 menit sejak mulai. Kalau mendekati batas atau kena usage limit: commit pekerjaan, set status `wip`, catat apa yang sudah/belum di kolom catatan, push, **stop**.
 11. **Verifikasi:** semua poin "Selesai jika" milik step + `npm run lint` + `npm run typecheck` (+ `npm test` bila ada unit test) untuk app/package yang disentuh.
 12. **Kalau gagal:** perbaiki maksimal 2 kali. Masih gagal → status `blocked` + ringkasan error di catatan, commit, push, stop.
@@ -56,7 +56,7 @@ Tujuan: menutup step yang **seharusnya selesai di malam kemarin (H-1) tapi belum
 6. Akhiri dengan ringkasan: `K`, step yang selesai, step `wip`/`blocked`.
 
 ### Aturan umum
-- Satu run = maksimal satu step.
+- Satu run = maksimal `steps_per_run` step (dikerjakan satu per satu, masing-masing klaim → verifikasi → `done`/commit sendiri).
 - Jangan mengubah step `done` kecuali untuk memperbaiki bug yang memblokir step berjalan (catat di `PROGRESS.md`).
 - Semua teks UI **Bahasa Indonesia**, brand **fiktif**.
 - Tidak ada secret di repo. Pakai `.env.example`; kredensial admin di seed hanya untuk development.
@@ -71,12 +71,13 @@ Tujuan: menutup step yang **seharusnya selesai di malam kemarin (H-1) tapi belum
   "timezone": "Asia/Jakarta",
   "branch": "claude/determined-turing-qzp8w9",
   "window": { "start": "23:00", "end": "05:00" },
-  "max_steps_per_night": 6,
+  "max_steps_per_night": 12,
+  "steps_per_run": 2,
   "stale_claim_minutes": 55,
   "run_budget_minutes": 50
 }
 ```
-Kalau kuota mepet, turunkan `max_steps_per_night` (mis. 4).
+Kalau kuota mepet, turunkan `max_steps_per_night` (mis. 6) dan `steps_per_run` (mis. 1). Cron minimal 1 jam sekali, jadi 6 slot × `steps_per_run` = batas atas step per malam.
 
 ---
 
@@ -157,7 +158,7 @@ Playwright config bersama (`packages/config`): hanya project `chromium`; `launch
 - Cron: `CRON_TZ=Asia/Jakarta 7 23,0,1,2,3,4 * * *` (6 run per malam; menit :07 untuk menghindari antrean jam :00). Run yang terlambat tidak berbahaya: protokol langkah 3 stop di luar window 23:00–05:00 WIB.
 - **Default branch repo tetap `claude/determined-turing-qzp8w9`** selama pengerjaan. Jangan buat/merge ke `main` atau ganti default branch sebelum semua step `done`.
 - **Scheduled task kedua — Catch-up:** `CRON_TZ=Asia/Jakarta 52 21 * * *` (≈22:00 WIB; digeser 8 menit lebih awal agar tidak di menit :00). Ke worker session yang sama. Pesan: *"CATCH-UP. Ikuti 'Mode Catch-up' di PLAN.md (§1) dan CLAUDE.md. Hitung K, lalu kerjakan semua backlog malam kemarin (boleh lebih dari satu step), satu per satu sesuai protokol. Jangan push ke branch lain, jangan buat PR."*
-- Pesan pembangun tiap run: *"RUN BARU. Ikuti 'Protokol Run' di PLAN.md (§1) dan CLAUDE.md. Mulai dengan git pull --ff-only di branch claude/determined-turing-qzp8w9. Kerjakan tepat satu step. Jangan push ke branch lain, jangan buat PR."*
+- Pesan pembangun tiap run: *"RUN BARU. Ikuti 'Protokol Run' di PLAN.md (§1) dan CLAUDE.md. Mulai dengan git pull --ff-only di branch claude/determined-turing-qzp8w9. Kerjakan step sebanyak `steps_per_run` di config.json, satu per satu. Jangan push ke branch lain, jangan buat PR."*
 - **Risiko yang belum terbukti:** container worker bisa direclaim saat idle dan konteks session menumpuk lintas malam. Bukti sesungguhnya = fire pertama setelah worker idle; periksa `PROGRESS.md`/log commit setelah malam 1.
 - **Setelah selesai:** run yang menemukan semua step `done` menulis `ALL DONE` di `PROGRESS.md` dan stop. Pemilik repo menghapus scheduled task secara manual (run berikutnya langsung stop dengan biaya minimal).
 

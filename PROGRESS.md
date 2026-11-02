@@ -52,3 +52,4 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 ## Log Run
 <!-- Satu baris per kejadian penting: STUCK / ALL DONE / koreksi step done. Format: `YYYY-MM-DD HH:mm WIB — pesan` -->
 - 2026-10-31 — Bootstrap: PLAN.md rev.2, PROGRESS.md, CLAUDE.md, config.json, .gitignore dibuat manual.
+- 2026-11-02 15:20 WIB — Atas permintaan pemilik: max_steps_per_night 6→12, steps_per_run=2 (cron tetap 6 slot; interval <1 jam ditolak platform).
