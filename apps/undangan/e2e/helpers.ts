@@ -29,3 +29,13 @@ export async function loginAdmin(page: Page, password = ADMIN_PASSWORD) {
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Masuk" }).click();
 }
+
+/** Koneksi tulis ke DB e2e — hanya untuk menyuntik data "kotor" yang tak mungkin lewat API (uji escaping saat output). */
+export function tulis(fn: (db: Database.Database) => void) {
+  const d = new Database("e2e.db", { fileMustExist: true });
+  try {
+    fn(d);
+  } finally {
+    d.close();
+  }
+}

@@ -25,7 +25,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U5 | Undangan: RSVP & ucapan | U4 | done | 2026-11-03 01:22 | /api/rsvp (Zod, pax dibatasi maxPax tamu, ?kode= memperbarui RSVP, honeypot, Origin, rate limit 5/10mnt) + /api/ucapan (GET paginasi cursor, POST; tautan/spam → visible=false; env WISH_MODERATION=on → semua perlu tinjau); daftar auto-refresh 15 dtk (dijeda saat tab tersembunyi); persetujuan ucapan di admin = U7; 30 unit + 49 e2e |
 | U6 | Undangan: Amplop digital | U5 | done | 2026-11-03 01:27 | rekening/e-wallet + QRIS placeholder (berlabel PLACEHOLDER) + alamat hadiah di content/undangan.ts (semua FIKTIF); tombol salin: Clipboard API → fallback execCommand → pesan gagal (3 jalur diuji); 37 unit + 56 e2e |
 | U7 | Undangan: Multi-tema & admin | U6 | done | 2026-11-03 02:22 | 3 tema (elegan/floral/islami; kontras WCAG AA diuji otomatis) + 3 jenis (pernikahan/aqiqah/khitan) per acara di DB (migrasi jenis,tema; seed 3 acara); admin (server actions + cookie undangan_admin): ringkasan, tamu massal+tautan pribadi+WA, rekap RSVP, moderasi ucapan, ekspor CSV anti-formula, pratinjau baca-saja; 58 unit + 73 e2e. Catatan: tema bukan lagi env NEXT_PUBLIC_THEME |
-| U8 | Undangan: QA | U7 | in_progress | 2026-11-03 02:23 | |
+| U8 | Undangan: QA | U7 | done | 2026-11-03 02:31 | qa.spec (ponsel 390x844): alur tamu penuh tanpa error konsol/CSP, XSS (?to=, ucapan, data kotor langsung di DB → publik+admin tetap teks; detektor diuji dengan kontrol positif), a11y dasar, keyboard, ukuran sentuh; README + 14 screenshot (SCREENSHOTS=1); 58 unit + 83 e2e (3 skip = screenshot) |
 | C1 | Company: Scaffold | 0.6 | todo | | |
 | C2 | Company: Halaman inti | C1 | todo | | |
 | C3 | Company: Portofolio & kredibilitas | C2 | todo | | |

@@ -1,6 +1,33 @@
 # Undangan Digital (demo)
 
-Template undangan pernikahan digital berbahasa Indonesia. Nama, tanggal, dan alamat di dalamnya **fiktif**.
+Template undangan digital berbahasa Indonesia untuk **pernikahan, aqiqah, dan khitanan** — dengan 3 tema, RSVP, ucapan & doa, amplop digital, dan panel admin. Nama, tanggal, alamat, rekening, dan QRIS di dalamnya **fiktif/placeholder**.
+
+| Sampul + nama tamu | Mempelai | Detail acara |
+|---|---|---|
+| ![Sampul](docs/screenshots/cover.png) | ![Mempelai](docs/screenshots/mempelai.png) | ![Detail acara](docs/screenshots/acara.png) |
+
+| Galeri | Amplop digital | RSVP |
+|---|---|---|
+| ![Galeri](docs/screenshots/galeri.png) | ![Amplop](docs/screenshots/amplop.png) | ![RSVP](docs/screenshots/rsvp.png) |
+
+**Tema & jenis acara** — floral/pernikahan, islami/aqiqah, elegan/khitanan:
+
+| Floral | Islami | Elegan |
+|---|---|---|
+| ![Floral](docs/screenshots/tema-floral-pernikahan.png) | ![Islami](docs/screenshots/tema-islami-aqiqah.png) | ![Elegan](docs/screenshots/tema-elegan-khitan.png) |
+
+**Admin** — ringkasan, tamu & tautan pribadi, moderasi ucapan:
+
+| Ringkasan | Tamu & tautan | Moderasi ucapan |
+|---|---|---|
+| ![Ringkasan](docs/screenshots/admin-ringkasan.png) | ![Tamu](docs/screenshots/admin-tamu.png) | ![Ucapan](docs/screenshots/admin-ucapan.png) |
+
+## Alur pemakaian
+
+1. Siapkan data acara (lihat bagian *Data acara*), lalu atur `EVENT_SLUG`.
+2. Buka `/admin` → **Tamu & Tautan** → tempel daftar tamu → bagikan tautan pribadi tiap tamu (WhatsApp).
+3. Tamu membuka tautan → sampul dengan namanya → **Buka Undangan** → baca → RSVP & ucapan.
+4. Pantau **Ringkasan/RSVP**, moderasi **Ucapan**, ekspor CSV untuk katering/data.
 
 ## Menjalankan
 
@@ -73,6 +100,14 @@ Data acara ada di database (tabel `Event`, lihat `prisma/schema.prisma`). Demo d
 ```bash
 npm run test -w @tpl/undangan        # unit (Vitest)
 npm run test:e2e -w @tpl/undangan    # e2e (Playwright, DB e2e sekali pakai)
+```
+
+Cakupan e2e: alur tamu lengkap di viewport ponsel (tanpa error konsol/pelanggaran CSP), **XSS** (`?to=`, ucapan, dan data "kotor" yang disuntik langsung ke DB — semua harus tampil sebagai teks), RSVP/ucapan (validasi, honeypot, rate limit, moderasi), cover & musik, Maps/kalender/amplop, admin (akses, tamu massal, moderasi, CSV anti-formula), jenis acara & tema (termasuk kontras WCAG AA), aksesibilitas dasar, dan tidak ada overflow di 360/768/1280 px.
+
+Membuat ulang screenshot di atas:
+
+```bash
+cd apps/undangan && SCREENSHOTS=1 npx playwright test e2e/screenshots.spec.ts
 ```
 
 Tanpa unduhan browser: tambahkan `PW_CHROMIUM_PATH=/path/ke/chromium`.
