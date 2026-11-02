@@ -23,7 +23,7 @@ export default async function PesanPage() {
   const layanan = new Map(getKonten().layanan.map((l) => [l.slug, l.nama]));
 
   return (
-    <main className="py-10">
+    <main id="isi" className="py-10">
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-bold text-fg">Pesan Masuk ({total})</h1>

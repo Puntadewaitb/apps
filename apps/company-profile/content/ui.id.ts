@@ -4,6 +4,7 @@
  */
 export const ui = {
   bahasa: { label: "Bahasa", id: "Bahasa Indonesia", en: "English", ganti: "Ganti bahasa" },
+  lewati: "Langsung ke konten utama",
   navbar: {
     navUtama: "Navigasi utama",
     menuMobile: "Menu mobile",

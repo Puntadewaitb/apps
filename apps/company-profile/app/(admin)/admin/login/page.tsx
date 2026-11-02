@@ -19,7 +19,7 @@ export default async function LoginPage({
   const disabled = adminConfig() === null;
   const message = error ? messages[error] : disabled ? messages.nonaktif : undefined;
   return (
-    <main className="py-16">
+    <main id="isi" className="py-16">
       <Container className="max-w-md">
         <Card>
           <h1 className="text-2xl font-bold text-fg">Masuk Admin</h1>

@@ -28,7 +28,7 @@ export default async function LayananPage({ params }: LangParams) {
         <ul className="grid gap-6 sm:grid-cols-2">
           {k.layanan.map((l) => (
             <li key={l.slug}>
-              <LayananKartu l={l} cta={h.cta} lang={lang} />
+              <LayananKartu l={l} cta={h.cta} lang={lang} judulTag="h2" />
             </li>
           ))}
         </ul>

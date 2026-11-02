@@ -16,7 +16,7 @@ test.describe("daftar blog & kategori", () => {
     await page.goto("/blog");
     await expect(page).toHaveTitle(`${blog.judul} | ${konten.perusahaan.nama}`);
     await expect(kartu(page)).toHaveCount(artikel.length);
-    await expect(kartu(page).locator("h3")).toHaveText(artikel.map((a) => a.judul));
+    await expect(kartu(page).locator("h2")).toHaveText(artikel.map((a) => a.judul));
     const pertama = kartu(page).first();
     await expect(pertama).toContainText(formatTanggalBlog(artikel[0]!.tanggal));
     await expect(pertama).toContainText(artikel[0]!.penulis);

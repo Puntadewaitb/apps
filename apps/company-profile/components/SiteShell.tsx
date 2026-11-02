@@ -18,6 +18,13 @@ export function SiteShell({
   const u = getUi(lang);
   return (
     <>
+      {/* Bypass block (WCAG 2.4.1): tampil hanya saat difokus dengan keyboard */}
+      <a
+        href="#isi"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-fg"
+      >
+        {u.lewati}
+      </a>
       <Navbar
         brand={k.perusahaan.nama}
         links={k.nav.map((l) => ({ ...l, href: localizeHref(lang, l.href) }))}

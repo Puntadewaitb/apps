@@ -2,6 +2,7 @@ import type { ui as uiId } from "./ui.id";
 
 export const ui: typeof uiId = {
   bahasa: { label: "Language", id: "Bahasa Indonesia", en: "English", ganti: "Change language" },
+  lewati: "Skip to main content",
   navbar: {
     navUtama: "Main navigation",
     menuMobile: "Mobile menu",

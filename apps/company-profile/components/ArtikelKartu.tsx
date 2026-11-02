@@ -3,7 +3,9 @@ import { formatTanggalBlog, type Artikel } from "../lib/blog";
 import { fmt, localizeHref } from "../lib/i18n";
 import { getBlog, getUi, type Lang } from "../lib/konten";
 
-export function ArtikelKartu({ a, lang }: { a: Artikel; lang: Lang }) {
+type Props = { a: Artikel; lang: Lang; judulTag?: "h2" | "h3" };
+
+export function ArtikelKartu({ a, lang, judulTag: H = "h3" }: Props) {
   const blog = getBlog(lang);
   const u = getUi(lang).blog;
   const kat = blog.kategori.find((k) => k.id === a.kategori);
@@ -30,7 +32,7 @@ export function ArtikelKartu({ a, lang }: { a: Artikel; lang: Lang }) {
             {formatTanggalBlog(a.tanggal, lang)}
           </time>
         </div>
-        <h3 className="mt-3 text-lg font-semibold text-fg">{a.judul}</h3>
+        <H className="mt-3 text-lg font-semibold text-fg">{a.judul}</H>
         <p className="mt-2 flex-1 text-muted">{a.ringkas}</p>
         <p className="mt-3 text-xs text-muted">
           {a.penulis} · {a.bacaMenit} {blog.bacaLabel}

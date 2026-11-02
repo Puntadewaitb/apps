@@ -70,7 +70,7 @@ export default async function PortofolioPage({ params, searchParams }: Props) {
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {daftar.map((x) => (
               <li key={x.slug}>
-                <ProyekKartu p={x} lang={lang} />
+                <ProyekKartu p={x} lang={lang} judulTag="h2" />
               </li>
             ))}
           </ul>

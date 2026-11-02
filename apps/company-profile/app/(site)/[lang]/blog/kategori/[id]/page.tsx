@@ -60,7 +60,7 @@ export default async function KategoriBlog({ params }: Props) {
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {daftar.map((a) => (
             <li key={a.slug}>
-              <ArtikelKartu a={a} lang={lang} />
+              <ArtikelKartu a={a} lang={lang} judulTag="h2" />
             </li>
           ))}
         </ul>

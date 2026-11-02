@@ -2,7 +2,9 @@ import { Badge, Card } from "@tpl/ui";
 import { fmt, localizeHref } from "../lib/i18n";
 import { getKonten, getUi, type Lang, type Proyek } from "../lib/konten";
 
-export function ProyekKartu({ p, lang }: { p: Proyek; lang: Lang }) {
+type Props = { p: Proyek; lang: Lang; judulTag?: "h2" | "h3" };
+
+export function ProyekKartu({ p, lang, judulTag: H = "h3" }: Props) {
   const u = getUi(lang).proyek;
   const kat = getKonten(lang).portofolio.kategori.find((k) => k.id === p.kategori);
   return (
@@ -26,7 +28,7 @@ export function ProyekKartu({ p, lang }: { p: Proyek; lang: Lang }) {
           <Badge tone="primary">{kat?.nama ?? p.kategori}</Badge>
           <span className="text-sm text-muted">{p.tahun}</span>
         </div>
-        <h3 className="mt-3 text-lg font-semibold text-fg">{p.judul}</h3>
+        <H className="mt-3 text-lg font-semibold text-fg">{p.judul}</H>
         <p className="text-sm text-muted">{p.klien}</p>
         <p className="mt-2 flex-1 text-muted">{p.ringkas}</p>
         <a

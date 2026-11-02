@@ -2,6 +2,19 @@
 
 Template website profil perusahaan **dua bahasa (Indonesia & English)**. Nama perusahaan, alamat, dan kontak di dalamnya **fiktif**.
 
+## Tampilan
+
+| Beranda (ID) | Beranda (EN) |
+|---|---|
+| ![Beranda ID](docs/screenshots/beranda-id.png) | ![Beranda EN](docs/screenshots/beranda-en.png) |
+| ![Detail layanan](docs/screenshots/layanan-detail.png) | ![Portofolio dengan filter](docs/screenshots/portofolio-filter.png) |
+| ![Artikel blog EN](docs/screenshots/blog-artikel-en.png) | ![Kontak](docs/screenshots/kontak.png) |
+| ![Mobile EN](docs/screenshots/mobile-beranda-en.png) | ![Menu mobile EN](docs/screenshots/mobile-menu-en.png) |
+
+![Admin pesan](docs/screenshots/admin-pesan.png)
+
+Membuat ulang screenshot: `cd apps/company-profile && SCREENSHOTS=1 npx playwright test e2e/screenshots.spec.ts` (jam dikunci, Google Maps diblok).
+
 ## Menjalankan
 
 ```bash
@@ -94,5 +107,7 @@ Di e2e, SMTP diarahkan ke server sink lokal (`e2e/smtp-sink.ts`, port 2525) sehi
 npm run test -w @tpl/company-profile        # unit (Vitest)
 npm run test:e2e -w @tpl/company-profile    # e2e (Playwright)
 ```
+
+Cakupan e2e: `home/pages/portofolio/blog/kontak/admin` (fitur), `i18n` (routing bahasa, hreflang, sitemap, JSON-LD, OG), dan `qa` (semua halaman ID+EN tanpa error konsol/CSP/aset rusak/permintaan domain luar, gambar termuat, overflow 360/768/1280, aksesibilitas: heading, landmark, label, keyboard + skip link, target sentuh, kontras 3 tema; XSS termasuk data kotor langsung di DB dengan kontrol positif; header keamanan).
 
 Tanpa unduhan browser: `PW_CHROMIUM_PATH=/path/ke/chromium`.
