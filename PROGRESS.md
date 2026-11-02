@@ -30,7 +30,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | C2 | Company: Halaman inti | C1 | done | 2026-11-03 03:23 | Beranda (layanan ringkas + keunggulan), Tentang (visi-misi, nilai, timeline, tim), Layanan (daftar + detail dinamis via generateStaticParams, dynamicParams=false → slug tak dikenal 404), konten/skema Zod terintegrasi (slug unik, terkait valid); e2e termasuk crawler tautan internal; 9 unit + 23 e2e. Form kontak masih info statis di beranda — halaman kontak penuh di C4 |
 | C3 | Company: Portofolio & kredibilitas | C2 | done | 2026-11-03 04:16 | portofolio 6 proyek: filter kategori berbasis URL (?kategori=, nilai tak dikenal diabaikan; jalan tanpa JS) + detail dinamis (404 slug tak dikenal) + proyek serupa; angka pencapaian, 8 logo klien (SVG placeholder), testimoni; beranda diperkaya; 14 unit + 43 e2e. Semua klien/angka fiktif (ditandai di UI) |
 | C4 | Company: Blog & kontak | C3 | done | 2026-11-03 04:33 | blog: 5 artikel Markdown (content/blog/*.md, front matter divalidasi; build gagal bila berkas rusak) + kategori + detail; renderer Markdown buatan sendiri TANPA HTML/MDX (keputusan keamanan: MDX mengeksekusi JS; tautan javascript: dibuang; ber-unit-test); kontak: form → DB (Prisma) + email SMTP opsional (tes e2e memakai SMTP sink lokal; gagal-SMTP tidak menggagalkan pesan; header diinjeksi ditolak), Maps embed, WA; admin /admin/pesan + CSV (cookie company_admin); dep baru nodemailer@10.3.1; 53 unit + 68 e2e |
-| C5 | Company: SEO & bahasa | C4 | todo | | |
+| C5 | Company: SEO & bahasa | C4 | in_progress | 2026-11-03 05:12 | catchup: |
 | C6 | Company: QA | C5 | todo | | |
 | S1 | Sekolah: Scaffold & data | 0.6 | todo | | |
 | S2 | Sekolah: Halaman publik inti | S1 | todo | | |
@@ -53,3 +53,4 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 <!-- Satu baris per kejadian penting: STUCK / ALL DONE / koreksi step done. Format: `YYYY-MM-DD HH:mm WIB — pesan` -->
 - 2026-10-31 — Bootstrap: PLAN.md rev.2, PROGRESS.md, CLAUDE.md, config.json, .gitignore dibuat manual.
 - 2026-11-02 15:20 WIB — Atas permintaan pemilik: max_steps_per_night 6→12, steps_per_run=2 (cron tetap 6 slot; interval <1 jam ditolak platform).
+- 2026-11-03 05:12 WIB — Atas permintaan pemilik ('jalankan sekarang yang belum dikerjakan'): sisa 18 step (C5–C6, S1–S8, T1–T8) dikerjakan manual di luar window & kuota; step ditandai catchup: agar kuota Nightly 23:00 tidak terpakai.
