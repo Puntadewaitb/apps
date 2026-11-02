@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 test("beranda menampilkan data acara dari database (seed)", async ({ page }) => {
   const res = await page.goto("/");
   expect(res?.status()).toBe(200);
+  await page.getByRole("button", { name: "Buka Undangan" }).click();
   await expect(page).toHaveTitle("Pernikahan Raka & Anisa");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Raka");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Anisa");
