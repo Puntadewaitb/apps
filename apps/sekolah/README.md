@@ -2,7 +2,7 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi (S1) — skema database, seed demo, dan beranda sementara. Halaman publik, admin, PPDB, dan donasi dibangun bertahap (S2–S8).
+> Status: fondasi + halaman publik inti (S1–S2). Berita/agenda/galeri, admin, PPDB, dan donasi dibangun bertahap (S3–S8).
 
 ## Menjalankan
 
@@ -13,6 +13,17 @@ cp apps/sekolah/.env.example apps/sekolah/.env      # lalu isi ADMIN_PASSWORD (m
 npm run setup -w @tpl/sekolah                       # prisma generate + migrate + seed demo
 npm run dev -w @tpl/sekolah                         # http://localhost:3004
 ```
+
+## Halaman
+
+| Rute | Isi |
+|---|---|
+| `/` | Hero, angka, sambutan, program unggulan, berita & pengumuman terbaru (DB) |
+| `/profil` | Sambutan kepala sekolah, visi-misi, sejarah, struktur organisasi, lokasi (Google Maps embed) |
+| `/guru` | Guru & staf dari database (hanya yang `active`, urut kolom `sort`) |
+| `/program` | Program akademik + ekstrakurikuler per kategori |
+
+Konten statis ada di `content/` (`sekolah.ts`, `profil.ts`, `program.ts`; divalidasi `lib/konten-schema.ts`). Menu (`nav` di `content/sekolah.ts`) hanya memuat halaman yang sudah ada. Embed Maps hanya merender URL `https://www.google.com/maps/embed…`/`?output=embed` (`lib/maps.ts`).
 
 ## Data
 

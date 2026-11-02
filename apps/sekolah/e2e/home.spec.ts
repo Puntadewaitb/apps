@@ -40,7 +40,7 @@ test("berita terbaru dari DB: tiga terbit terbaru, urut menurun, draf tidak tamp
 test("seed e2e lengkap & idempotent: jumlah baris sesuai data demo; akun admin dibuat dari env", async () => {
   const n = (t: string) => query<{ c: number }>(`SELECT count(*) c FROM ${t}`)[0]!.c;
   expect(n("Post")).toBe(posts.length);
-  expect(n("Teacher")).toBe(6);
+  expect(query<{ c: number }>("SELECT count(*) c FROM Teacher WHERE active = 1")[0]!.c).toBe(6);
   expect(n("Agenda")).toBe(6);
   expect(n("Gallery")).toBe(3);
   expect(n("GalleryImage")).toBe(7);
