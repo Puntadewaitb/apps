@@ -1,4 +1,5 @@
 import { Badge, ButtonLink, Card, Container, Section, buildWhatsAppUrl } from "@tpl/ui";
+import { PostKartu } from "../components/PostKartu";
 import { profil } from "../content/profil";
 import { program } from "../content/program";
 import { sekolah } from "../content/sekolah";
@@ -130,16 +131,13 @@ export default async function HomePage() {
         <ul className="grid gap-4 md:grid-cols-3" data-testid="daftar-terbaru">
           {posts.map((p) => (
             <li key={p.slug}>
-              <Card className="h-full">
-                <Badge tone={p.kind === "PENGUMUMAN" ? "primary" : "neutral"}>
-                  {p.kind === "PENGUMUMAN" ? "Pengumuman" : "Berita"}
-                </Badge>
-                <h3 className="mt-3 font-semibold text-fg">{p.title}</h3>
-                <p className="mt-1 text-muted">{p.excerpt}</p>
-              </Card>
+              <PostKartu p={p} />
             </li>
           ))}
         </ul>
+        <ButtonLink href="/berita" variant="secondary" className="mt-8">
+          Semua berita & pengumuman
+        </ButtonLink>
       </Section>
     </main>
   );

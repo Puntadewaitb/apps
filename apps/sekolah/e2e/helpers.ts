@@ -11,6 +11,9 @@ export const huruf = () =>
   [...randomBytes(6)].map((b) => String.fromCharCode(97 + (b % 16))).join("");
 export const tag = (p = "t") => `${p}${randomBytes(4).toString("hex")}`;
 
+/** Format DateTime yang dipakai Prisma + SQLite (teks ISO "…+00:00") — wajib sama agar perbandingan di DB benar. */
+export const dbDate = (d: Date | number) => new Date(d).toISOString().replace("Z", "+00:00");
+
 export function query<T>(sql: string, ...args: unknown[]): T[] {
   const d = new Database("e2e.db", { readonly: true, fileMustExist: true });
   try {
