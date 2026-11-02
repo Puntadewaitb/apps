@@ -1,17 +1,24 @@
 import { ButtonLink } from "@tpl/ui";
+import { fmt } from "../lib/i18n";
 import { mapsSearchUrl, safeMapsEmbedUrl } from "../lib/maps";
 
-type Props = { embedUrl: string; title: string; address: string };
+type Props = {
+  embedUrl: string;
+  title: string;
+  address: string;
+  /** Teks UI: judul iframe (`{nama}`) & label tombol. */
+  labels: { judul: string; buka: string };
+};
 
 /** Embed Google Maps (bila URL valid) + tautan buka di Maps. */
-export function MapsEmbed({ embedUrl, title, address }: Props) {
+export function MapsEmbed({ embedUrl, title, address, labels }: Props) {
   const src = safeMapsEmbedUrl(embedUrl);
   return (
     <div className="space-y-3">
       {src && (
         <iframe
           src={src}
-          title={`Peta lokasi ${title}`}
+          title={fmt(labels.judul, { nama: title })}
           loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
           sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
@@ -25,7 +32,7 @@ export function MapsEmbed({ embedUrl, title, address }: Props) {
         variant="secondary"
         size="sm"
       >
-        Buka di Google Maps
+        {labels.buka}
       </ButtonLink>
     </div>
   );

@@ -1,8 +1,10 @@
 import { Badge, Card } from "@tpl/ui";
-import { getKonten, type Proyek } from "../lib/konten";
+import { fmt, localizeHref } from "../lib/i18n";
+import { getKonten, getUi, type Lang, type Proyek } from "../lib/konten";
 
-export function ProyekKartu({ p }: { p: Proyek }) {
-  const kat = getKonten().portofolio.kategori.find((k) => k.id === p.kategori);
+export function ProyekKartu({ p, lang }: { p: Proyek; lang: Lang }) {
+  const u = getUi(lang).proyek;
+  const kat = getKonten(lang).portofolio.kategori.find((k) => k.id === p.kategori);
   return (
     <Card
       className="flex h-full flex-col overflow-hidden p-0"
@@ -12,7 +14,7 @@ export function ProyekKartu({ p }: { p: Proyek }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={p.gambar}
-        alt={`Ilustrasi proyek ${p.judul}`}
+        alt={fmt(u.ilustrasi, { judul: p.judul })}
         width={400}
         height={300}
         loading="lazy"
@@ -28,11 +30,11 @@ export function ProyekKartu({ p }: { p: Proyek }) {
         <p className="text-sm text-muted">{p.klien}</p>
         <p className="mt-2 flex-1 text-muted">{p.ringkas}</p>
         <a
-          href={`/portofolio/${p.slug}`}
-          aria-label={`Lihat proyek: ${p.judul}`}
+          href={localizeHref(lang, `/portofolio/${p.slug}`)}
+          aria-label={fmt(u.lihatAria, { judul: p.judul })}
           className="mt-4 font-medium text-primary underline underline-offset-2"
         >
-          Lihat proyek →
+          {u.lihat} →
         </a>
       </div>
     </Card>

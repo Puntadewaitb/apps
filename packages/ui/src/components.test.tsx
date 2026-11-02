@@ -74,6 +74,27 @@ describe("render komponen", () => {
     expect(html).toContain('aria-expanded="false"');
   });
 
+  it("Navbar & Footer: label aksesibilitas default Indonesia, bisa ditimpa (situs multi-bahasa)", () => {
+    const def = render(<Navbar brand="X" links={[{ label: "Home", href: "/" }]} />);
+    expect(def).toContain('aria-label="Navigasi utama"');
+    const en = render(
+      <Navbar
+        brand="X"
+        links={[{ label: "Home", href: "/" }]}
+        labels={{ nav: "Main navigation", open: "Open menu" }}
+      />,
+    );
+    expect(en).toContain('aria-label="Main navigation"');
+    expect(en).toContain('aria-label="Open menu"');
+    expect(en).not.toContain("Buka menu");
+    expect(render(<Footer brand="X" links={[{ label: "A", href: "/a" }]} />)).toContain(
+      'aria-label="Tautan footer"',
+    );
+    expect(
+      render(<Footer brand="X" links={[{ label: "A", href: "/a" }]} navLabel="Footer links" />),
+    ).toContain('aria-label="Footer links"');
+  });
+
   it("Footer", () => {
     const html = render(
       <Footer

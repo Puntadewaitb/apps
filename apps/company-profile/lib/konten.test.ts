@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { konten as kontenEn } from "../content/en";
 import { konten } from "../content/id";
 import {
   cariLayanan,
@@ -18,6 +19,13 @@ describe("konten website", () => {
   it("lolos validasi skema", () => {
     const r = kontenSchema.safeParse(konten);
     expect(r.success, r.success ? "" : JSON.stringify(r.error.issues, null, 1)).toBe(true);
+  });
+
+  it("konten English juga lolos validasi skema & gambar ada", () => {
+    const r = kontenSchema.safeParse(kontenEn);
+    expect(r.success, r.success ? "" : JSON.stringify(r.error.issues, null, 1)).toBe(true);
+    for (const g of [kontenEn.hero.gambar.src, ...kontenEn.tentang.tim.anggota.map((a) => a.foto)])
+      expect(existsSync(join(__dirname, "..", "public", g)), g).toBe(true);
   });
 
   it("gambar hero ada di public/", () => {
@@ -51,6 +59,9 @@ describe("konten website", () => {
     const wa = resolveHref("WHATSAPP", k);
     expect(wa.startsWith(`https://wa.me/${k.kontak.whatsapp}?text=`)).toBe(true);
     expect(resolveHref("/layanan", k)).toBe("/layanan");
+    expect(resolveHref("/layanan", k, "en")).toBe("/en/layanan");
+    expect(resolveHref("#x", k, "en")).toBe("#x");
+    expect(resolveHref("WHATSAPP", getKonten("en"), "en")).toContain("wa.me");
   });
 });
 

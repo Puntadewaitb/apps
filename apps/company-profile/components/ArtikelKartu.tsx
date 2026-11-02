@@ -1,8 +1,11 @@
 import { Badge, Card } from "@tpl/ui";
-import { blog } from "../content/blog.id";
 import { formatTanggalBlog, type Artikel } from "../lib/blog";
+import { fmt, localizeHref } from "../lib/i18n";
+import { getBlog, getUi, type Lang } from "../lib/konten";
 
-export function ArtikelKartu({ a }: { a: Artikel }) {
+export function ArtikelKartu({ a, lang }: { a: Artikel; lang: Lang }) {
+  const blog = getBlog(lang);
+  const u = getUi(lang).blog;
   const kat = blog.kategori.find((k) => k.id === a.kategori);
   return (
     <Card
@@ -24,7 +27,7 @@ export function ArtikelKartu({ a }: { a: Artikel }) {
         <div className="flex items-center justify-between gap-2 text-sm">
           <Badge tone="primary">{kat?.nama ?? a.kategori}</Badge>
           <time dateTime={a.tanggal} className="text-muted">
-            {formatTanggalBlog(a.tanggal)}
+            {formatTanggalBlog(a.tanggal, lang)}
           </time>
         </div>
         <h3 className="mt-3 text-lg font-semibold text-fg">{a.judul}</h3>
@@ -33,11 +36,11 @@ export function ArtikelKartu({ a }: { a: Artikel }) {
           {a.penulis} · {a.bacaMenit} {blog.bacaLabel}
         </p>
         <a
-          href={`/blog/${a.slug}`}
-          aria-label={`Baca artikel: ${a.judul}`}
+          href={localizeHref(lang, `/blog/${a.slug}`)}
+          aria-label={fmt(u.bacaAria, { judul: a.judul })}
           className="mt-3 font-medium text-primary underline underline-offset-2"
         >
-          Baca selengkapnya →
+          {u.baca} →
         </a>
       </div>
     </Card>

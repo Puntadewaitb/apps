@@ -1,8 +1,8 @@
 import { Container } from "@tpl/ui";
-import { getKonten } from "../lib/konten";
+import { getKonten, type Lang } from "../lib/konten";
 
-export function Angka() {
-  const a = getKonten().kredibilitas.angka;
+export function Angka({ lang }: { lang: Lang }) {
+  const a = getKonten(lang).kredibilitas.angka;
   return (
     <section aria-labelledby="angka-judul" className="border-y border-border bg-bg py-10">
       <Container>

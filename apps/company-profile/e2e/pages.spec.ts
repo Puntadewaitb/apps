@@ -172,7 +172,9 @@ test.describe("halaman Layanan", () => {
     await expect(page.getByText(l.faq[0]!.a)).toBeHidden();
   });
 
-  test("slug tidak dikenal → 404 Indonesia (tanpa render dinamis)", async ({ page }) => {
+  test("slug tidak dikenal → 404 Indonesia (halaman 404 bertema, bukan halaman bawaan Next)", async ({
+    page,
+  }) => {
     for (const s of ["tidak-ada", "__proto__", "..%2Fetc", "KONSULTASI-PROSES-BISNIS"]) {
       const res = await page.goto(`/layanan/${s}`);
       expect(res?.status(), s).toBe(404);

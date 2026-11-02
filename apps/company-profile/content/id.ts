@@ -36,6 +36,16 @@ export const konten = {
     jamKerja: "Senin–Jumat, 08.30–17.00 WIB",
     // Embed Google Maps (hanya https://www.google.com/maps/embed… atau /maps?…&output=embed yang dirender)
     mapsUrl: "https://www.google.com/maps?q=Jl.+Jenderal+Sudirman+Jakarta&output=embed",
+    struktur: {
+      jalan: "Jl. Sudirman No. 100",
+      kota: "Jakarta Selatan",
+      provinsi: "DKI Jakarta",
+      kodePos: "12190",
+      negara: "ID",
+      hari: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      buka: "08:30",
+      tutup: "17:00",
+    },
   },
   hero: {
     eyebrow: "Konsultan bisnis & teknologi sejak 2012",

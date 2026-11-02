@@ -1,8 +1,10 @@
 import { Card, Section } from "@tpl/ui";
-import { getKonten } from "../lib/konten";
+import { getKonten, getUi, type Lang } from "../lib/konten";
+import { fmt } from "../lib/i18n";
 
-export function TestimoniKlien() {
-  const t = getKonten().kredibilitas.testimoni;
+export function TestimoniKlien({ lang }: { lang: Lang }) {
+  const t = getKonten(lang).kredibilitas.testimoni;
+  const u = getUi(lang);
   return (
     <Section id="testimoni" title={t.judul}>
       <ul className="grid gap-4 md:grid-cols-3">
@@ -11,7 +13,7 @@ export function TestimoniKlien() {
             <Card className="flex h-full flex-col" data-testid="testimoni">
               <p
                 role="img"
-                aria-label={`Penilaian ${x.rating} dari 5`}
+                aria-label={fmt(u.testimoni.rating, { n: x.rating })}
                 className="text-lg text-accent"
               >
                 {"★".repeat(x.rating)}

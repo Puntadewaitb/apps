@@ -1,7 +1,8 @@
 import { Card } from "@tpl/ui";
-import type { Layanan } from "../lib/konten";
+import { localizeHref } from "../lib/i18n";
+import type { Lang, Layanan } from "../lib/konten";
 
-export function LayananKartu({ l, cta }: { l: Layanan; cta: string }) {
+export function LayananKartu({ l, cta, lang }: { l: Layanan; cta: string; lang: Lang }) {
   return (
     <Card className="flex h-full flex-col" data-testid="kartu-layanan">
       <span aria-hidden="true" className="text-3xl">
@@ -10,7 +11,7 @@ export function LayananKartu({ l, cta }: { l: Layanan; cta: string }) {
       <h3 className="mt-3 text-lg font-semibold text-fg">{l.nama}</h3>
       <p className="mt-2 flex-1 text-muted">{l.ringkas}</p>
       <a
-        href={`/layanan/${l.slug}`}
+        href={localizeHref(lang, `/layanan/${l.slug}`)}
         aria-label={`${cta}: ${l.nama}`}
         className="mt-4 font-medium text-primary underline underline-offset-2"
       >

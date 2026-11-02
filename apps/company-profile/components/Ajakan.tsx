@@ -1,11 +1,12 @@
 import { ButtonLink, Container } from "@tpl/ui";
-import { getKonten, resolveHref } from "../lib/konten";
+import { getKonten, getUi, resolveHref, type Lang } from "../lib/konten";
 
-type Props = { judul?: string; teks?: string };
+type Props = { lang: Lang; judul?: string; teks?: string };
 
 /** Pita ajakan (CTA): WhatsApp + email. */
-export function Ajakan({ judul, teks }: Props) {
-  const k = getKonten();
+export function Ajakan({ lang, judul, teks }: Props) {
+  const k = getKonten(lang);
+  const u = getUi(lang);
   return (
     <section aria-labelledby="ajakan-judul" className="bg-primary py-12 text-primary-fg sm:py-14">
       <Container className="text-center">
@@ -21,7 +22,7 @@ export function Ajakan({ judul, teks }: Props) {
             size="lg"
             className="!bg-bg !text-primary hover:opacity-90"
           >
-            Hubungi via WhatsApp
+            {u.ajakan.whatsapp}
           </ButtonLink>
           <ButtonLink
             href={`mailto:${k.kontak.email}`}
@@ -29,7 +30,7 @@ export function Ajakan({ judul, teks }: Props) {
             variant="ghost"
             className="!text-primary-fg border border-white/40 hover:bg-white/10"
           >
-            Kirim Email
+            {u.ajakan.email}
           </ButtonLink>
         </div>
       </Container>

@@ -148,6 +148,21 @@ export const kontenSchema = z.object({
     alamat: z.string().min(1),
     jamKerja: z.string().min(1),
     mapsUrl: z.string(),
+    /** Data terstruktur untuk schema.org (alamat & jam buka) — dipakai JSON-LD, tidak ditampilkan langsung. */
+    struktur: z.object({
+      jalan: z.string().min(3),
+      kota: z.string().min(2),
+      provinsi: z.string().min(2),
+      kodePos: z.string().regex(/^\d{5}$/),
+      negara: z.string().regex(/^[A-Z]{2}$/),
+      hari: z
+        .array(
+          z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]),
+        )
+        .min(1),
+      buka: z.string().regex(/^\d{2}:\d{2}$/),
+      tutup: z.string().regex(/^\d{2}:\d{2}$/),
+    }),
   }),
   hero: z.object({
     eyebrow: z.string().min(1),

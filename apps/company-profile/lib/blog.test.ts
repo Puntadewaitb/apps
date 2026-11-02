@@ -105,7 +105,7 @@ describe("artikel di content/blog", () => {
   it("berkas rusak di direktori → error menyebut nama berkas", () => {
     const dir = mkdtempSync(join(tmpdir(), "blog-"));
     writeFileSync(join(dir, "rusak.md"), "tanpa front matter");
-    expect(() => semuaArtikel(dir)).toThrow(/rusak\.md/);
+    expect(() => semuaArtikel("id", dir)).toThrow(/rusak\.md/);
   });
 
   it("formatTanggalBlog: format Indonesia", () => {

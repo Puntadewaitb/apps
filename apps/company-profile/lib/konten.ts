@@ -1,18 +1,37 @@
 import { buildWhatsAppUrl } from "@tpl/ui";
-import { konten, type Konten } from "../content/id";
+import { blog as blogEn } from "../content/blog.en";
+import { blog as blogId } from "../content/blog.id";
+import { konten as kontenEn } from "../content/en";
+import { konten as kontenId, type Konten } from "../content/id";
+import { ui as uiEn } from "../content/ui.en";
+import { ui as uiId } from "../content/ui.id";
+import { localizeHref, type Lang } from "./i18n";
 
-export type Lang = "id";
+export type { Lang };
 
-/** Konten untuk bahasa tertentu. (English ditambahkan di langkah C5.) */
-const SEMUA: Record<Lang, Konten> = { id: konten };
+const SEMUA: Record<Lang, Konten> = { id: kontenId, en: kontenEn };
+const UI: Record<Lang, typeof uiId> = { id: uiId, en: uiEn };
+const BLOG: Record<Lang, typeof blogId> = { id: blogId, en: blogEn };
 
+/** Konten bisnis untuk bahasa tertentu (struktur ID & EN dijamin identik oleh TypeScript). */
 export function getKonten(lang: Lang = "id"): Konten {
   return SEMUA[lang];
 }
 
-/** Ganti placeholder "WHATSAPP" pada href dengan tautan wa.me berisi pesan awal. */
-export function resolveHref(href: string, k: Konten): string {
-  return href === "WHATSAPP" ? buildWhatsAppUrl(k.kontak.whatsapp, k.kontak.pesanWhatsapp) : href;
+/** Teks antarmuka untuk bahasa tertentu. */
+export function getUi(lang: Lang = "id"): typeof uiId {
+  return UI[lang];
+}
+
+/** Konfigurasi blog (judul, kategori) untuk bahasa tertentu. */
+export function getBlog(lang: Lang = "id"): typeof blogId {
+  return BLOG[lang];
+}
+
+/** Ganti placeholder "WHATSAPP" dengan tautan wa.me; path internal diberi awalan bahasa. */
+export function resolveHref(href: string, k: Konten, lang: Lang = "id"): string {
+  if (href === "WHATSAPP") return buildWhatsAppUrl(k.kontak.whatsapp, k.kontak.pesanWhatsapp);
+  return localizeHref(lang, href);
 }
 
 export type Layanan = Konten["layanan"][number];
