@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { Container, Section } from "@tpl/ui";
+import { Container } from "@tpl/ui";
 import { Cover } from "../components/Cover";
+import { DetailAcara } from "../components/DetailAcara";
+import { Mempelai } from "../components/Mempelai";
 import { getActiveEvent } from "../lib/event";
-import { formatJam, formatTanggal } from "../lib/format";
+import { formatTanggal } from "../lib/format";
 import { guestNameFromParam } from "../lib/guest-name";
 
 // Data acara dibaca dari DB saat request (berubah tanpa build ulang).
@@ -45,22 +47,39 @@ export default async function HomePage({
             </p>
           </Container>
         </section>
-        <Section title="Waktu & Tempat">
-          <dl className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <dt className="font-semibold text-fg">Akad Nikah</dt>
-              <dd className="text-muted">{formatJam(ev.akadAt)}</dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-fg">Resepsi</dt>
-              <dd className="text-muted">{formatJam(ev.resepsiAt)}</dd>
-            </div>
-            <div className="sm:col-span-2">
-              <dt className="font-semibold text-fg">{ev.venueName}</dt>
-              <dd className="text-muted">{ev.venueAddress}</dd>
-            </div>
-          </dl>
-        </Section>
+        <Mempelai
+          quote={ev.quote}
+          groom={{
+            name: ev.groomName,
+            parents: ev.groomParents,
+            photo: "/img/mempelai-pria.svg",
+            role: "mempelai pria",
+          }}
+          bride={{
+            name: ev.brideName,
+            parents: ev.brideParents,
+            photo: "/img/mempelai-wanita.svg",
+            role: "mempelai wanita",
+          }}
+        />
+        <DetailAcara
+          countdownTarget={ev.akadAt.toISOString()}
+          mapsUrl={ev.mapsUrl}
+          akad={{
+            id: "akad",
+            nama: "Akad Nikah",
+            waktu: ev.akadAt,
+            tempat: ev.venueName,
+            alamat: ev.venueAddress,
+          }}
+          resepsi={{
+            id: "resepsi",
+            nama: "Resepsi",
+            waktu: ev.resepsiAt,
+            tempat: ev.resepsiVenueName || ev.venueName,
+            alamat: ev.resepsiVenueAddress || ev.venueAddress,
+          }}
+        />
       </main>
     </>
   );

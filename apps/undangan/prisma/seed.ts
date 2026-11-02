@@ -19,7 +19,9 @@ const event = {
   resepsiAt: new Date("2027-02-20T11:00:00+07:00"),
   venueName: "Gedung Serbaguna Melati",
   venueAddress: "Jl. Melati Raya No. 12, Yogyakarta (alamat fiktif untuk demo)",
-  mapsUrl: "",
+  resepsiVenueName: "Balai Pertemuan Kenanga",
+  resepsiVenueAddress: "Jl. Kenanga No. 8, Yogyakarta (alamat fiktif untuk demo)",
+  mapsUrl: "https://www.google.com/maps?q=Yogyakarta&output=embed",
   quote:
     "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri, agar kamu merasa tenteram kepadanya. (QS. Ar-Rum: 21)",
 };

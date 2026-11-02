@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Ilustrasi mempelai pria">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset="1" stop-color="#c2410c"/></linearGradient></defs>
+  <rect width="400" height="400" fill="url(#g)"/>
+  <circle cx="200" cy="150" r="62" fill="#fff" fill-opacity=".92"/>
+  <path d="M70 400c0-84 58-140 130-140s130 56 130 140z" fill="#fff" fill-opacity=".92"/>
+  <path d="M170 262l30 34 30-34-30-12z" fill="#c2410c"/>
+</svg>

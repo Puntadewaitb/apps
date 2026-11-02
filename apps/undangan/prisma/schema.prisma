@@ -21,9 +21,13 @@ model Event {
   akadAt        DateTime
   /// Waktu resepsi
   resepsiAt     DateTime
+  /// Lokasi akad (dan resepsi bila lokasi resepsi dikosongkan)
   venueName     String
   venueAddress  String
-  /// URL embed/tautan peta (opsional)
+  /// Lokasi resepsi bila berbeda dari akad (kosong = sama dengan lokasi akad)
+  resepsiVenueName    String @default("")
+  resepsiVenueAddress String @default("")
+  /// URL embed peta (hanya embed Google Maps via HTTPS yang ditampilkan; opsional)
   mapsUrl       String   @default("")
   /// Kutipan/ayat pembuka (opsional)
   quote         String   @default("")
