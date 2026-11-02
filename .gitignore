@@ -29,3 +29,4 @@ test-results/
 # generated (prisma client) — dibuat ulang oleh `npm run db:generate`
 generated/
 e2e-mail.jsonl
+e2e-uploads/

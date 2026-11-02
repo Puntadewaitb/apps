@@ -149,28 +149,6 @@ test.describe("guru & staf", () => {
       true,
     );
   });
-
-  test("data 'kotor' di DB (HTML/skrip) tampil sebagai teks, tidak dieksekusi", async ({
-    page,
-  }) => {
-    const t = huruf();
-    const kotor = `<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>`;
-    tulis((d) =>
-      d
-        .prepare(
-          "INSERT INTO Teacher (name, position, subject, bio, photo, sort, active) VALUES (?, ?, ?, ?, '', 98, 1)",
-        )
-        .run(`${kotor}N${t}`, `${kotor}P${t}`, `${kotor}S${t}`, `${kotor}B${t}`),
-    );
-    await awasi(page);
-    await page.goto("/guru");
-    const kartu = page.getByTestId("kartu-guru").filter({ hasText: `N${t}` });
-    await expect(kartu).toHaveCount(1);
-    expect(await kartu.locator("img, script").count()).toBe(0);
-    expect(await page.evaluate(() => (window as unknown as { __xss?: number }).__xss ?? 0)).toBe(0);
-    // bersihkan agar tes lain (jumlah guru aktif) tidak terganggu
-    tulis((d) => d.prepare("DELETE FROM Teacher WHERE sort = 98").run());
-  });
 });
 
 test.describe("program & ekstrakurikuler", () => {

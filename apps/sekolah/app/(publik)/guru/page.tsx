@@ -33,7 +33,7 @@ export default async function GuruPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={g.photo}
-                      alt={`Foto ${g.name} (placeholder)`}
+                      alt={`Foto ${g.name}${g.photo.startsWith("/img/") ? " (placeholder)" : ""}`}
                       width={160}
                       height={160}
                       loading="lazy"

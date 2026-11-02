@@ -3,6 +3,7 @@ import { rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 
 for (const f of ["e2e.db", "e2e.db-journal"]) rmSync(f, { force: true });
+rmSync("e2e-uploads", { recursive: true, force: true });
 execSync(
   "npx prisma generate && npx prisma migrate deploy && node --env-file-if-exists=.env prisma/seed.ts",
   {

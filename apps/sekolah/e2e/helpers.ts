@@ -78,3 +78,21 @@ export async function masuk(
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Masuk" }).click();
 }
+
+/** PNG 1×1 valid (untuk uji unggah; benar-benar bisa ditampilkan browser). */
+export const PNG_1X1 = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "base64",
+);
+export const berkasPng = (name = "foto.png") => ({ name, mimeType: "image/png", buffer: PNG_1X1 });
+export const berkasSvg = (name = "x.png") => ({
+  name,
+  mimeType: "image/png",
+  buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
+});
+
+/** Login yang berhasil: tunggu sampai benar-benar masuk panel (bukan sekadar klik tombol). */
+export async function login(page: Page, email = ADMIN_EMAIL, password = ADMIN_PASSWORD) {
+  await masuk(page, email, password);
+  await page.waitForURL(/\/admin$/);
+}

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Card, Container } from "@tpl/ui";
-import { LogoutButton } from "../../components/admin/LogoutButton";
-import { ambilRingkasan } from "../../lib/ringkasan";
-import { requireAdmin } from "../../lib/session";
+import { ambilRingkasan } from "../../../lib/ringkasan";
+import { requireAdmin } from "../../../lib/session";
 
 export const metadata: Metadata = { title: "Ringkasan" };
 export const dynamic = "force-dynamic";
@@ -54,15 +53,10 @@ export default async function AdminHome({
   return (
     <main id="isi" className="py-10">
       <Container>
-        <header className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold text-fg">Dashboard Admin</h1>
-            <p className="text-sm text-muted" data-testid="info-pengguna">
-              {user.name} · {user.role === "ADMIN" ? "Administrator" : "Editor"}
-            </p>
-          </div>
-          <LogoutButton />
-        </header>
+        <h1 className="text-2xl font-bold text-fg">Dashboard Admin</h1>
+        <p className="text-sm text-muted" data-testid="info-pengguna">
+          {user.name} · {user.role === "ADMIN" ? "Administrator" : "Editor"}
+        </p>
         {ditolak && (
           <p
             role="alert"

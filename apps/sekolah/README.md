@@ -2,7 +2,7 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi, halaman publik, informasi, dan login + dashboard admin (S1–S4). CRUD konten, PPDB, dan donasi dibangun bertahap (S5–S8).
+> Status: fondasi, halaman publik, informasi, login admin, dan CRUD konten (S1–S5). PPDB dan donasi dibangun bertahap (S6–S8).
 
 ## Menjalankan
 
@@ -35,6 +35,17 @@ Konten statis ada di `content/` (`sekolah.ts`, `profil.ts`, `program.ts`; divali
 - Peran: `ADMIN` (semua area) dan `EDITOR` (berita, agenda, galeri, guru) — matriks di `lib/auth-core.ts` (`can()`).
 - Rate limit login: 10 percobaan/15 menit/IP + 20/15 menit/akun (in-memory; ganti store dengan Redis untuk multi-instance). Atur `TRUSTED_PROXIES` sesuai jumlah reverse proxy agar IP klien benar. Email tak terdaftar & password salah → pesan identik; waktu respons disamakan (hash palsu).
 - `callbackUrl` hanya boleh path `/admin…` (anti open redirect). Halaman & API admin: `Cache-Control: no-store`, `X-Robots-Tag: noindex`.
+
+## Kelola konten (admin)
+
+`/admin/berita` · `/admin/agenda` · `/admin/galeri` · `/admin/guru` — tambah, ubah, hapus. Semua aksi (server action) memanggil `requireAdmin(area)` lebih dulu, memvalidasi dengan Zod (`lib/validasi.ts`), dan menolak ID/slug tak valid.
+
+- **Berita**: editor teks kaya berbasis **Markdown aman** (toolbar + tab Pratinjau yang memakai renderer yang sama dengan situs publik — tanpa HTML mentah). Draf / terbit / terjadwal (tanggal terbit di masa depan). Slug dibuat dari judul, unik, dan **tidak berubah** saat judul diedit (URL publik stabil).
+- **Agenda**: waktu diisi dalam WIB (`datetime-local` ⇄ UTC di `lib/waktu.ts`).
+- **Galeri**: unggah banyak foto sekaligus (maks. 10; satu berkas tidak valid → seluruh unggahan dibatalkan), keterangan, sampul otomatis/pilihan.
+- **Guru**: foto, urutan tampil, sembunyikan tanpa menghapus.
+- **Unggah gambar** (`lib/upload.ts`): PNG/JPG/WebP ≤ 2 MB; tipe diperiksa dari **magic bytes** (bukan ekstensi) dan harus cocok dengan MIME yang dinyatakan; SVG/GIF/PDF ditolak; nama file acak buatan server. Disimpan di `UPLOAD_DIR` (bawaan `./uploads`, **di luar `public/`**) dan disajikan lewat `/uploads/<nama>` (nama dibatasi regex ketat; `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`, cache immutable). File dihapus otomatis saat data/penggantinya dihapus bila tak dirujuk lagi.
+- Setelah validasi gagal, isian yang sudah diketik **dipertahankan** (React 19 mereset field tak terkontrol; action mengembalikan nilai yang dikirim).
 
 ## Data
 
