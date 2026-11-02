@@ -1,7 +1,13 @@
 import { createRateLimiter } from "@tpl/core";
 
 type Limiter = ReturnType<typeof createRateLimiter>;
-type Limiters = { loginIp: Limiter; loginEmail: Limiter };
+type Limiters = {
+  loginIp: Limiter;
+  loginEmail: Limiter;
+  daftarIp: Limiter;
+  statusIp: Limiter;
+  statusNomor: Limiter;
+};
 /** Bilangan bulat positif dari env; selain itu pakai bawaan. */
 const dariEnv = (nama: string, bawaan: number) => {
   const n = Number(process.env[nama]);
@@ -19,6 +25,14 @@ export function limiters(): Limiters {
       limit: dariEnv("LOGIN_LIMIT_EMAIL", 20),
       windowMs: 15 * 60_000,
     }),
+    // PPDB: 5 pendaftaran / jam / IP (formulir panjang + unggah berkas)
+    daftarIp: createRateLimiter({ limit: dariEnv("PPDB_LIMIT_DAFTAR", 5), windowMs: 60 * 60_000 }),
+    // cek status: 10 / 15 menit / IP dan 8 / 15 menit / nomor (menahan tebak-token terdistribusi)
+    statusIp: createRateLimiter({
+      limit: dariEnv("PPDB_LIMIT_STATUS_IP", 10),
+      windowMs: 15 * 60_000,
+    }),
+    statusNomor: createRateLimiter({ limit: 8, windowMs: 15 * 60_000 }),
   };
   return g.__limiters;
 }

@@ -10,6 +10,7 @@ const MENU: Array<{ href: string; label: string; area: Area }> = [
   { href: "/admin/agenda", label: "Agenda", area: "agenda" },
   { href: "/admin/galeri", label: "Galeri", area: "galeri" },
   { href: "/admin/guru", label: "Guru & Staf", area: "guru" },
+  { href: "/admin/ppdb", label: "PPDB", area: "ppdb" },
 ];
 
 /** Kerangka panel admin. Pemeriksaan sesi di sini hanya kenyamanan — setiap halaman & action memeriksa ulang. */

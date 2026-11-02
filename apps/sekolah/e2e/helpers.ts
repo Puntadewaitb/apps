@@ -96,3 +96,46 @@ export async function login(page: Page, email = ADMIN_EMAIL, password = ADMIN_PA
   await masuk(page, email, password);
   await page.waitForURL(/\/admin$/);
 }
+
+export const PDF_MIN = Buffer.from("%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF\n");
+export const berkasPdf = (name = "dok.pdf") => ({
+  name,
+  mimeType: "application/pdf",
+  buffer: PDF_MIN,
+});
+
+/** Isi formulir PPDB sampai ke langkah "Tinjau" (kecuali `sampaiLangkah` lebih kecil). */
+export async function isiWizard(
+  page: Page,
+  o: {
+    nama?: string;
+    pekerjaan?: string;
+    alamat?: string;
+    asal?: string;
+    dokumen?: boolean;
+    sampaiLangkah?: 1 | 2 | 3 | 4;
+  } = {},
+) {
+  const stop = o.sampaiLangkah ?? 4;
+  await page.getByLabel("Nama lengkap calon siswa").fill(o.nama ?? "Siswa Uji");
+  await page.getByLabel("Tempat lahir").fill("Yogyakarta");
+  await page.getByLabel("Tanggal lahir").fill("2014-05-20");
+  await page.getByLabel("Jenis kelamin").selectOption("L");
+  await page.getByLabel("Jenjang tujuan").selectOption("SMP Kelas 7");
+  await page.getByLabel("Asal sekolah").fill(o.asal ?? "SDN 1 Sleman");
+  await page.getByLabel("Alamat lengkap").fill(o.alamat ?? "Jl. Melati No. 5, Sleman, Yogyakarta");
+  if (stop === 1) return;
+  await page.getByRole("button", { name: "Lanjut →" }).click();
+  await page.getByLabel("Nama orang tua/wali").fill("Ahmad Santoso");
+  await page.getByLabel("No. HP / WhatsApp").fill("081234567890");
+  await page.getByLabel("Pekerjaan (opsional)").fill(o.pekerjaan ?? "Wiraswasta");
+  if (stop === 2) return;
+  await page.getByRole("button", { name: "Lanjut →" }).click();
+  if (o.dokumen !== false) {
+    await page.getByLabel("Akta kelahiran").setInputFiles(berkasPng("akta.png"));
+    await page.getByLabel("Kartu keluarga").setInputFiles(berkasPdf("kk.pdf"));
+    await page.getByLabel("Rapor / ijazah terakhir").setInputFiles(berkasPng("rapor.png"));
+  }
+  if (stop === 3) return;
+  await page.getByRole("button", { name: "Lanjut →" }).click();
+}

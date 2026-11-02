@@ -2,7 +2,7 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi, halaman publik, informasi, login admin, dan CRUD konten (S1–S5). PPDB dan donasi dibangun bertahap (S6–S8).
+> Status: fondasi, halaman publik, informasi, login admin, CRUD konten, dan PPDB (S1–S6). Donasi dan QA akhir dibangun bertahap (S7–S8).
 
 ## Menjalankan
 
@@ -46,6 +46,15 @@ Konten statis ada di `content/` (`sekolah.ts`, `profil.ts`, `program.ts`; divali
 - **Guru**: foto, urutan tampil, sembunyikan tanpa menghapus.
 - **Unggah gambar** (`lib/upload.ts`): PNG/JPG/WebP ≤ 2 MB; tipe diperiksa dari **magic bytes** (bukan ekstensi) dan harus cocok dengan MIME yang dinyatakan; SVG/GIF/PDF ditolak; nama file acak buatan server. Disimpan di `UPLOAD_DIR` (bawaan `./uploads`, **di luar `public/`**) dan disajikan lewat `/uploads/<nama>` (nama dibatasi regex ketat; `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`, cache immutable). File dihapus otomatis saat data/penggantinya dihapus bila tak dirujuk lagi.
 - Setelah validasi gagal, isian yang sudah diketik **dipertahankan** (React 19 mereset field tak terkontrol; action mengembalikan nilai yang dikirim).
+
+## PPDB online
+
+`/ppdb` (info) · `/ppdb/daftar` (formulir 4 langkah) · `/ppdb/status` (cek status) · admin `/admin/ppdb` (hanya `ADMIN`). Konfigurasi (dibuka/ditutup, jenjang, dokumen) di `content/ppdb.ts`.
+
+- **Nomor & token**: nomor pendaftaran **acak** (`PPDB-2027-K7M2XQ`, bukan urutan → tak bisa ditebak) dan token akses 12 karakter (`ABCD-EFGH-JKMN`, ±59 bit) dibuat dengan CSPRNG. Token ditampilkan **sekali**; yang disimpan hanya **hash SHA-256**-nya (DB bocor ≠ token bocor). Cek status wajib nomor **dan** token (bukan ID berurutan), dibandingkan waktu-konstan; nomor tak dikenal & token salah → pesan **identik** (anti-enumerasi). Rate limit: 10 percobaan/15 menit/IP + 8/15 menit/nomor; pendaftaran 5/jam/IP + honeypot.
+- **Dokumen** (akta, KK, rapor, pas foto): PDF/PNG/JPG/WebP ≤ 2 MB, tipe dari magic bytes & harus cocok MIME; **semua divalidasi dulu** — satu gagal → tidak ada yang tersimpan (tanpa berkas yatim). Disimpan **privat** di `UPLOAD_DIR/dokumen/` (tidak terjangkau `/uploads`) dan hanya bisa dibuka admin lewat `/admin/ppdb/dokumen/<id>/<jenis>` (CSP sandbox, `nosniff`, `no-store`; PDF diunduh).
+- **Wizard**: tanpa JavaScript semua bagian tampil sekaligus dan tetap bisa dikirim; dengan JavaScript ada validasi per langkah, ringkasan sebelum kirim, dan isian + berkas tidak hilang saat server menolak.
+- **Admin**: daftar + filter status + cari, detail, ubah status + catatan (catatan terlihat pendaftar), ekspor CSV (sel berawalan `= + - @` dinetralkan). Status/catatan divalidasi ulang di server (nilai di luar daftar ditolak).
 
 ## Data
 

@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         source: "/uploads/:path*",
         headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; sandbox" }],
       },
+      // Dokumen PPDB (privat; hanya admin): CSP serupa.
+      {
+        source: "/admin/ppdb/dokumen/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; sandbox" }],
+      },
       // Area admin & API sesi: jangan di-cache browser/proxy, dan jangan diindeks mesin pencari.
       ...["/admin/:path*", "/api/admin/:path*", "/api/auth/:path*"].map((source) => ({
         source,

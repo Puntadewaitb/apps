@@ -1,5 +1,6 @@
 import { Badge, ButtonLink, Card, Container, Section, buildWhatsAppUrl } from "@tpl/ui";
 import { PostKartu } from "../../components/PostKartu";
+import { ppdb } from "../../content/ppdb";
 import { profil } from "../../content/profil";
 import { program } from "../../content/program";
 import { sekolah } from "../../content/sekolah";
@@ -34,6 +35,9 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/program" size="lg">
                 Lihat Program
+              </ButtonLink>
+              <ButtonLink href="/ppdb" size="lg" variant="secondary">
+                PPDB {ppdb.tahunAjaran}
               </ButtonLink>
               <ButtonLink
                 href={buildWhatsAppUrl(sekolah.kontak.whatsapp, sekolah.kontak.pesanWhatsapp)}
