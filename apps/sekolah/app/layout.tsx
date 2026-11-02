@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { SiteShell } from "../components/SiteShell";
 import { sekolah } from "../content/sekolah";
 import "./globals.css";
 
@@ -16,9 +15,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id" data-theme={sekolah.tema}>
-      <body>
-        <SiteShell>{children}</SiteShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

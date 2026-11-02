@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@tpl/ui";
-import { PostKartu } from "../../components/PostKartu";
-import { daftarBerita, parseHalaman, parseJenis } from "../../lib/berita";
+import { PostKartu } from "../../../components/PostKartu";
+import { daftarBerita, parseHalaman, parseJenis } from "../../../lib/berita";
 
 export const metadata: Metadata = {
   title: "Berita & Pengumuman",

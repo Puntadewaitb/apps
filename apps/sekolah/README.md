@@ -2,7 +2,7 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi, halaman publik inti, dan informasi (S1–S3). Admin, PPDB, dan donasi dibangun bertahap (S4–S8).
+> Status: fondasi, halaman publik, informasi, dan login + dashboard admin (S1–S4). CRUD konten, PPDB, dan donasi dibangun bertahap (S5–S8).
 
 ## Menjalankan
 
@@ -27,6 +27,14 @@ npm run dev -w @tpl/sekolah                         # http://localhost:3004
 | `/galeri` · `/galeri/<slug>` | Album foto dan detail dengan lightbox (panah/Esc, fokus kembali ke thumbnail) |
 
 Konten statis ada di `content/` (`sekolah.ts`, `profil.ts`, `program.ts`; divalidasi `lib/konten-schema.ts`). Menu (`nav` di `content/sekolah.ts`) hanya memuat halaman yang sudah ada. Embed Maps hanya merender URL `https://www.google.com/maps/embed…`/`?output=embed` (`lib/maps.ts`).
+
+## Admin (login & otorisasi)
+
+- Login `/admin/login` (email + password) memakai **NextAuth v4 (credentials) + bcrypt**; sesi JWT dalam cookie `httpOnly`, `SameSite=Strict`, berlaku 8 jam. Tanpa `NEXTAUTH_SECRET` (≥ 32 karakter) login **nonaktif** (fail closed).
+- **Berlapis**: (1) `proxy.ts` (Next 16 — pengganti `middleware.ts`) menolak `/admin/*` & `/api/admin/*` tanpa JWT valid (halaman → redirect login, API → 401); (2) setiap halaman/route handler/server action memanggil `requireAdmin()` / `apiAdmin()` (`lib/session.ts`) yang **memeriksa ulang ke DB** — akun yang dihapus atau diturunkan perannya langsung kehilangan akses, hak mengikuti peran di DB (bukan klaim di token).
+- Peran: `ADMIN` (semua area) dan `EDITOR` (berita, agenda, galeri, guru) — matriks di `lib/auth-core.ts` (`can()`).
+- Rate limit login: 10 percobaan/15 menit/IP + 20/15 menit/akun (in-memory; ganti store dengan Redis untuk multi-instance). Atur `TRUSTED_PROXIES` sesuai jumlah reverse proxy agar IP klien benar. Email tak terdaftar & password salah → pesan identik; waktu respons disamakan (hash palsu).
+- `callbackUrl` hanya boleh path `/admin…` (anti open redirect). Halaman & API admin: `Cache-Control: no-store`, `X-Robots-Tag: noindex`.
 
 ## Data
 

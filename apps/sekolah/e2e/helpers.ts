@@ -55,3 +55,26 @@ export async function awasi(page: Page, base = "http://localhost:3004") {
   });
   return p;
 }
+
+export const ADMIN_EMAIL = "admin@sekolah.example";
+export const ADMIN_PASSWORD = "e2e-password-bukan-rahasia";
+export const EDITOR_EMAIL = "editor@sekolah.example";
+export const EDITOR_PASSWORD = "e2e-editor-bukan-rahasia";
+/** Sama dengan NEXTAUTH_SECRET di playwright.config.mjs (hanya untuk tes). */
+export const E2E_SECRET = "e2e-nextauth-secret-0123456789abcdef-xyz";
+
+/** Login lewat UI; tiap panggilan memakai IP berbeda agar rate limit antar tes tidak saling mengganggu. */
+export async function masuk(
+  page: Page,
+  email = ADMIN_EMAIL,
+  password = ADMIN_PASSWORD,
+  callbackUrl?: string,
+) {
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": uniqueIp() });
+  await page.goto(
+    callbackUrl ? `/admin/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/admin/login",
+  );
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill(password);
+  await page.getByRole("button", { name: "Masuk" }).click();
+}

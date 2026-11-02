@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Card, Container, Section } from "@tpl/ui";
-import { guruAktif } from "../../lib/teachers";
+import { guruAktif } from "../../../lib/teachers";
 
 export const metadata: Metadata = {
   title: "Guru & Staf",

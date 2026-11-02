@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Card, Container, Section } from "@tpl/ui";
-import { Kalender } from "../../components/Kalender";
-import { parseBulan } from "../../lib/agenda";
-import { agendaBulan } from "../../lib/agenda-db";
-import { formatHariTanggal, formatJam, hariWib, formatTanggalPendek } from "../../lib/format";
+import { Kalender } from "../../../components/Kalender";
+import { parseBulan } from "../../../lib/agenda";
+import { agendaBulan } from "../../../lib/agenda-db";
+import { formatHariTanggal, formatJam, hariWib, formatTanggalPendek } from "../../../lib/format";
 
 export const metadata: Metadata = {
   title: "Agenda Kegiatan",

@@ -8,6 +8,7 @@ export default createPlaywrightConfig({
     // Kredensial HANYA untuk tes (DB e2e sekali pakai) — bukan rahasia.
     ADMIN_EMAIL: "admin@sekolah.example",
     ADMIN_PASSWORD: "e2e-password-bukan-rahasia",
+    EDITOR_PASSWORD: "e2e-editor-bukan-rahasia",
     NEXTAUTH_SECRET: "e2e-nextauth-secret-0123456789abcdef-xyz",
     NEXTAUTH_URL: "http://localhost:3004",
     NEXT_TELEMETRY_DISABLED: "1",

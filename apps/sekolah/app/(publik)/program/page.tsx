@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Badge, Card, Container, Section } from "@tpl/ui";
-import { program } from "../../content/program";
+import { program } from "../../../content/program";
 
 export const metadata: Metadata = { title: program.judul, description: program.pengantar };
 

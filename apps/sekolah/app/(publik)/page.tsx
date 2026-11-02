@@ -1,10 +1,10 @@
 import { Badge, ButtonLink, Card, Container, Section, buildWhatsAppUrl } from "@tpl/ui";
-import { PostKartu } from "../components/PostKartu";
-import { profil } from "../content/profil";
-import { program } from "../content/program";
-import { sekolah } from "../content/sekolah";
-import { postTerbaru } from "../lib/posts";
-import { guruAktif } from "../lib/teachers";
+import { PostKartu } from "../../components/PostKartu";
+import { profil } from "../../content/profil";
+import { program } from "../../content/program";
+import { sekolah } from "../../content/sekolah";
+import { postTerbaru } from "../../lib/posts";
+import { guruAktif } from "../../lib/teachers";
 
 // Data dari database → dirender per-request.
 export const dynamic = "force-dynamic";

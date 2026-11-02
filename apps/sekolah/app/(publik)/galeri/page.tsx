@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Card, Container, Section } from "@tpl/ui";
-import { daftarAlbum } from "../../lib/galeri";
+import { daftarAlbum } from "../../../lib/galeri";
 
 export const metadata: Metadata = {
   title: "Galeri",

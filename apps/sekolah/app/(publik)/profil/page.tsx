@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Card, Container, Section } from "@tpl/ui";
-import { MapsEmbed } from "../../components/MapsEmbed";
-import { Struktur } from "../../components/Struktur";
-import { profil } from "../../content/profil";
-import { sekolah } from "../../content/sekolah";
+import { MapsEmbed } from "../../../components/MapsEmbed";
+import { Struktur } from "../../../components/Struktur";
+import { profil } from "../../../content/profil";
+import { sekolah } from "../../../content/sekolah";
 
 export const metadata: Metadata = { title: profil.judul, description: profil.pengantar };
 

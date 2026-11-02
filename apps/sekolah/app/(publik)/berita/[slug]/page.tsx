@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Badge, Container, Section } from "@tpl/ui";
-import { Markdown } from "../../../components/Markdown";
-import { PostKartu } from "../../../components/PostKartu";
-import { beritaBySlug, beritaTerkait } from "../../../lib/berita";
-import { formatTanggal } from "../../../lib/format";
+import { Markdown } from "../../../../components/Markdown";
+import { PostKartu } from "../../../../components/PostKartu";
+import { beritaBySlug, beritaTerkait } from "../../../../lib/berita";
+import { formatTanggal } from "../../../../lib/format";
 
 export const dynamic = "force-dynamic";
 

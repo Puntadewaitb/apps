@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container, Lightbox, Section } from "@tpl/ui";
-import { albumBySlug } from "../../../lib/galeri";
+import { albumBySlug } from "../../../../lib/galeri";
 
 export const dynamic = "force-dynamic";
 
