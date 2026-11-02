@@ -1,4 +1,4 @@
-import { Container } from "@tpl/ui";
+import { Container, Section } from "@tpl/ui";
 import type { Event, Guest } from "../generated/prisma/client";
 import { Amplop } from "./Amplop";
 import { Cerita } from "./Cerita";
@@ -23,10 +23,12 @@ type Props = {
   guestName: string;
   /** Tamu terdaftar (dari ?kode=) bila ada */
   tamu: Guest | null;
+  /** Mode pratinjau admin: baca-saja (tanpa formulir; kalender mengikuti acara aktif sehingga disembunyikan) */
+  pratinjau?: boolean;
 };
 
 /** Seluruh halaman undangan untuk satu acara; tampilan mengikuti `ev.jenis` & `ev.tema`. */
-export async function Undangan({ ev, guestName, tamu }: Props) {
+export async function Undangan({ ev, guestName, tamu, pratinjau = false }: Props) {
   const jenis = resolveJenis(ev.jenis);
   const cfg = JENIS[jenis];
   const nama = namaAcara(jenis, ev);
@@ -100,17 +102,32 @@ export async function Undangan({ ev, guestName, tamu }: Props) {
           </Container>
         </section>
         <Mempelai judul={cfg.profilJudul} quote={ev.quote} orang={orang} />
-        <DetailAcara sesi={sesi} mapsUrl={ev.mapsUrl} countdownTarget={ev.akadAt.toISOString()} />
+        <DetailAcara
+          sesi={sesi}
+          mapsUrl={ev.mapsUrl}
+          countdownTarget={ev.akadAt.toISOString()}
+          kalender={!pratinjau}
+        />
         {cfg.cerita && <Cerita />}
         <Galeri />
         <VideoEmbed />
         <Amplop />
-        <RsvpSection
-          defaultName={namaIsian}
-          kode={tamu?.code}
-          maxPax={tamu?.maxPax ?? DEFAULT_MAX_PAX}
-        />
-        <Ucapan initial={wishes.items} nextCursor={wishes.nextCursor} defaultName={namaIsian} />
+        {pratinjau ? (
+          <Section id="rsvp" title="RSVP & Ucapan">
+            <p className="text-muted" data-testid="catatan-pratinjau">
+              Formulir RSVP dan ucapan dinonaktifkan pada mode pratinjau.
+            </p>
+          </Section>
+        ) : (
+          <>
+            <RsvpSection
+              defaultName={namaIsian}
+              kode={tamu?.code}
+              maxPax={tamu?.maxPax ?? DEFAULT_MAX_PAX}
+            />
+            <Ucapan initial={wishes.items} nextCursor={wishes.nextCursor} defaultName={namaIsian} />
+          </>
+        )}
       </main>
     </div>
   );

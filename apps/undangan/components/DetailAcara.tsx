@@ -11,9 +11,11 @@ type Props = {
   mapsUrl: string;
   /** ISO 8601 target hitung mundur (awal sesi pertama) */
   countdownTarget: string;
+  /** Tampilkan tombol simpan ke kalender (.ics acara aktif) */
+  kalender?: boolean;
 };
 
-export function DetailAcara({ sesi, mapsUrl, countdownTarget }: Props) {
+export function DetailAcara({ sesi, mapsUrl, countdownTarget, kalender = true }: Props) {
   const [pertama, kedua] = sesi;
   const samaTempat =
     !kedua || (pertama!.tempat === kedua.tempat && pertama!.alamat === kedua.alamat);
@@ -50,11 +52,13 @@ export function DetailAcara({ sesi, mapsUrl, countdownTarget }: Props) {
         )}
       </div>
 
-      <div className="mt-8">
-        <ButtonLink href="/api/kalender" download="undangan.ics" variant="secondary">
-          Simpan ke Kalender (.ics)
-        </ButtonLink>
-      </div>
+      {kalender && (
+        <div className="mt-8">
+          <ButtonLink href="/api/kalender" download="undangan.ics" variant="secondary">
+            Simpan ke Kalender (.ics)
+          </ButtonLink>
+        </div>
+      )}
     </Section>
   );
 }

@@ -10,3 +10,8 @@ export function adminConfig(): { password: string; secret: string } | null {
   if (!password || !secret || secret.length < 32) return null;
   return { password, secret };
 }
+
+/** URL publik situs tanpa slash akhir (untuk tautan undangan yang dibagikan). */
+export function siteUrl(): string {
+  return (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3003").replace(/\/+$/, "");
+}
