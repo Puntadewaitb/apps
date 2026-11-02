@@ -1,0 +1,170 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Catatan desain:
+//  - SQLite tidak punya enum yang nyaman → kolom status/peran berupa String; nilai sah divalidasi
+//    di kode (lib/domain.ts) dan diuji.
+//  - Uang disimpan sebagai Int rupiah (tanpa desimal).
+//  - Token rahasia (cek status PPDB) TIDAK disimpan polos: hanya hash SHA-256-nya.
+
+/// Akun admin/editor dashboard (login NextAuth credentials di S4).
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String
+  /// bcrypt hash — tidak pernah polos
+  passwordHash String
+  /// ADMIN | EDITOR
+  role         String   @default("EDITOR")
+  createdAt    DateTime @default(now())
+  posts        Post[]
+}
+
+/// Berita & pengumuman.
+model Post {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  /// BERITA | PENGUMUMAN
+  kind        String    @default("BERITA")
+  title       String
+  excerpt     String
+  /// Isi dalam Markdown aman (renderer di S3; tanpa HTML mentah)
+  body        String
+  /// Path gambar sampul (mis. /img/berita-1.svg atau /uploads/…)
+  image       String    @default("")
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, publishedAt])
+  @@index([kind])
+}
+
+/// Agenda kegiatan sekolah.
+model Agenda {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String    @default("")
+  location    String    @default("")
+  startsAt    DateTime
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([startsAt])
+}
+
+/// Album galeri.
+model Gallery {
+  id          Int            @id @default(autoincrement())
+  slug        String         @unique
+  title       String
+  description String         @default("")
+  cover       String         @default("")
+  createdAt   DateTime       @default(now())
+  images      GalleryImage[]
+}
+
+model GalleryImage {
+  id        Int     @id @default(autoincrement())
+  gallery   Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  galleryId Int
+  src       String
+  caption   String  @default("")
+  sort      Int     @default(0)
+
+  @@index([galleryId, sort])
+}
+
+/// Guru & staf.
+model Teacher {
+  id        Int     @id @default(autoincrement())
+  name      String
+  position  String
+  subject   String  @default("")
+  bio       String  @default("")
+  photo     String  @default("")
+  sort      Int     @default(0)
+  active    Boolean @default(true)
+
+  @@index([active, sort])
+}
+
+/// Pendaftaran peserta didik baru (PPDB).
+model Registration {
+  id            Int      @id @default(autoincrement())
+  /// Nomor pendaftaran yang dibagikan ke pendaftar, mis. PPDB-2027-K7M2XQ (acak, bukan urutan)
+  regNo         String   @unique
+  /// SHA-256 (hex) dari token cek status. Token polos hanya ditampilkan sekali ke pendaftar.
+  tokenHash     String
+  /// BARU | DIPROSES | DITERIMA | DITOLAK
+  status        String   @default("BARU")
+  adminNote     String   @default("")
+  // Data siswa
+  studentName   String
+  birthPlace    String
+  birthDate     DateTime
+  /// L | P
+  gender        String
+  previousSchool String  @default("")
+  address       String
+  /// Jenjang/kelas tujuan, mis. "SMP Kelas 7"
+  targetGrade   String
+  // Data orang tua/wali
+  parentName    String
+  parentPhone   String
+  parentEmail   String   @default("")
+  parentJob     String   @default("")
+  /// JSON array: [{ kind, path, mime, size }] — dokumen unggahan tervalidasi (S6)
+  documents     String   @default("[]")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/// Program donasi/infaq dengan target dana.
+model DonationProgram {
+  id          Int        @id @default(autoincrement())
+  slug        String     @unique
+  title       String
+  description String
+  image       String     @default("")
+  /// Target dana (rupiah)
+  target      Int
+  active      Boolean    @default(true)
+  deadline    DateTime?
+  createdAt   DateTime   @default(now())
+  donations   Donation[]
+}
+
+/// Konfirmasi transfer donasi; terhitung di progress hanya bila TERVERIFIKASI.
+model Donation {
+  id         Int             @id @default(autoincrement())
+  program    DonationProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  programId  Int
+  donorName  String
+  anonymous  Boolean         @default(false)
+  /// Rupiah
+  amount     Int
+  message    String          @default("")
+  /// Path bukti transfer (upload tervalidasi di S7)
+  proofPath  String          @default("")
+  /// MENUNGGU | TERVERIFIKASI | DITOLAK
+  status     String          @default("MENUNGGU")
+  verifiedAt DateTime?
+  createdAt  DateTime        @default(now())
+
+  @@index([programId, status])
+  @@index([status])
+}
