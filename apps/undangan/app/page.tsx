@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Container } from "@tpl/ui";
 import { Cover } from "../components/Cover";
+import { Amplop } from "../components/Amplop";
 import { Cerita } from "../components/Cerita";
 import { DetailAcara } from "../components/DetailAcara";
 import { Galeri } from "../components/Galeri";
@@ -102,6 +103,7 @@ export default async function HomePage({
         <Cerita />
         <Galeri />
         <VideoEmbed />
+        <Amplop />
         <RsvpSection
           defaultName={namaIsian}
           kode={tamu?.code}

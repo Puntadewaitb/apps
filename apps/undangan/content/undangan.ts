@@ -46,4 +46,40 @@ export const undangan = {
     judul: "Video Kami",
     youtube: "",
   },
+  /**
+   * Amplop digital. SEMUA data di bawah FIKTIF (nama bank/e-wallet, nomor, atas nama).
+   * Ganti dengan data asli sebelum dipakai; hapus blok yang tidak diperlukan.
+   */
+  amplop: {
+    judul: "Amplop Digital",
+    subjudul:
+      "Doa restu Anda adalah hadiah terbaik. Namun jika ingin memberikan tanda kasih, kami menyediakan beberapa cara berikut.",
+    rekening: [
+      {
+        id: "bank",
+        jenis: "Bank",
+        nama: "Bank Nusantara (contoh)",
+        nomor: "1234567890",
+        atasNama: "Raka Pratama",
+      },
+      {
+        id: "ewallet",
+        jenis: "E-Wallet",
+        nama: "DompetKu (contoh)",
+        nomor: "081234567890",
+        atasNama: "Anisa Putri",
+      },
+    ],
+    qris: {
+      src: "/img/qris-placeholder.svg",
+      alt: "Contoh kode QR (placeholder, bukan QRIS asli)",
+      catatan: "Pindai dengan aplikasi pembayaran Anda. Gambar ini hanya placeholder.",
+    },
+    hadiah: {
+      judul: "Kirim Hadiah",
+      penerima: "Raka & Anisa",
+      alamat: "Jl. Melati Raya No. 12, Yogyakarta 55281 (alamat fiktif untuk demo)",
+      telepon: "081234567890",
+    },
+  },
 };
