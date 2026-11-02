@@ -22,7 +22,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U2 | Undangan: Cover & nama tamu | U1 | done | 2026-11-03 00:14 | cover dialog + ?to= (sanitasi, maks 60, XSS diuji) + Buka Undangan (scroll/inert dibuka, fokus ke konten) + toggle musik; audio = placeholder senyap WAV (petunjuk ganti di README); 9 unit + 14 e2e; musik hanya diuji state play/pause (headless, tanpa suara) |
 | U3 | Undangan: Detail acara | U2 | done | 2026-11-03 00:33 | profil mempelai, akad&resepsi (lokasi terpisah; migrasi resepsiVenue*), Maps (iframe diuji src/title, jaringan Google diblok), countdown (pad/remaining dipindah ke @tpl/core), .ics (/api/kalender, RFC5545 escape+folding); URL Maps dari DB wajib embed www.google.com HTTPS; 17 unit + 25 e2e |
 | U4 | Undangan: Galeri & cerita | U3 | done | 2026-11-03 00:39 | galeri 6 SVG + Lightbox (ui: fokus ke tombol tutup, kembali ke thumbnail, scroll terkunci, thumbnail lazy), timeline cerita (content/undangan.ts), video YouTube-nocookie opsional (default kosong; jalur aktif diuji manual: iframe + CSP melebar); 22 unit + 32 e2e |
-| U5 | Undangan: RSVP & ucapan | U4 | in_progress | 2026-11-03 01:15 | |
+| U5 | Undangan: RSVP & ucapan | U4 | done | 2026-11-03 01:22 | /api/rsvp (Zod, pax dibatasi maxPax tamu, ?kode= memperbarui RSVP, honeypot, Origin, rate limit 5/10mnt) + /api/ucapan (GET paginasi cursor, POST; tautan/spam → visible=false; env WISH_MODERATION=on → semua perlu tinjau); daftar auto-refresh 15 dtk (dijeda saat tab tersembunyi); persetujuan ucapan di admin = U7; 30 unit + 49 e2e |
 | U6 | Undangan: Amplop digital | U5 | todo | | |
 | U7 | Undangan: Multi-tema & admin | U6 | todo | | |
 | U8 | Undangan: QA | U7 | todo | | |

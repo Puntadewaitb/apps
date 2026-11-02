@@ -15,11 +15,19 @@ test("beranda menampilkan data acara dari database (seed)", async ({ page }) => 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "hangat");
 });
 
-test("seed lengkap: 1 acara, 3 tamu, RSVP & ucapan demo", async () => {
+test("seed lengkap: 1 acara, 3 tamu demo, RSVP & ucapan demo", async () => {
   const { default: Database } = await import("better-sqlite3");
   const d = new Database("e2e.db", { readonly: true, fileMustExist: true });
-  const n = (t: string) => (d.prepare(`SELECT COUNT(*) c FROM ${t}`).get() as { c: number }).c;
-  expect([n("Event"), n("Guest"), n("Rsvp"), n("Wish")]).toEqual([1, 3, 1, 2]);
+  const n = (sql: string) => (d.prepare(sql).get() as { c: number }).c;
+  // Tes lain menambah RSVP/ucapan secara paralel, jadi periksa data seed — bukan total baris.
+  expect(n("SELECT COUNT(*) c FROM Event")).toBe(1);
+  expect(n("SELECT COUNT(*) c FROM Guest WHERE code LIKE 'DEMO-%'")).toBe(3);
+  expect(n("SELECT COUNT(*) c FROM Rsvp WHERE name = 'Ibu Dewi Lestari'")).toBeGreaterThanOrEqual(
+    1,
+  );
+  expect(
+    n("SELECT COUNT(*) c FROM Wish WHERE name IN ('Dewi Lestari','Budi Santoso')"),
+  ).toBeGreaterThanOrEqual(2);
   d.close();
 });
 
