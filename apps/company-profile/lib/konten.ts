@@ -14,3 +14,13 @@ export function getKonten(lang: Lang = "id"): Konten {
 export function resolveHref(href: string, k: Konten): string {
   return href === "WHATSAPP" ? buildWhatsAppUrl(k.kontak.whatsapp, k.kontak.pesanWhatsapp) : href;
 }
+
+export type Layanan = Konten["layanan"][number];
+
+export function semuaLayanan(lang: Lang = "id"): Layanan[] {
+  return getKonten(lang).layanan;
+}
+
+export function cariLayanan(slug: string, lang: Lang = "id"): Layanan | undefined {
+  return semuaLayanan(lang).find((l) => l.slug === slug);
+}

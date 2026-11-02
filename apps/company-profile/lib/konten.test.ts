@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { konten } from "../content/id";
-import { getKonten, resolveHref } from "./konten";
+import { cariLayanan, getKonten, resolveHref, semuaLayanan } from "./konten";
 import { kontenSchema } from "./konten-schema";
 
 describe("konten website", () => {
@@ -42,5 +42,39 @@ describe("konten website", () => {
     const wa = resolveHref("WHATSAPP", k);
     expect(wa.startsWith(`https://wa.me/${k.kontak.whatsapp}?text=`)).toBe(true);
     expect(resolveHref("/layanan", k)).toBe("/layanan");
+  });
+});
+
+describe("integritas konten layanan & tentang", () => {
+  it("slug layanan unik; layanan terkait menunjuk slug yang ada & bukan dirinya sendiri", () => {
+    const daftar = semuaLayanan();
+    const slugs = daftar.map((l) => l.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    for (const l of daftar) {
+      for (const t of l.terkait) {
+        expect(slugs, `${l.slug} → ${t}`).toContain(t);
+        expect(t).not.toBe(l.slug);
+      }
+      expect(new Set(l.faq.map((f) => f.id)).size, `faq id ${l.slug}`).toBe(l.faq.length);
+    }
+  });
+
+  it("cariLayanan: ada & tidak ada", () => {
+    expect(cariLayanan("analitik-data")?.nama).toBe("Analitik & Dasbor Data");
+    expect(cariLayanan("tidak-ada")).toBeUndefined();
+    expect(cariLayanan("__proto__")).toBeUndefined();
+  });
+
+  it("foto tim ada di public/ & sejarah berurutan", () => {
+    for (const a of konten.tentang.tim.anggota) {
+      expect(existsSync(join(__dirname, "..", "public", a.foto)), a.foto).toBe(true);
+    }
+    const tahun = konten.tentang.sejarah.peristiwa.map((p) => Number(p.tahun));
+    expect(tahun).toEqual([...tahun].sort((a, b) => a - b));
+  });
+
+  it("href navigasi hanya ke halaman yang ada / anchor", () => {
+    const hrefs = konten.nav.map((n) => n.href);
+    expect(hrefs).toEqual(expect.arrayContaining(["/", "/tentang", "/layanan"]));
   });
 });

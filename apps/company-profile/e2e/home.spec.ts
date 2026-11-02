@@ -26,7 +26,7 @@ test("beranda 200: judul, hero, CTA, dan kontak dari konten", async ({ page }) =
 test("tautan WhatsApp: href wa.me dengan pesan awal, tanpa navigasi", async ({ page }) => {
   await page.goto("/");
   const links = page.locator('a[href^="https://wa.me/"]');
-  await expect(links).toHaveCount(2); // CTA hero + tombol mengambang
+  await expect(links).toHaveCount(3); // CTA hero + pita ajakan + tombol mengambang
   for (const href of await links.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) {
     expect(href).toMatch(new RegExp(`^https://wa\\.me/${konten.kontak.whatsapp}\\?text=`));
     expect(decodeURIComponent(href!)).toContain(konten.kontak.pesanWhatsapp);
