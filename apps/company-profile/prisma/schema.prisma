@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// Pesan dari formulir kontak.
+model Pesan {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  email     String
+  telepon   String   @default("")
+  /// Layanan yang diminati (slug) atau kosong
+  layanan   String   @default("")
+  isi       String
+  /// Apakah email notifikasi berhasil dikirim (false bila SMTP tidak diatur / gagal)
+  emailTerkirim Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

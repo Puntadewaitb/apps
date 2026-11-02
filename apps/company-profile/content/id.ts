@@ -23,6 +23,8 @@ export const konten = {
     { label: "Tentang", href: "/tentang" },
     { label: "Layanan", href: "/layanan" },
     { label: "Portofolio", href: "/portofolio" },
+    { label: "Blog", href: "/blog" },
+    { label: "Kontak", href: "/kontak" },
   ],
   kontak: {
     telepon: "(021) 5551 2345",
