@@ -26,7 +26,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U6 | Undangan: Amplop digital | U5 | done | 2026-11-03 01:27 | rekening/e-wallet + QRIS placeholder (berlabel PLACEHOLDER) + alamat hadiah di content/undangan.ts (semua FIKTIF); tombol salin: Clipboard API → fallback execCommand → pesan gagal (3 jalur diuji); 37 unit + 56 e2e |
 | U7 | Undangan: Multi-tema & admin | U6 | done | 2026-11-03 02:22 | 3 tema (elegan/floral/islami; kontras WCAG AA diuji otomatis) + 3 jenis (pernikahan/aqiqah/khitan) per acara di DB (migrasi jenis,tema; seed 3 acara); admin (server actions + cookie undangan_admin): ringkasan, tamu massal+tautan pribadi+WA, rekap RSVP, moderasi ucapan, ekspor CSV anti-formula, pratinjau baca-saja; 58 unit + 73 e2e. Catatan: tema bukan lagi env NEXT_PUBLIC_THEME |
 | U8 | Undangan: QA | U7 | done | 2026-11-03 02:31 | qa.spec (ponsel 390x844): alur tamu penuh tanpa error konsol/CSP, XSS (?to=, ucapan, data kotor langsung di DB → publik+admin tetap teks; detektor diuji dengan kontrol positif), a11y dasar, keyboard, ukuran sentuh; README + 14 screenshot (SCREENSHOTS=1); 58 unit + 83 e2e (3 skip = screenshot) |
-| C1 | Company: Scaffold | 0.6 | todo | | |
+| C1 | Company: Scaffold | 0.6 | in_progress | 2026-11-03 03:10 | |
 | C2 | Company: Halaman inti | C1 | todo | | |
 | C3 | Company: Portofolio & kredibilitas | C2 | todo | | |
 | C4 | Company: Blog & kontak | C3 | todo | | |
