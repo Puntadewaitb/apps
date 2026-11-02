@@ -147,6 +147,7 @@ export const kontenSchema = z.object({
     email: z.email(),
     alamat: z.string().min(1),
     jamKerja: z.string().min(1),
+    mapsUrl: z.string(),
   }),
   hero: z.object({
     eyebrow: z.string().min(1),

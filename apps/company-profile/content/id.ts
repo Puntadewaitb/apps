@@ -34,13 +34,15 @@ export const konten = {
     alamat:
       "Gedung Cakra Lt. 5, Jl. Sudirman No. 100, Jakarta Selatan 12190 (alamat fiktif untuk demo)",
     jamKerja: "Senin–Jumat, 08.30–17.00 WIB",
+    // Embed Google Maps (hanya https://www.google.com/maps/embed… atau /maps?…&output=embed yang dirender)
+    mapsUrl: "https://www.google.com/maps?q=Jl.+Jenderal+Sudirman+Jakarta&output=embed",
   },
   hero: {
     eyebrow: "Konsultan bisnis & teknologi sejak 2012",
     judul: "Proses yang rapi, sistem yang tepat, tim yang siap bertumbuh",
     subjudul:
       "Dari analisis proses hingga implementasi sistem dan pelatihan tim, kami mendampingi Anda sampai hasilnya terasa di operasional harian.",
-    cta: { label: "Jadwalkan Konsultasi", href: "#kontak" },
+    cta: { label: "Jadwalkan Konsultasi", href: "/kontak" },
     ctaSekunder: { label: "Hubungi via WhatsApp", href: "WHATSAPP" },
     gambar: {
       src: "/img/hero.svg",

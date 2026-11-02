@@ -16,7 +16,8 @@ export function generateStaticParams() {
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const k = blog.kategori.find((x) => x.id === (await params).id);
+  const { id } = await params;
+  const k = blog.kategori.find((x) => x.id === id);
   return k ? { title: `${k.nama} — ${blog.judul}`, description: k.deskripsi } : {};
 }
 

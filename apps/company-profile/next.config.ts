@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@tpl/ui", "@tpl/core"],
   poweredByHeader: false,
   async headers() {
-    // Tambah origin bila memakai embed (mis. frameSrc: ["https://www.google.com"] untuk peta — dipakai di C4).
     return [
-      ...nextSecurityHeaders(),
+      // Embed Google Maps di halaman kontak (lib/maps.ts hanya merender URL embed www.google.com).
+      ...nextSecurityHeaders({ frameSrc: ["https://www.google.com"] }),
       {
         source: "/img/:path*",
         headers: [

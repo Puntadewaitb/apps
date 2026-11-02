@@ -84,7 +84,9 @@ describe("integritas konten layanan & tentang", () => {
 
   it("href navigasi hanya ke halaman yang ada / anchor", () => {
     const hrefs = konten.nav.map((n) => n.href);
-    expect(hrefs).toEqual(expect.arrayContaining(["/", "/tentang", "/layanan"]));
+    expect(hrefs).toEqual(
+      expect.arrayContaining(["/", "/tentang", "/layanan", "/portofolio", "/blog", "/kontak"]),
+    );
   });
 });
 
