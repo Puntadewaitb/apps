@@ -31,11 +31,11 @@ test("tautan WhatsApp: href wa.me dengan pesan awal, tanpa navigasi", async ({ p
     expect(href).toMatch(new RegExp(`^https://wa\\.me/${konten.kontak.whatsapp}\\?text=`));
     expect(decodeURIComponent(href!)).toContain(konten.kontak.pesanWhatsapp);
   }
-  await expect(page.locator("a.fixed")).toHaveAttribute("rel", "noopener noreferrer");
-  await expect(page.getByRole("link", { name: konten.hero.ctaSekunder.label })).toHaveAttribute(
-    "target",
-    "_blank",
-  );
+  // semua tautan WA membuka tab baru dengan rel aman
+  for (const l of await links.all()) {
+    await expect(l).toHaveAttribute("target", "_blank");
+    await expect(l).toHaveAttribute("rel", "noopener noreferrer");
+  }
 });
 
 test("gambar hero termuat, ber-alt, dan dioptimasi", async ({ page }) => {
