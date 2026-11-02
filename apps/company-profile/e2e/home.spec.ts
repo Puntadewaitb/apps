@@ -16,7 +16,7 @@ test("beranda 200: judul, hero, CTA, dan kontak dari konten", async ({ page }) =
 
   await expect(page.getByRole("link", { name: konten.hero.cta.label })).toHaveAttribute(
     "href",
-    "#kontak",
+    "/kontak",
   );
   await expect(page.locator("#kontak")).toContainText(konten.kontak.email);
   await expect(page.locator("#kontak")).toContainText(konten.kontak.telepon);

@@ -43,5 +43,5 @@ export async function POST(req: Request) {
   ]
     .filter(Boolean)
     .join("; ");
-  return redirect("/admin", { "Set-Cookie": cookie });
+  return redirect("/admin/pesan", { "Set-Cookie": cookie });
 }

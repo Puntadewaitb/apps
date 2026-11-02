@@ -98,5 +98,9 @@ function blok(b: Block, i: number): ReactNode {
 
 /** Render Markdown aman: tanpa HTML mentah, semua teks di-escape oleh React. */
 export function Markdown({ source }: { source: string }) {
-  return <div className="max-w-3xl text-fg">{parseMarkdown(source).map(blok)}</div>;
+  return (
+    <div className="max-w-3xl text-fg" data-testid="isi-artikel">
+      {parseMarkdown(source).map(blok)}
+    </div>
+  );
 }

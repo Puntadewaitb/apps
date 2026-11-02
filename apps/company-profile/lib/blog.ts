@@ -63,11 +63,15 @@ let cache: Artikel[] | undefined;
 /** Semua artikel, terbaru dulu. Berkas yang salah format → error jelas saat build (bukan diam-diam hilang). */
 export function semuaArtikel(dir: string = BLOG_DIR): Artikel[] {
   if (dir === BLOG_DIR && cache) return cache;
-  const daftar = readdirSync(dir)
+  // Direktori artikel memang dibaca saat build (halaman statis): jangan trace seluruh proyek.
+  const daftar = readdirSync(/*turbopackIgnore: true*/ dir)
     .filter((f) => f.endsWith(".md"))
     .map((f) => {
       try {
-        return parseArtikel(f.slice(0, -3), readFileSync(join(dir, f), "utf8"));
+        return parseArtikel(
+          f.slice(0, -3),
+          readFileSync(/*turbopackIgnore: true*/ join(/*turbopackIgnore: true*/ dir, f), "utf8"),
+        );
       } catch (e) {
         throw new Error(`content/blog/${f}: ${e instanceof Error ? e.message : String(e)}`);
       }

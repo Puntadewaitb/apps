@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
+import { blog } from "../content/blog.id";
 import { konten } from "../content/id";
+import { semuaArtikel } from "../lib/blog";
 
 const layanan = konten.layanan;
 const WIDTHS = [360, 768, 1280];
@@ -63,8 +65,12 @@ test.describe("navigasi", () => {
       "/tentang",
       "/layanan",
       "/portofolio",
+      "/blog",
+      "/kontak",
       ...layanan.map((l) => `/layanan/${l.slug}`),
       ...konten.portofolio.proyek.map((x) => `/portofolio/${x.slug}`),
+      ...semuaArtikel().map((a) => `/blog/${a.slug}`),
+      ...blog.kategori.map((k) => `/blog/kategori/${k.id}`),
     ]) {
       expect(dikunjungi, p).toContain(p);
     }
@@ -190,12 +196,25 @@ test("tidak ada overflow horizontal di semua halaman pada 360/768/1280", async (
 });
 
 test("satu h1 & satu main di setiap halaman; judul halaman unik", async ({ page }) => {
+  await page.route("https://www.google.com/**", (r) => r.abort());
+  const halaman = [
+    "/",
+    "/tentang",
+    "/layanan",
+    "/portofolio",
+    "/blog",
+    "/kontak",
+    ...layanan.map((l) => `/layanan/${l.slug}`),
+    ...konten.portofolio.proyek.map((x) => `/portofolio/${x.slug}`),
+    ...semuaArtikel().map((a) => `/blog/${a.slug}`),
+    ...blog.kategori.map((k) => `/blog/kategori/${k.id}`),
+  ];
   const judul = new Set<string>();
-  for (const h of ["/", "/tentang", "/layanan", ...layanan.map((l) => `/layanan/${l.slug}`)]) {
+  for (const h of halaman) {
     await page.goto(h);
     await expect(page.locator("h1"), h).toHaveCount(1);
     await expect(page.locator("main"), h).toHaveCount(1);
     judul.add(await page.title());
   }
-  expect(judul.size).toBe(3 + layanan.length);
+  expect(judul.size).toBe(halaman.length);
 });
