@@ -24,7 +24,7 @@ Urutan baris = urutan eksekusi. Step dipilih jika semua `deps`-nya `done`.
 | U4 | Undangan: Galeri & cerita | U3 | done | 2026-11-03 00:39 | galeri 6 SVG + Lightbox (ui: fokus ke tombol tutup, kembali ke thumbnail, scroll terkunci, thumbnail lazy), timeline cerita (content/undangan.ts), video YouTube-nocookie opsional (default kosong; jalur aktif diuji manual: iframe + CSP melebar); 22 unit + 32 e2e |
 | U5 | Undangan: RSVP & ucapan | U4 | done | 2026-11-03 01:22 | /api/rsvp (Zod, pax dibatasi maxPax tamu, ?kode= memperbarui RSVP, honeypot, Origin, rate limit 5/10mnt) + /api/ucapan (GET paginasi cursor, POST; tautan/spam → visible=false; env WISH_MODERATION=on → semua perlu tinjau); daftar auto-refresh 15 dtk (dijeda saat tab tersembunyi); persetujuan ucapan di admin = U7; 30 unit + 49 e2e |
 | U6 | Undangan: Amplop digital | U5 | done | 2026-11-03 01:27 | rekening/e-wallet + QRIS placeholder (berlabel PLACEHOLDER) + alamat hadiah di content/undangan.ts (semua FIKTIF); tombol salin: Clipboard API → fallback execCommand → pesan gagal (3 jalur diuji); 37 unit + 56 e2e |
-| U7 | Undangan: Multi-tema & admin | U6 | todo | | |
+| U7 | Undangan: Multi-tema & admin | U6 | in_progress | 2026-11-03 02:12 | |
 | U8 | Undangan: QA | U7 | todo | | |
 | C1 | Company: Scaffold | 0.6 | todo | | |
 | C2 | Company: Halaman inti | C1 | todo | | |
