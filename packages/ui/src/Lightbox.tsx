@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type LightboxImage = { src: string; alt: string };
 
@@ -10,6 +10,9 @@ type Props = { images: LightboxImage[]; className?: string };
 export function Lightbox({ images, className }: Props) {
   const [index, setIndex] = useState<number | null>(null);
   const count = images.length;
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const open = index !== null;
 
   const close = useCallback(() => setIndex(null), []);
   const move = useCallback(
@@ -28,6 +31,19 @@ export function Lightbox({ images, className }: Props) {
     return () => document.removeEventListener("keydown", onKey);
   }, [index, close, move]);
 
+  // Saat terbuka: kunci scroll, fokus ke tombol tutup; saat tertutup: kembalikan fokus ke thumbnail.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    const trigger = triggerRef.current;
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      trigger?.focus();
+    };
+  }, [open]);
+
   const current = index === null ? null : images[index];
 
   return (
@@ -37,12 +53,21 @@ export function Lightbox({ images, className }: Props) {
           <li key={img.src}>
             <button
               type="button"
-              onClick={() => setIndex(i)}
+              onClick={(e) => {
+                triggerRef.current = e.currentTarget;
+                setIndex(i);
+              }}
               aria-label={`Perbesar: ${img.alt}`}
               className="block w-full overflow-hidden rounded-lg border border-border"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.src} alt={img.alt} className="aspect-4/3 w-full object-cover" />
+              <img
+                src={img.src}
+                alt={img.alt}
+                loading="lazy"
+                decoding="async"
+                className="aspect-4/3 w-full object-cover"
+              />
             </button>
           </li>
         ))}
@@ -84,6 +109,7 @@ export function Lightbox({ images, className }: Props) {
           </button>
           <button
             type="button"
+            ref={closeRef}
             aria-label="Tutup"
             onClick={close}
             className="absolute right-4 top-4 text-2xl text-white"

@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import { Container } from "@tpl/ui";
 import { Cover } from "../components/Cover";
+import { Cerita } from "../components/Cerita";
 import { DetailAcara } from "../components/DetailAcara";
+import { Galeri } from "../components/Galeri";
 import { Mempelai } from "../components/Mempelai";
+import { VideoEmbed } from "../components/VideoEmbed";
 import { getActiveEvent } from "../lib/event";
 import { formatTanggal } from "../lib/format";
 import { guestNameFromParam } from "../lib/guest-name";
@@ -80,6 +83,9 @@ export default async function HomePage({
             alamat: ev.resepsiVenueAddress || ev.venueAddress,
           }}
         />
+        <Cerita />
+        <Galeri />
+        <VideoEmbed />
       </main>
     </>
   );
