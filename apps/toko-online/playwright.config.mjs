@@ -12,11 +12,18 @@ export default createPlaywrightConfig({
   port: 3005,
   serverCommand: "node e2e/prepare-db.mjs && npm run build && npx next start -p 3005",
   // Bertahap (berurutan): tes admin mengubah data bersama (kategori, produk, stok, pesanan) sehingga tidak boleh
-  // berjalan bersamaan dengan tes yang menghitung/membandingkan data itu.  fitur → admin → dasbor
+  // berjalan bersamaan dengan tes yang menghitung/membandingkan data itu.  fitur → admin → pengaturan → dasbor
   projects: [
-    { name: "fitur", testIgnore: /(admin-|dasbor).*\.spec\.ts/, use: browser },
+    { name: "fitur", testIgnore: /(admin-|dasbor|pengaturan).*\.spec\.ts/, use: browser },
     { name: "admin", testMatch: /admin-.*\.spec\.ts/, dependencies: ["fitur"], use: browser },
-    { name: "dasbor", testMatch: /dasbor\.spec\.ts/, dependencies: ["admin"], use: browser },
+    // Pengaturan mengubah identitas/ongkir/rekening global → setelah semua tes admin selesai.
+    {
+      name: "pengaturan",
+      testMatch: /pengaturan\.spec\.ts/,
+      dependencies: ["admin"],
+      use: browser,
+    },
+    { name: "dasbor", testMatch: /dasbor\.spec\.ts/, dependencies: ["pengaturan"], use: browser },
   ],
   serverEnv: {
     DATABASE_URL: "file:./e2e.db",

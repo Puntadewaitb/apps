@@ -128,7 +128,11 @@ export default async function AdminHome({
                 <tbody>
                   {r.terbaru.map((o) => (
                     <tr key={o.code} className="border-t border-border">
-                      <td className="p-3 font-mono">{o.code}</td>
+                      <td className="p-3 font-mono">
+                        <a href={`/admin/pesanan/${o.id}`} className="underline">
+                          {o.code}
+                        </a>
+                      </td>
                       <td className="p-3">{o.customerName}</td>
                       <td className="p-3">{rupiah(o.total)}</td>
                       <td className="p-3">

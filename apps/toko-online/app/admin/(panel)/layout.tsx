@@ -9,6 +9,8 @@ const MENU: Array<{ href: string; label: string; area: Area }> = [
   { href: "/admin/produk", label: "Produk", area: "produk" },
   { href: "/admin/kategori", label: "Kategori", area: "kategori" },
   { href: "/admin/stok", label: "Stok", area: "stok" },
+  { href: "/admin/pesanan", label: "Pesanan", area: "pesanan" },
+  { href: "/admin/pengaturan", label: "Pengaturan", area: "pengaturan" },
 ];
 
 /** Kerangka panel admin. Pemeriksaan sesi di sini hanya kenyamanan — setiap halaman & action memeriksa ulang. */
@@ -22,7 +24,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
       >
         Langsung ke konten utama
       </a>
-      <header className="border-b border-border bg-bg">
+      <header className="border-b border-border bg-bg print:hidden">
         <Container className="flex flex-wrap items-center justify-between gap-3 py-3">
           <nav aria-label="Menu admin" className="flex flex-wrap items-center gap-1">
             <a href="/" className="mr-3 text-sm font-bold text-fg">

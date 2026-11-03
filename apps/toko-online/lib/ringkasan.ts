@@ -16,6 +16,7 @@ export type Ringkasan = {
   stokHabis: number;
   produkAktif: number;
   terbaru: Array<{
+    id: number;
     code: string;
     customerName: string;
     total: number;
@@ -51,7 +52,14 @@ export async function ambilRingkasan(role: string, now = new Date()): Promise<Ri
     db().order.findMany({
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 5,
-      select: { code: true, customerName: true, total: true, status: true, createdAt: true },
+      select: {
+        id: true,
+        code: true,
+        customerName: true,
+        total: true,
+        status: true,
+        createdAt: true,
+      },
     }),
   ]);
   return {

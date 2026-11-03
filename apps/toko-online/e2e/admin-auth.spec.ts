@@ -19,6 +19,8 @@ const HALAMAN_ADMIN = [
   "/admin/produk/baru",
   "/admin/kategori",
   "/admin/stok",
+  "/admin/pesanan",
+  "/admin/pengaturan",
 ];
 
 test.describe("gerbang & login", () => {
@@ -217,6 +219,8 @@ test.describe("matriks otorisasi: ADMIN vs STAFF", () => {
   const MATRIKS: Array<[string, boolean]> = [
     ["/admin", true],
     ["/admin/stok", true],
+    ["/admin/pesanan", true],
+    ["/admin/pengaturan", false],
     ["/admin/produk", false],
     ["/admin/produk/baru", false],
     ["/admin/kategori", false],

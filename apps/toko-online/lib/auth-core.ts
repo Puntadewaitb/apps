@@ -4,10 +4,11 @@ import type { Role } from "./domain";
 /**
  * Area dashboard dan peran yang boleh mengaksesnya.
  *  - ADMIN: semua.
- *  - STAFF: operasional harian — ringkasan, stok, dan pesanan. TIDAK boleh mengubah produk/harga, kategori, voucher,
- *    atau pengaturan toko (prinsip least privilege: harga & rekening pembayaran hanya admin).
+ *  - STAFF: operasional harian — ringkasan, stok, dan pesanan. TIDAK boleh mengubah produk/harga, kategori,
+ *    pengaturan toko (rekening pembayaran), maupun mengekspor data pelanggan massal ("laporan").
  */
-export type Area = "ringkasan" | "stok" | "pesanan" | "produk" | "kategori" | "pengaturan";
+export type Area =
+  "ringkasan" | "stok" | "pesanan" | "produk" | "kategori" | "pengaturan" | "laporan";
 
 const STAFF_AREAS: ReadonlySet<Area> = new Set(["ringkasan", "stok", "pesanan"]);
 

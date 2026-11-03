@@ -3,6 +3,9 @@ const PESAN: Record<string, string> = {
   dihapus: "Data dihapus.",
   stok: "Stok diperbarui.",
   aktif: "Status produk diperbarui.",
+  status: "Status pesanan diperbarui.",
+  catatan: "Catatan disimpan.",
+  pengaturan: "Pengaturan toko disimpan.",
 };
 
 const GALAT: Record<string, string> = {
@@ -11,6 +14,9 @@ const GALAT: Record<string, string> = {
   tidakada: "Data tidak ditemukan (mungkin sudah dihapus).",
   stokminus: "Stok tidak boleh menjadi kurang dari nol.",
   stoktidaksah: "Perubahan stok tidak valid.",
+  statusberubah: "Status pesanan sudah berubah (mungkin diubah pengguna lain). Muat ulang halaman.",
+  transisi: "Perubahan status tidak diizinkan dari status saat ini.",
+  catatan: "Catatan tidak valid.",
 };
 
 /** Pesan sukses dari ?ok= (hanya kunci terdaftar — teks bebas dari URL tidak pernah ditampilkan). */
