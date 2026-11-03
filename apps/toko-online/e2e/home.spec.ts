@@ -28,7 +28,10 @@ test("produk terbaru dari DB: 8 kartu, harga berformat rupiah, stok habis ditand
   await expect(page.getByTestId("kartu-produk")).toHaveCount(8);
   const kartu = page.getByTestId("kartu-produk");
   for (const k of await kartu.all()) {
-    await expect(k.locator("img")).toHaveAttribute("alt", /.+/);
+    // gambar kartu dekoratif (alt kosong) — nama produk sudah ada pada tautan judul
+    await expect(k.locator("img")).toHaveAttribute("alt", "");
+    await expect(k.getByRole("link")).toHaveCount(1);
+    await expect(k.getByRole("link")).toHaveAccessibleName(/.+/);
     expect((await k.textContent())!).toMatch(/Rp\s?[\d.]+/);
   }
   // produk habis (sapu ijuk) diberi tanda — periksa lewat DB agar tak bergantung urutan tampilan

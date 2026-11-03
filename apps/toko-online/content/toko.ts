@@ -5,6 +5,9 @@ export const toko = {
   tagline: "Kopi, camilan, batik, dan kerajinan pilihan dari seluruh Nusantara",
   deskripsi:
     "Toko Nusantara Craft (fiktif) menghadirkan produk lokal berkualitas langsung dari pengrajin dan petani di berbagai daerah.",
-  nav: [{ label: "Beranda", href: "/" }],
+  nav: [
+    { label: "Beranda", href: "/" },
+    { label: "Produk", href: "/produk" },
+  ],
 };
 export type Toko = typeof toko;

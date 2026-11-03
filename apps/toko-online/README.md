@@ -2,7 +2,7 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: fondasi (T1) — skema database, seed 20 produk, dan beranda sementara. Katalog, keranjang, checkout, lacak pesanan, dan admin dibangun bertahap (T2–T8).
+> Status: T1–T2 — skema + seed, **katalog** (beranda, daftar produk, detail). Keranjang, checkout, lacak pesanan, dan admin dibangun bertahap (T3–T8).
 
 ## Menjalankan
 
@@ -27,6 +27,22 @@ npm run dev -w @tpl/toko-online                             # http://localhost:3
 Kolom status/peran bertipe `String` (SQLite tanpa enum); nilai sahnya ada di `lib/domain.ts` dan diuji terhadap `schema.prisma`. Uang = `Int` rupiah.
 
 **Seed** (`prisma/seed.ts`, data di `prisma/seed-data.ts`): idempotent dan **tidak menimpa** baris yang sudah ada. Berisi 5 kategori, 20 produk (33 varian; ada contoh stok habis & harga varian berbeda), 5 voucher (aktif, kedaluwarsa, kuota habis, nonaktif), dan pengaturan awal. Akun dashboard hanya dibuat bila `ADMIN_PASSWORD` / `STAFF_PASSWORD` diisi (≥ 12 karakter). Gambar demo = SVG placeholder di `public/img/`.
+
+## Katalog (T2)
+
+| Halaman | Isi |
+|---|---|
+| `/` | Hero, kategori, 8 produk terbaru |
+| `/produk` | Daftar produk: filter `?kategori=`, pencarian `?q=`, urutan `?urut=terbaru\|termurah\|termahal\|nama`, paginasi `?halaman=` (12/halaman). Form filter memakai GET biasa → jalan **tanpa JavaScript** |
+| `/produk/[slug]` | Galeri gambar, pilihan varian (harga & stok mengikuti varian; varian habis tidak bisa dipilih), deskripsi, produk terkait, JSON-LD `Product` |
+| `/sitemap.xml`, `/robots.txt` | Hanya produk aktif; `/admin`, keranjang, checkout, lacak tidak diindeks |
+
+Keputusan desain:
+- **Hanya produk & varian `active`** yang publik (daftar, pencarian, detail → 404, sitemap). Produk tanpa varian aktif dianggap **habis**.
+- Parameter URL divalidasi (`urut`, `halaman`, `kategori`, `q`): nilai aneh diabaikan, bukan error; `halaman` di luar rentang dijepit.
+- Pencarian dan pengurutan dilakukan di aplikasi, bukan `contains` Prisma — `contains` **tidak meng-escape wildcard LIKE** (terbukti: `?q=%` mencocokkan semua produk). Cukup untuk katalog skala toko kecil (≤ ribuan produk); untuk katalog besar pindahkan ke FTS5/indeks.
+- Galeri: hanya path `/img/…` atau `/uploads/…` yang sah; entri lain (`javascript:`, URL luar) dibuang. Data JSON-LD meng-escape `<`.
+- Nama/deskripsi dirender sebagai teks (tidak ada HTML dari data).
 
 ## Pengujian
 
