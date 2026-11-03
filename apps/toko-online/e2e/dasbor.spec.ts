@@ -13,6 +13,9 @@ import {
 /** Jalan di project terpisah ("dasbor", setelah semua tes yang membuat/mengubah pesanan) → angka global stabil. */
 const angka = (t: string) => Number(t.replace(/[^\d]/g, ""));
 
+// Serial: tiap tes menghitung SELISIH angka global, jadi tidak boleh ada tes lain yang menyisipkan pesanan bersamaan.
+test.describe.configure({ mode: "serial" });
+
 test.describe("dasbor", () => {
   test("angka dasbor = hitungan dari DB (pesanan hari ini WIB, omzet hanya dari yang dibayar & tidak batal, menunggu bayar, stok)", async ({
     page,
