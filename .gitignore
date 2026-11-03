@@ -15,7 +15,10 @@ next-env.d.ts
 # database & uploads
 *.db
 *.db-journal
-uploads/
+# Folder unggahan RUNTIME (UPLOAD_DIR bawaan ./uploads di folder tiap app). Dianchor agar TIDAK ikut mengabaikan
+# folder rute `app/uploads/[nama]/` yang merupakan kode sumber.
+/uploads/
+/apps/*/uploads/
 
 # test output
 playwright-report/
