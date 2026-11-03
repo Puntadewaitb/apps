@@ -146,6 +146,9 @@ test.describe("stok", () => {
         ),
         page.getByRole("button", { name: "Terapkan" }).last().click(),
       ]);
+      // Setelah action selesai React me-reset form (input kosong). Tunggu itu dulu agar `fill` berikutnya
+      // tidak terhapus oleh reset yang datang terlambat (submit kosong).
+      await expect(page.getByLabel(new RegExp(`Selisih stok ${p.name}`))).toHaveValue("");
     };
     await kirim("+10");
     await expect(page.getByTestId("flash")).toHaveText("Stok diperbarui.");
