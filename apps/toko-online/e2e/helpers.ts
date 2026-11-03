@@ -205,3 +205,27 @@ export function buatOrder(
   });
   return { id, kode, telepon };
 }
+
+export const ADMIN_EMAIL = "admin@toko.example";
+export const ADMIN_PASSWORD = "e2e-password-bukan-rahasia";
+export const STAFF_EMAIL = "staf@toko.example";
+export const STAFF_PASSWORD = "e2e-staf-bukan-rahasia";
+/** Sama dengan NEXTAUTH_SECRET di playwright.config.mjs (hanya untuk tes). */
+export const E2E_SECRET = "e2e-nextauth-secret-0123456789abcdef-xyz";
+
+/** Login lewat UI sampai benar-benar masuk panel; tiap panggilan memakai IP berbeda agar batas laju antar tes tidak saling mengganggu. */
+export async function login(page: Page, email = ADMIN_EMAIL, password = ADMIN_PASSWORD) {
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": uniqueIp() });
+  await page.goto("/admin/login");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill(password);
+  await page.getByRole("button", { name: "Masuk" }).click();
+  await page.waitForURL(/\/admin$/);
+}
+
+/** PNG 1×1 valid (bisa ditampilkan browser). */
+export const PNG_1X1 = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "base64",
+);
+export const berkasPng = (name = "foto.png") => ({ name, mimeType: "image/png", buffer: PNG_1X1 });

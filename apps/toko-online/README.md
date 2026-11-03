@@ -2,7 +2,7 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: T1–T5 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**. Admin dibangun bertahap (T6–T8).
+> Status: T1–T6 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**, **admin produk**. Admin pesanan & pengaturan (T7) dan QA final (T8) menyusul.
 
 ## Menjalankan
 
@@ -92,6 +92,30 @@ Jaminan keamanan & integritas (semuanya diuji e2e, termasuk balapan bersamaan):
 - **Bukti bayar**: hanya saat `MENUNGGU_BAYAR` (lainnya 409; update-nya bersyarat status sehingga tidak berbalapan dengan admin). Validasi **magic bytes** (PNG/JPEG/WebP/PDF), ≤ 2 MB, MIME harus cocok isi; SVG/HTML/GIF/PHP/EXE ditolak meski dinamai `.png`. Nama berkas dibuat server (acak), disimpan di `UPLOAD_DIR/bukti/` — **tidak disajikan oleh route publik mana pun** (viewer admin dibuat di T7). Mengganti bukti menghapus berkas lama; kegagalan menyimpan DB membersihkan berkas baru.
 - Badan permintaan dibaca dengan **batas keras** (stream dihentikan melewati ~2 MB; tidak menampung badan raksasa), `Origin` lintas-situs → 403.
 - **Konsekuensi yang diketahui:** batas per-kode berarti pihak lain bisa menghabiskan 8 percobaan/15 menit untuk kode yang ia ketahui sehingga pembeli asli tertahan sementara (kompromi yang sama dengan cek status PPDB).
+
+## Admin (T6)
+
+Login: `/admin/login` (NextAuth v4, credentials + bcrypt). Akun dibuat `npm run setup` dari `ADMIN_EMAIL`/`ADMIN_PASSWORD` dan `STAFF_PASSWORD` (≥ 12 karakter; **tidak ada password bawaan**). Tanpa `NEXTAUTH_SECRET` (≥ 32 karakter) login nonaktif (fail closed).
+
+| Peran | Akses |
+|---|---|
+| `ADMIN` | semua: ringkasan, produk, kategori, stok, pesanan, pengaturan |
+| `STAFF` | ringkasan, stok, pesanan — **tidak** boleh mengubah produk/harga, kategori, atau pengaturan (rekening pembayaran) |
+
+Pertahanan berlapis: `proxy.ts` menolak `/admin/*` & `/api/admin/*` tanpa JWT (gerbang pertama), **lalu** setiap halaman, server action, dan route handler memeriksa ulang sesi **ke DB** — akun yang dihapus atau diturunkan perannya kehilangan akses seketika, dan hak mengikuti peran di DB (bukan klaim token). Cookie sesi `httpOnly` + `SameSite=Strict`, 8 jam. Login dibatasi 10 percobaan/15 menit/IP (+ batas longgar per akun); galat login identik untuk email tak terdaftar/password salah; `callbackUrl` hanya path `/admin…` (anti open redirect).
+
+| Halaman | Fungsi |
+|---|---|
+| `/admin` | Dasbor: pesanan hari ini (WIB), omzet hari ini (hanya pesanan dibayar/diproses/dikirim/selesai), menunggu bayar, perlu diproses, stok menipis/habis, 5 pesanan terbaru |
+| `/admin/produk` | Daftar (cari, filter status), tambah/ubah (nama, kategori, harga, deskripsi, gambar utama + galeri ≤ 8, **varian**: nama/SKU/harga/stok awal/aktif), aktifkan/nonaktifkan, hapus |
+| `/admin/kategori` | CRUD; slug dibuat otomatis (unik) dan **tidak berubah** saat nama diganti; kategori berisi produk tidak bisa dihapus |
+| `/admin/stok` | Penyesuaian stok per varian sebagai **selisih** (+/−), atomik; hasil tak boleh < 0 |
+
+Keputusan desain:
+- **Stok diubah sebagai selisih, bukan nilai mutlak**, dan stok varian yang sudah ada **tidak ikut disimpan dari form produk**: menimpa nilai mutlak akan menghapus pengurangan oleh pesanan yang masuk saat form terbuka (terbukti di tes).
+- Unggah gambar: magic bytes PNG/JPEG/WebP ≤ 2 MB, MIME harus cocok isi; SVG/GIF/HTML/PHP ditolak; nama dibuat server; semua berkas diperiksa **sebelum** ada yang ditulis; disajikan lewat `/uploads/[nama]` (regex ketat, `nosniff`, CSP `sandbox`) dari folder di luar `public/`. Berkas dibersihkan hanya bila tak dirujuk lagi (produk lain/pengaturan).
+- Varian yang dikirim harus milik produk yang sedang diubah (ID produk lain ditolak); SKU unik di seluruh toko.
+- Menghapus produk/varian tidak merusak riwayat pesanan (`OrderItem` menyimpan snapshot nama & harga; relasi `SetNull`).
 
 ## Pengujian
 
