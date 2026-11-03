@@ -2,7 +2,7 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: T1–T6 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**, **admin produk**. Admin pesanan & pengaturan (T7) dan QA final (T8) menyusul.
+> Status: T1–T7 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**, **admin produk**, **admin pesanan & pengaturan**. QA final & integrasi (T8) menyusul.
 
 ## Menjalankan
 
@@ -116,6 +116,27 @@ Keputusan desain:
 - Unggah gambar: magic bytes PNG/JPEG/WebP ≤ 2 MB, MIME harus cocok isi; SVG/GIF/HTML/PHP ditolak; nama dibuat server; semua berkas diperiksa **sebelum** ada yang ditulis; disajikan lewat `/uploads/[nama]` (regex ketat, `nosniff`, CSP `sandbox`) dari folder di luar `public/`. Berkas dibersihkan hanya bila tak dirujuk lagi (produk lain/pengaturan).
 - Varian yang dikirim harus milik produk yang sedang diubah (ID produk lain ditolak); SKU unik di seluruh toko.
 - Menghapus produk/varian tidak merusak riwayat pesanan (`OrderItem` menyimpan snapshot nama & harga; relasi `SetNull`).
+
+## Admin pesanan & pengaturan (T7)
+
+| Halaman | Peran | Fungsi |
+|---|---|---|
+| `/admin/pesanan` | ADMIN, STAFF | Daftar (cari kode/nama/HP, filter status, 25/halaman) |
+| `/admin/pesanan/[id]` | ADMIN, STAFF | Detail, ubah status, catatan internal, lihat bukti bayar |
+| `/admin/pesanan/[id]/invoice` | ADMIN, STAFF | Invoice A4 siap cetak (menu admin disembunyikan saat cetak) |
+| `/admin/pesanan/ekspor[?status=]` | **ADMIN saja** | CSV pesanan (memuat data pribadi massal → area `laporan`) |
+| `/admin/pengaturan` | **ADMIN saja** | Nama, tagline, WhatsApp, alamat, rekening (≤ 5), QRIS, tarif ongkir (bawaan + ≤ 50 kota) |
+
+Status pesanan: `MENUNGGU_BAYAR → DIBAYAR → DIPROSES → DIKIRIM → SELESAI`; **dibatalkan** boleh selama belum dikirim. `SELESAI` dan `DIBATALKAN` final. Peta transisi satu-satunya ada di `lib/status.ts` (diuji).
+
+Jaminan integritas:
+- **Compare-and-set**: form membawa status yang dilihat admin (`dari`); server menolak bila status di DB sudah berbeda (dua admin / klik ganda tidak saling menimpa) atau transisinya tidak sah — juga bila permintaan dibuat tanpa UI.
+- **Pembatalan mengembalikan stok tiap item dan kuota voucher tepat sekali** (dalam satu transaksi; 3 permintaan batal serentak → stok kembali sekali). Varian yang sudah dihapus dilewati.
+- Bukti bayar disajikan hanya ke sesi admin/staf, dengan `nosniff`, CSP `sandbox`, `no-store`; tidak ada rute publik.
+- CSV: sel berawalan `=` `+` `-` `@` dinetralkan, BOM UTF-8, maks 5.000 baris.
+- Pengaturan: semua nilai divalidasi ulang di server dan JSON dibangun dari data tervalidasi (bukan dari klien); nama kota dinormalkan & dicek unik, nama berbahaya (`__proto__`, `constructor`, …) ditolak; WA dinormalkan ke `62…`; QRIS lewat validasi unggahan yang sama dengan gambar produk; berkas QRIS lama dibersihkan bila tak dirujuk.
+- Pencarian admin: wildcard (`%`, `_`, `\`) dicari sebagai teks biasa; kata kunci yang hanya berisi wildcard tidak cocok apa pun.
+- Voucher dikelola lewat seed/DB (UI voucher di luar cakupan template ini).
 
 ## Pengujian
 

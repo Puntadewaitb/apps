@@ -288,7 +288,7 @@ test.describe("ubah status", () => {
     await login(page);
     await page.goto(`/admin/pesanan/${o.id}`);
     await page
-      .getByLabel("Catatan internal")
+      .getByRole("textbox", { name: "Catatan internal" })
       .fill("Telepon dulu <script>alert(1)</script> sebelum kirim");
     await page.getByRole("button", { name: "Simpan catatan" }).click();
     await expect(page.getByTestId("flash")).toHaveText("Catatan disimpan.");

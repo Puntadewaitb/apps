@@ -212,15 +212,11 @@ test("kota duplikat (setelah normalisasi) & QRIS berbahaya ditolak; HTML pada na
     await b.getByLabel("Kota", { exact: true }).fill(nama);
     await b.getByLabel("Tarif (Rp)").fill("5000");
   }
-  await f
-    .getByLabel("Gambar QRIS")
-    .setInputFiles({
-      name: "qris.png",
-      mimeType: "image/png",
-      buffer: Buffer.from(
-        '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
-      ),
-    });
+  await f.getByLabel("Gambar QRIS").setInputFiles({
+    name: "qris.png",
+    mimeType: "image/png",
+    buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
+  });
   const ongkir = nilai("toko.ongkir");
   const qris = nilai("toko.qris");
   await simpan(page);

@@ -37,6 +37,7 @@ export default async function DaftarPesanan({
   // Wildcard LIKE (% _ \) dibuang dari kata kunci agar dicari sebagai teks biasa.
   const qMentah = (sp.q ?? "").trim().slice(0, 60);
   const q = qMentah.replace(/[%_\\]/g, "").trim();
+  const digit = q.replace(/\D/g, "");
   const where = {
     ...(status ? { status } : {}),
     // Kata kunci yang HANYA berisi wildcard (mis. "%") tidak cocok dengan apa pun (bukan "semua").
@@ -46,7 +47,8 @@ export default async function DaftarPesanan({
           OR: [
             { code: { contains: q.toUpperCase() } },
             { customerName: { contains: q } },
-            { customerPhone: { contains: q.replace(/\D/g, "") || "\u0000" } },
+            // Klausa HP hanya bila ada digit (pola kosong/NUL akan cocok dengan SEMUA baris).
+            ...(digit.length >= 3 ? [{ customerPhone: { contains: digit } }] : []),
           ],
         }
       : {}),
