@@ -222,7 +222,7 @@ test("kota duplikat (setelah normalisasi) & QRIS berbahaya ditolak; HTML pada na
   await simpan(page);
   await expect(page.getByText("Kota ini sudah ada di daftar.")).toBeVisible();
   await expect(page.getByText(/Nama kota 2–60 karakter/)).toBeVisible(); // "__proto__" ditolak sejak regex nama
-  await expect(page.getByText(/qris\.png: /)).toBeVisible();
+  await expect(page.getByText(/Format gambar harus PNG, JPG, atau WebP/)).toBeVisible();
   expect(nilai("toko.ongkir")).toBe(ongkir);
   expect(nilai("toko.qris")).toBe(qris);
   // nama toko berisi HTML
