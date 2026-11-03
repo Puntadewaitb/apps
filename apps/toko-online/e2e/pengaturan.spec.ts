@@ -175,7 +175,7 @@ test("validasi: isian salah → galat per-field, baris rekening/kota & isian tid
   await r.getByLabel("Nomor rekening").fill("abc");
   await f.getByRole("button", { name: "+ Tambah kota" }).click();
   const k = f.getByTestId("baris-kota").last();
-  await k.getByLabel("Kota", { exact: true }).fill("__proto__");
+  await k.getByLabel("Kota", { exact: true }).fill("constructor");
   await k.getByLabel("Tarif (Rp)").fill("1.5");
   await f.getByRole("button", { name: "+ Tambah kota" }).click();
   const k2 = f.getByTestId("baris-kota").last();
@@ -206,7 +206,7 @@ test("kota duplikat (setelah normalisasi) & QRIS berbahaya ditolak; HTML pada na
   await page.goto("/admin/pengaturan");
   const f = form(page);
   await f.evaluate((el) => ((el as HTMLFormElement).noValidate = true));
-  for (const nama of ["Solo", "kota SOLO"]) {
+  for (const nama of ["Solo", "kota SOLO", "__proto__"]) {
     await f.getByRole("button", { name: "+ Tambah kota" }).click();
     const b = f.getByTestId("baris-kota").last();
     await b.getByLabel("Kota", { exact: true }).fill(nama);
@@ -221,6 +221,7 @@ test("kota duplikat (setelah normalisasi) & QRIS berbahaya ditolak; HTML pada na
   const qris = nilai("toko.qris");
   await simpan(page);
   await expect(page.getByText("Kota ini sudah ada di daftar.")).toBeVisible();
+  await expect(page.getByText(/Nama kota 2–60 karakter/)).toBeVisible(); // "__proto__" ditolak sejak regex nama
   await expect(page.getByText(/qris\.png: /)).toBeVisible();
   expect(nilai("toko.ongkir")).toBe(ongkir);
   expect(nilai("toko.qris")).toBe(qris);
