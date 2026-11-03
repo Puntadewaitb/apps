@@ -187,6 +187,7 @@ test.describe("produk: buat, ubah, nonaktifkan, hapus", () => {
     expect((await request.get(`/produk/${p.slug}`)).status()).toBe(404);
     await page.goto(`/admin/produk?q=${encodeURIComponent(nama)}`);
     await baris().getByRole("button", { name: "Aktifkan" }).click();
+    await expect(baris().getByText("Aktif", { exact: true })).toBeVisible();
     expect((await request.get(`/produk/${p.slug}`)).status()).toBe(200);
     // pesanan lama yang merujuk produk ini tetap utuh setelah dihapus
     const vid = idVarian(p.id)[0]!;
@@ -257,6 +258,10 @@ test.describe("produk: validasi & ketahanan", () => {
     await login(page);
     await page.goto("/admin/produk/baru");
     const sebelum = query<{ c: number }>("SELECT count(*) c FROM Product")[0]!.c;
+    // Validasi SERVER diuji tanpa pagar bawaan browser (atribut required memblokir submit sebelum POST).
+    await page
+      .getByRole("form", { name: "Form produk baru" })
+      .evaluate((f) => ((f as HTMLFormElement).noValidate = true));
     await page.getByRole("button", { name: "+ Tambah varian" }).click();
     await page.getByLabel("Nama produk").fill("ab");
     await page.getByLabel(/Harga dasar/).fill("1,5 juta");
@@ -389,10 +394,11 @@ test.describe("produk: validasi & ketahanan", () => {
     const saya = buatProduk({ name: `Saya ${huruf()}` });
     await login(page);
     await page.goto(`/admin/produk/${saya.id}`);
+    await varian(page, 0).getByLabel("Nama varian").fill("DIBAJAK");
+    // Ubah ID varian SETELAH semua isian: re-render React akan mengembalikan nilai kontrol terkendali.
     await page
       .locator('input[name="v0_id"]')
       .evaluate((e, id) => ((e as HTMLInputElement).value = String(id)), vk);
-    await varian(page, 0).getByLabel("Nama varian").fill("DIBAJAK");
     await simpan(page);
     await expect(page.getByText("Varian tidak valid. Muat ulang halaman.")).toBeVisible();
     expect(query<{ name: string }>("SELECT name FROM Variant WHERE id = ?", vk)[0]!.name).toBe(
