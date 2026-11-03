@@ -8,6 +8,7 @@ export const toko = {
   nav: [
     { label: "Beranda", href: "/" },
     { label: "Produk", href: "/produk" },
+    { label: "Lacak Pesanan", href: "/lacak" },
   ],
 };
 export type Toko = typeof toko;

@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+
 /** Akses env terpusat. Dibaca saat dipanggil (bukan saat import) agar build tidak butuh rahasia. */
 export function databaseUrl(): string {
   return process.env.DATABASE_URL || "file:./dev.db";
@@ -20,4 +22,9 @@ export const authConfigured = () => authSecret() !== null;
 export function trustedProxies(): number {
   const n = Number(process.env.TRUSTED_PROXIES ?? 1);
   return Number.isInteger(n) && n >= 0 ? n : 1;
+}
+
+/** Folder unggahan — DI LUAR public/. Bukti bayar di subfolder `bukti/` (privat, tidak disajikan publik). */
+export function uploadDir(): string {
+  return resolve(process.env.UPLOAD_DIR || "./uploads");
 }

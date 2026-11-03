@@ -149,3 +149,59 @@ export const ambilOrder = (kode: string) =>
 export const stokVarian = (id: number) =>
   query<{ stock: number }>("SELECT stock FROM Variant WHERE id = ?", id)[0]!.stock;
 export const jumlahOrder = () => query<{ c: number }>('SELECT count(*) c FROM "Order"')[0]!.c;
+
+const ALFABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
+export const kodeAcak = () =>
+  `TKO-${[...randomBytes(8)].map((b) => ALFABET[b % ALFABET.length]).join("")}`;
+
+/** Sisipkan pesanan langsung ke DB (status/HP/isi bebas) — untuk menguji lacak, bukti bayar, dan admin tanpa lewat checkout. */
+export function buatOrder(
+  o: {
+    status?: string;
+    telepon?: string;
+    nama?: string;
+    kota?: string;
+    proof?: string;
+    adminNote?: string;
+    kode?: string;
+    total?: number;
+  } = {},
+) {
+  const kode = o.kode ?? kodeAcak();
+  const telepon =
+    o.telepon ??
+    `628${[...randomBytes(5)].map((b) => String(b % 10)).join("")}${[...randomBytes(2)].map((b) => String(b % 10)).join("")}`;
+  const now = dbDate(Date.now());
+  const total = o.total ?? 60_000;
+  const id = tulis((d) => {
+    const r = d
+      .prepare(
+        'INSERT INTO "Order" (code, status, customerName, customerPhone, customerEmail, address, city, note, subtotal, shippingCost, discount, total, voucherCode, paymentProof, adminNote, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      )
+      .run(
+        kode,
+        o.status ?? "MENUNGGU_BAYAR",
+        o.nama ?? "Pembeli Uji",
+        telepon,
+        "rahasia@contoh.test",
+        "Jl. Rahasia No. 99, Sleman",
+        o.kota ?? "Sleman",
+        "catatan-pribadi",
+        total - 10_000,
+        10_000,
+        0,
+        total,
+        "",
+        o.proof ?? "",
+        o.adminNote ?? "",
+        now,
+        now,
+      );
+    const oid = Number(r.lastInsertRowid);
+    d.prepare(
+      "INSERT INTO OrderItem (orderId, productName, variantName, unitPrice, qty, lineTotal) VALUES (?,?,?,?,?,?)",
+    ).run(oid, "Kopi Uji", "Standar", 25_000, 2, 50_000);
+    return oid;
+  });
+  return { id, kode, telepon };
+}

@@ -171,6 +171,14 @@ function Konfirmasi({ s }: { s: Sukses }) {
             Kirim pesanan via WhatsApp
           </ButtonLink>
         )}
+        <ButtonLink
+          href={`/lacak?kode=${s.kode}`}
+          variant="secondary"
+          size="lg"
+          data-testid="ke-lacak"
+        >
+          Lacak pesanan / unggah bukti bayar
+        </ButtonLink>
         <ButtonLink href="/produk" variant="secondary" size="lg">
           Lanjut belanja
         </ButtonLink>

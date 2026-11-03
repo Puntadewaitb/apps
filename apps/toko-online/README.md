@@ -2,7 +2,7 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: T1–T4 — skema + seed, **katalog**, **keranjang**, **checkout**. Lacak pesanan dan admin dibangun bertahap (T5–T8).
+> Status: T1–T5 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**. Admin dibangun bertahap (T6–T8).
 
 ## Menjalankan
 
@@ -77,6 +77,21 @@ Jaminan keamanan & integritas (semuanya diuji e2e, termasuk balapan bersamaan):
 - Konfirmasi ditampilkan **di halaman yang sama** (tanpa URL per-pesanan yang bisa ditebak); pelacakan lewat kode + nomor HP (T5). Tombol WhatsApp berupa tautan yang diklik pengguna (bukan redirect otomatis — WCAG 3.2.5).
 - **Risiko yang diketahui**: stok dikunci saat pesanan dibuat, sehingga pesanan palsu bisa "menahan" stok. Mitigasi: batas laju + pembatalan oleh admin mengembalikan stok (T7).
 - QRIS di demo = gambar placeholder (`/img/qris.svg`), bukan kode QR sungguhan.
+
+## Lacak pesanan & bukti bayar (T5)
+
+`/lacak` — pembeli memasukkan **kode pesanan + nomor HP** yang dipakai saat checkout (tautan di halaman konfirmasi sudah mengisi kode).
+
+| Endpoint | Fungsi |
+|---|---|
+| `POST /api/lacak` | Status & rincian pesanan. 10/15 menit/IP dan 8/15 menit/kode |
+| `POST /api/lacak/bukti` | Unggah/ganti bukti bayar (multipart). 5/jam/IP dan 5/jam/kode |
+
+- **Otorisasi = kode + HP cocok.** Semua kegagalan (kode tak ada, HP salah, format salah) dijawab **identik** (404 "Kode pesanan atau nomor HP tidak cocok") dan perbandingan HP waktu-konstan → tidak membocorkan apakah suatu kode ada. Kode acak 8 karakter dari 31 simbol (~8,5×10¹¹ kemungkinan).
+- Respons hanya memuat yang perlu: status, rincian barang, biaya, nama, kota. **Tidak** ada HP, email, alamat, catatan pembeli, catatan admin, atau nama berkas bukti. Info rekening hanya saat `MENUNGGU_BAYAR`.
+- **Bukti bayar**: hanya saat `MENUNGGU_BAYAR` (lainnya 409; update-nya bersyarat status sehingga tidak berbalapan dengan admin). Validasi **magic bytes** (PNG/JPEG/WebP/PDF), ≤ 2 MB, MIME harus cocok isi; SVG/HTML/GIF/PHP/EXE ditolak meski dinamai `.png`. Nama berkas dibuat server (acak), disimpan di `UPLOAD_DIR/bukti/` — **tidak disajikan oleh route publik mana pun** (viewer admin dibuat di T7). Mengganti bukti menghapus berkas lama; kegagalan menyimpan DB membersihkan berkas baru.
+- Badan permintaan dibaca dengan **batas keras** (stream dihentikan melewati ~2 MB; tidak menampung badan raksasa), `Origin` lintas-situs → 403.
+- **Konsekuensi yang diketahui:** batas per-kode berarti pihak lain bisa menghabiskan 8 percobaan/15 menit untuk kode yang ia ketahui sehingga pembeli asli tertahan sementara (kompromi yang sama dengan cek status PPDB).
 
 ## Pengujian
 

@@ -7,6 +7,10 @@ type Limiters = {
   voucherIp: Limiter;
   pesananIp: Limiter;
   pesananTelepon: Limiter;
+  lacakIp: Limiter;
+  lacakKode: Limiter;
+  buktiIp: Limiter;
+  buktiKode: Limiter;
 };
 const dariEnv = (nama: string, bawaan: number) => {
   const n = Number(process.env[nama]);
@@ -28,6 +32,12 @@ export function limiters(): Limiters {
       limit: dariEnv("PESANAN_LIMIT_HP", 6),
       windowMs: 60 * 60_000,
     }),
+    // lacak pesanan: 10 / 15 menit / IP dan 8 / 15 menit / kode (menahan tebak kode+HP, termasuk terdistribusi)
+    lacakIp: createRateLimiter({ limit: dariEnv("LACAK_LIMIT_IP", 10), windowMs: 15 * 60_000 }),
+    lacakKode: createRateLimiter({ limit: dariEnv("LACAK_LIMIT_KODE", 8), windowMs: 15 * 60_000 }),
+    // unggah bukti bayar: 5 / jam / IP dan 5 / jam / kode
+    buktiIp: createRateLimiter({ limit: dariEnv("BUKTI_LIMIT_IP", 5), windowMs: 60 * 60_000 }),
+    buktiKode: createRateLimiter({ limit: dariEnv("BUKTI_LIMIT_KODE", 5), windowMs: 60 * 60_000 }),
   };
   return g.__limiters;
 }
