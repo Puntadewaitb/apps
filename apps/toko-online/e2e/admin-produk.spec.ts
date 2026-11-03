@@ -257,7 +257,6 @@ test.describe("produk: validasi & ketahanan", () => {
   }) => {
     await login(page);
     await page.goto("/admin/produk/baru");
-    const sebelum = query<{ c: number }>("SELECT count(*) c FROM Product")[0]!.c;
     // Validasi SERVER diuji tanpa pagar bawaan browser (atribut required memblokir submit sebelum POST).
     await page
       .getByRole("form", { name: "Form produk baru" })
@@ -278,7 +277,7 @@ test.describe("produk: validasi & ketahanan", () => {
     await expect(page.getByLabel("Nama produk")).toHaveValue("ab"); // tidak hilang
     await expect(page.getByTestId("baris-varian")).toHaveCount(2); // baris varian tetap
     await expect(varian(page, 1).getByLabel("Nama varian")).toHaveValue("Dua");
-    expect(query<{ c: number }>("SELECT count(*) c FROM Product")[0]!.c).toBe(sebelum);
+    expect(query("SELECT 1 FROM Product WHERE name = ?", "ab")).toHaveLength(0); // produk tidak terbuat (spesifik, tahan tes paralel)
   });
 
   test("SKU bentrok (dengan produk lain & di dalam form sendiri) ditolak; produk tidak terbuat", async ({
