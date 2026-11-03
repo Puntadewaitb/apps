@@ -241,7 +241,9 @@ export function KeranjangView() {
           </div>
           <div className="flex justify-between text-base font-bold text-fg">
             <dt>Subtotal</dt>
-            <dd data-testid="subtotal">{rupiah(subtotal)}</dd>
+            <dd data-testid="subtotal" className="whitespace-nowrap">
+              {rupiah(subtotal)}
+            </dd>
           </div>
         </dl>
         <p className="mt-2 text-xs text-muted">

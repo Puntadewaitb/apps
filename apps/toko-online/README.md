@@ -2,7 +2,19 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: T1–T7 — skema + seed, **katalog**, **keranjang**, **checkout**, **lacak pesanan**, **admin produk**, **admin pesanan & pengaturan**. QA final & integrasi (T8) menyusul.
+> Status: **lengkap** (T1–T8) — katalog, keranjang, checkout, lacak pesanan, admin produk, admin pesanan & pengaturan, dan QA final.
+
+## Tampilan
+
+| Beranda | Mobile |
+|---|---|
+| ![Beranda](docs/screenshots/beranda.png) | ![Mobile](docs/screenshots/mobile-beranda.png) |
+| ![Katalog](docs/screenshots/katalog.png) | ![Detail produk](docs/screenshots/detail-produk.png) |
+| ![Keranjang](docs/screenshots/keranjang.png) | ![Checkout](docs/screenshots/checkout.png) |
+| ![Dasbor admin](docs/screenshots/admin-dashboard.png) | ![Kelola produk](docs/screenshots/admin-produk.png) |
+| ![Detail pesanan](docs/screenshots/admin-pesanan.png) | ![Pengaturan toko](docs/screenshots/admin-pengaturan.png) |
+
+Membuat ulang: `cd apps/toko-online && SCREENSHOTS=1 npx playwright test e2e/screenshots.spec.ts --project=fitur`.
 
 ## Menjalankan
 
@@ -137,6 +149,27 @@ Jaminan integritas:
 - Pengaturan: semua nilai divalidasi ulang di server dan JSON dibangun dari data tervalidasi (bukan dari klien); nama kota dinormalkan & dicek unik, nama berbahaya (`__proto__`, `constructor`, …) ditolak; WA dinormalkan ke `62…`; QRIS lewat validasi unggahan yang sama dengan gambar produk; berkas QRIS lama dibersihkan bila tak dirujuk.
 - Pencarian admin: wildcard (`%`, `_`, `\`) dicari sebagai teks biasa; kata kunci yang hanya berisi wildcard tidak cocok apa pun.
 - Voucher dikelola lewat seed/DB (UI voucher di luar cakupan template ini).
+
+## Akun demo
+
+Akun dibuat oleh `npm run setup` **hanya bila** password diisi di `.env` (min. 12 karakter; tidak ada password bawaan):
+
+| Peran | Email | Password dari |
+|---|---|---|
+| ADMIN | `admin@toko.example` (atau `ADMIN_EMAIL`) | `ADMIN_PASSWORD` |
+| STAFF | `staf@toko.example` | `STAFF_PASSWORD` |
+
+Voucher demo (seed): `HEMAT10` (10%, min Rp 100.000, maks Rp 50.000), `POTONG25K` (Rp 25.000, min Rp 200.000, kuota 100); `KADALUARSA`, `HABIS`, `NONAKTIF` untuk menguji penolakan.
+
+## Hasil QA final (T8)
+
+`e2e/qa.spec.ts` dan `e2e/admin-qa.spec.ts` merangkum pemeriksaan lintas-fitur:
+- **Halaman publik** (beranda, katalog + filter, semua produk seed, keranjang, checkout, lacak, login admin): 200 tanpa error konsol/CSP, tanpa aset 4xx, **tanpa permintaan ke domain luar**; gambar termuat, ber-`alt`, dimensi/rasio tetap (anti layout shift); tanpa overflow horizontal di 360/768/1280 px.
+- **Aksesibilitas**: satu `h1`, heading tanpa lompat, landmark banner/main/footer, `lang="id"`, id unik, semua tautan/tombol/input bernama, Tab pertama = lewati-konten, indikator fokus, target sentuh ≥ 24 px (termasuk tombol keranjang), **kontras WCAG AA untuk ketiga tema**.
+- **Keamanan**: manipulasi harga/qty/total di request (ditolak/dihitung ulang server), akses pesanan orang lain (kode + HP harus cocok; galat identik), unggah berbahaya (SVG/HTML/PHP/GIF/EXE, MIME palsu, > 2 MB) di produk, QRIS, dan bukti bayar, balapan stok & kuota voucher, CSRF (Origin/Content-Type), rate limit, header keamanan di semua jenis rute, tak ada kebocoran jejak teknologi di galat.
+- **Otorisasi**: matriks anonim / STAFF / ADMIN atas **semua** halaman dan route admin (termasuk metode tulis dan memutar ulang ID server action milik admin tanpa sesi).
+- **Alur lengkap lintas peran**: admin membuat produk → pembeli menelusuri, checkout dengan voucher, lacak, unggah bukti → admin verifikasi dan memproses hingga selesai → pembeli melihat "Selesai"; invoice, CSV, dasbor, dan stok konsisten. Plus alur pembatalan (stok & voucher kembali).
+- **Temuan QA & perbaikan** selama T8: tautan brand navbar hanya 21 px tinggi (< 24 px) → 44 px; nilai rupiah dan tombol "Terapkan" terpecah di kolom sempit karena `overflow-wrap: anywhere` global → `whitespace-nowrap`.
 
 ## Pengujian
 

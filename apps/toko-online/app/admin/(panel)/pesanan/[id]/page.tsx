@@ -157,18 +157,18 @@ export default async function DetailPesanan({
                     {i.productName}
                     {i.variantName !== "Standar" && ` (${i.variantName})`} × {i.qty}
                   </span>
-                  <span>{rupiah(i.lineTotal)}</span>
+                  <span className="whitespace-nowrap">{rupiah(i.lineTotal)}</span>
                 </li>
               ))}
             </ul>
             <dl className="mt-3 space-y-1 text-sm">
               <div className="flex justify-between">
                 <dt>Subtotal</dt>
-                <dd>{rupiah(o.subtotal)}</dd>
+                <dd className="whitespace-nowrap">{rupiah(o.subtotal)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt>Ongkir</dt>
-                <dd>{rupiah(o.shippingCost)}</dd>
+                <dd className="whitespace-nowrap">{rupiah(o.shippingCost)}</dd>
               </div>
               {o.discount > 0 && (
                 <div className="flex justify-between">
@@ -178,7 +178,9 @@ export default async function DetailPesanan({
               )}
               <div className="flex justify-between text-base font-bold text-fg">
                 <dt>Total</dt>
-                <dd data-testid="total">{rupiah(o.total)}</dd>
+                <dd data-testid="total" className="whitespace-nowrap">
+                  {rupiah(o.total)}
+                </dd>
               </div>
             </dl>
           </section>

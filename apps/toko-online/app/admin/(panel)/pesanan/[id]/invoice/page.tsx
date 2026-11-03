@@ -103,11 +103,11 @@ export default async function Invoice({ params }: { params: Promise<{ id: string
       <dl className="ml-auto mt-4 w-64 space-y-1 text-sm">
         <div className="flex justify-between">
           <dt>Subtotal</dt>
-          <dd>{rupiah(o.subtotal)}</dd>
+          <dd className="whitespace-nowrap">{rupiah(o.subtotal)}</dd>
         </div>
         <div className="flex justify-between">
           <dt>Ongkir</dt>
-          <dd>{rupiah(o.shippingCost)}</dd>
+          <dd className="whitespace-nowrap">{rupiah(o.shippingCost)}</dd>
         </div>
         {o.discount > 0 && (
           <div className="flex justify-between">
@@ -117,7 +117,9 @@ export default async function Invoice({ params }: { params: Promise<{ id: string
         )}
         <div className="flex justify-between border-t border-gray-400 pt-1 text-base font-bold">
           <dt>Total</dt>
-          <dd data-testid="inv-total">{rupiah(o.total)}</dd>
+          <dd data-testid="inv-total" className="whitespace-nowrap">
+            {rupiah(o.total)}
+          </dd>
         </div>
       </dl>
       {!lunas && o.status !== "DIBATALKAN" && s.rekening.length > 0 && (

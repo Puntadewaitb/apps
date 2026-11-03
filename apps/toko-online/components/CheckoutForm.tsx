@@ -102,18 +102,18 @@ function Konfirmasi({ s }: { s: Sukses }) {
                 {b.produkNama}
                 {b.varianNama !== "Standar" && ` (${b.varianNama})`} × {b.qty}
               </span>
-              <span>{rupiah(b.jumlah)}</span>
+              <span className="whitespace-nowrap">{rupiah(b.jumlah)}</span>
             </li>
           ))}
         </ul>
         <dl className="mt-3 space-y-1 text-sm">
           <div className="flex justify-between">
             <dt>Subtotal</dt>
-            <dd>{rupiah(s.subtotal)}</dd>
+            <dd className="whitespace-nowrap">{rupiah(s.subtotal)}</dd>
           </div>
           <div className="flex justify-between">
             <dt>Ongkir</dt>
-            <dd>{rupiah(s.ongkir)}</dd>
+            <dd className="whitespace-nowrap">{rupiah(s.ongkir)}</dd>
           </div>
           {s.diskon > 0 && (
             <div className="flex justify-between">
@@ -123,7 +123,9 @@ function Konfirmasi({ s }: { s: Sukses }) {
           )}
           <div className="flex justify-between text-base font-bold text-fg">
             <dt>Total bayar</dt>
-            <dd data-testid="total-bayar">{rupiah(s.total)}</dd>
+            <dd data-testid="total-bayar" className="whitespace-nowrap">
+              {rupiah(s.total)}
+            </dd>
           </div>
         </dl>
       </section>
@@ -418,7 +420,9 @@ export function CheckoutForm({ kotaOpsi, ongkirBawaan }: Props) {
                       <span className="block text-danger">Stok tersisa {b.stok}</span>
                     )}
                   </span>
-                  <span>{b.status === "ok" ? rupiah(b.jumlah) : "—"}</span>
+                  <span className="whitespace-nowrap">
+                    {b.status === "ok" ? rupiah(b.jumlah) : "—"}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -433,11 +437,12 @@ export function CheckoutForm({ kotaOpsi, ongkirBawaan }: Props) {
                   onChange={(e) => setVoucherIsi(e.target.value)}
                   maxLength={32}
                   autoComplete="off"
-                  className={input}
+                  className={`${input} min-w-0`}
                 />
                 <Button
                   type="button"
                   variant="secondary"
+                  className="shrink-0 whitespace-nowrap"
                   onClick={() => setVoucher(voucherIsi.trim())}
                   disabled={!voucherIsi.trim()}
                 >
@@ -469,11 +474,15 @@ export function CheckoutForm({ kotaOpsi, ongkirBawaan }: Props) {
             <dl className="space-y-1 text-sm" aria-live="polite">
               <div className="flex justify-between">
                 <dt>Subtotal</dt>
-                <dd data-testid="co-subtotal">{rupiah(ringkasan.subtotal)}</dd>
+                <dd data-testid="co-subtotal" className="whitespace-nowrap">
+                  {rupiah(ringkasan.subtotal)}
+                </dd>
               </div>
               <div className="flex justify-between">
                 <dt>Ongkir</dt>
-                <dd data-testid="co-ongkir">{rupiah(ringkasan.ongkir)}</dd>
+                <dd data-testid="co-ongkir" className="whitespace-nowrap">
+                  {rupiah(ringkasan.ongkir)}
+                </dd>
               </div>
               {ringkasan.diskon > 0 && (
                 <div className="flex justify-between text-success">
@@ -483,7 +492,9 @@ export function CheckoutForm({ kotaOpsi, ongkirBawaan }: Props) {
               )}
               <div className="flex justify-between border-t border-border pt-2 text-base font-bold text-fg">
                 <dt>Total</dt>
-                <dd data-testid="co-total">{rupiah(ringkasan.total)}</dd>
+                <dd data-testid="co-total" className="whitespace-nowrap">
+                  {rupiah(ringkasan.total)}
+                </dd>
               </div>
             </dl>
             {ringkasan.masalah

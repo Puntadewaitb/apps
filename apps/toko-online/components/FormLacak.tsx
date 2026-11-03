@@ -179,18 +179,18 @@ export function FormLacak({ kodeAwal = "" }: { kodeAwal?: string }) {
                     {b.produkNama}
                     {b.varianNama !== "Standar" && ` (${b.varianNama})`} × {b.qty}
                   </span>
-                  <span>{rupiah(b.lineTotal)}</span>
+                  <span className="whitespace-nowrap">{rupiah(b.lineTotal)}</span>
                 </li>
               ))}
             </ul>
             <dl className="mt-3 space-y-1 text-sm">
               <div className="flex justify-between">
                 <dt>Subtotal</dt>
-                <dd>{rupiah(pesanan.subtotal)}</dd>
+                <dd className="whitespace-nowrap">{rupiah(pesanan.subtotal)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt>Ongkir</dt>
-                <dd>{rupiah(pesanan.ongkir)}</dd>
+                <dd className="whitespace-nowrap">{rupiah(pesanan.ongkir)}</dd>
               </div>
               {pesanan.diskon > 0 && (
                 <div className="flex justify-between">
@@ -200,7 +200,9 @@ export function FormLacak({ kodeAwal = "" }: { kodeAwal?: string }) {
               )}
               <div className="flex justify-between text-base font-bold text-fg">
                 <dt>Total</dt>
-                <dd data-testid="hasil-total">{rupiah(pesanan.total)}</dd>
+                <dd data-testid="hasil-total" className="whitespace-nowrap">
+                  {rupiah(pesanan.total)}
+                </dd>
               </div>
             </dl>
           </div>
