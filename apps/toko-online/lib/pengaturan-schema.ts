@@ -1,7 +1,8 @@
 import { phoneIdSchema, sanitizeText } from "@tpl/core";
 import { z } from "zod";
 import { kunciKota } from "./checkout";
-import { bulat, opsional, teks } from "./validasi";
+import { parseRupiah } from "./rupiah";
+import { opsional, teks } from "./validasi";
 
 export const MAKS_REKENING = 5;
 export const MAKS_KOTA = 50;
@@ -42,7 +43,12 @@ const namaKota = z
       ),
   );
 
-const tarif = bulat("Tarif", 0, MAKS_ONGKIR);
+/** Tarif rupiah: menerima "9000", "9.000", "Rp 9.000"; menolak desimal/negatif/huruf. 0 = gratis ongkir. */
+const tarif = z.string().transform((v, ctx) => {
+  const r = parseRupiah(v, 0, MAKS_ONGKIR);
+  if (!r.ok) ctx.addIssue({ code: "custom", message: `Tarif: ${r.pesan}` });
+  return r.ok ? r.nilai : 0;
+});
 
 export const tokoSchema = z.object({
   nama: teks(3, 80, "Nama toko"),

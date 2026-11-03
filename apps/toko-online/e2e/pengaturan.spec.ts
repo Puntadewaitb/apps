@@ -186,7 +186,7 @@ test("validasi: isian salah → galat per-field, baris rekening/kota & isian tid
   await expect(page.getByText("Nomor WhatsApp tidak valid (contoh: 081234567890).")).toBeVisible();
   await expect(page.getByText(/Nomor rekening 4–30 karakter/)).toBeVisible();
   await expect(page.getByText("Nama kota tidak diizinkan.")).toBeVisible();
-  await expect(page.getByText(/Tarif maksimal/).first()).toBeVisible();
+  await expect(page.getByText(/Tarif: (Maksimal|Hanya angka)/).first()).toBeVisible();
   await expect(f.getByLabel("Nama toko")).toHaveValue("ab");
   await expect(f.getByTestId("baris-kota").last().getByLabel("Kota", { exact: true })).toHaveValue(
     "Solo",
