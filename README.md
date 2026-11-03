@@ -57,9 +57,9 @@ Voucher demo toko: `HEMAT10`, `POTONG25K` (lihat [README toko](apps/toko-online/
 
 - Header keamanan (CSP ketat, `nosniff`, `frame-ancestors 'none'`, …) di semua app; tidak ada permintaan ke domain luar (font lokal/system, gambar SVG lokal).
 - Validasi masukan di server (Zod), sanitasi teks, honeypot + rate limit pada form publik, unggahan divalidasi **magic bytes** (SVG/GIF ditolak), CSV anti-formula-injection.
-- Admin: sesi dicek ulang ke database di tiap halaman/aksi, hak dari peran di DB, anti open redirect, anti-enumerasi akun.
+- Admin: login fail-closed tanpa rahasia, cookie `httpOnly` + `SameSite=Strict`, rate limit login. Pada **sekolah** dan **toko** (NextAuth) sesi juga dicek ulang ke database di tiap halaman/aksi dan hak berasal dari peran di DB, plus anti open redirect dan anti-enumerasi akun.
 - Toko: harga, ongkir, diskon, dan total **dihitung ulang di server** (klien tidak dipercaya); stok & voucher dikunci atomik.
-- Tiap app punya e2e (Playwright) untuk: tanpa error konsol/CSP, tanpa overflow di 360/768/1280 px, aksesibilitas (heading, landmark, label, fokus, kontras WCAG AA), dan matriks otorisasi.
+- Tiap app punya e2e (Playwright) untuk: tanpa error konsol/CSP, tanpa overflow di 360/768/1280 px, dan aksesibilitas (heading, landmark, label, fokus, kontras WCAG AA); app ber-admin juga menguji otorisasi.
 
 Panduan memodifikasi template: [`docs/CARA-MODIF.md`](docs/CARA-MODIF.md). Rencana pengerjaan: `PLAN.md`; status: `PROGRESS.md`. Lisensi aset demo: [`CREDITS.md`](CREDITS.md).
 
