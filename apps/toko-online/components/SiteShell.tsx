@@ -16,7 +16,15 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       >
         Langsung ke konten utama
       </a>
-      <Navbar brand={<a href="/">{nama}</a>} links={toko.nav} actions={<MiniCart />} />
+      <Navbar
+        brand={
+          <a href="/" className="inline-flex min-h-11 items-center">
+            {nama}
+          </a>
+        }
+        links={toko.nav}
+        actions={<MiniCart />}
+      />
       {children}
       <Footer
         brand={nama}
