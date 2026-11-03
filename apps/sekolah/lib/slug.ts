@@ -38,3 +38,10 @@ export const slugGaleriUnik = (dasar: string) =>
     dasar,
     async (s) => !!(await db().gallery.findUnique({ where: { slug: s }, select: { id: true } })),
   );
+
+export const slugProgramUnik = (dasar: string) =>
+  slugUnik(
+    dasar,
+    async (s) =>
+      !!(await db().donationProgram.findUnique({ where: { slug: s }, select: { id: true } })),
+  );

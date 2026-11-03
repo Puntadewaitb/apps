@@ -29,7 +29,7 @@ export const sekolah = {
     jamLayanan: "Senin–Jumat, 07.00–15.00 WIB",
     pesanWhatsapp: "Halo Sekolah Cendekia Nusantara, saya ingin bertanya tentang sekolah.",
   },
-  // Menu hanya memuat halaman yang sudah ada; langkah berikutnya menambah Donasi.
+  // Menu hanya memuat halaman yang sudah ada; semua halaman publik sudah tercakup.
   nav: [
     { label: "Beranda", href: "/" },
     { label: "Profil", href: "/profil" },
@@ -39,6 +39,7 @@ export const sekolah = {
     { label: "Agenda", href: "/agenda" },
     { label: "Galeri", href: "/galeri" },
     { label: "PPDB", href: "/ppdb" },
+    { label: "Donasi", href: "/donasi" },
   ],
 };
 

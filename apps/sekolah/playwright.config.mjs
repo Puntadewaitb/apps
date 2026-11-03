@@ -11,11 +11,19 @@ const browser = {
 export default createPlaywrightConfig({
   port: 3004,
   serverCommand: "node e2e/prepare-db.mjs && npm run build && npx next start -p 3004",
-  // Dua tahap: tes CRUD (crud-*.spec.ts) mengubah data bersama (guru, berita, dsb.) sehingga baru jalan
-  // SETELAH semua tes fitur selesai — mencegah tes yang menghitung/membandingkan data saling mengganggu.
+  // Bertahap (berurutan): tes yang mengubah data/berkas bersama tidak boleh berjalan bersamaan dengan tes lain.
+  //  fitur → crud (berita/agenda/galeri/guru) → ppdb → donasi
+  // PPDB & donasi sama-sama menghitung berkas di folder dokumen/ sehingga dipisah satu per satu.
   projects: [
     { name: "fitur", testIgnore: /crud-.*\.spec\.ts/, use: browser },
-    { name: "crud", testMatch: /crud-.*\.spec\.ts/, dependencies: ["fitur"], use: browser },
+    {
+      name: "crud",
+      testMatch: /crud-(berita|agenda|galeri|guru)\.spec\.ts/,
+      dependencies: ["fitur"],
+      use: browser,
+    },
+    { name: "ppdb", testMatch: /crud-ppdb\.spec\.ts/, dependencies: ["crud"], use: browser },
+    { name: "donasi", testMatch: /crud-donasi\.spec\.ts/, dependencies: ["ppdb"], use: browser },
   ],
   serverEnv: {
     DATABASE_URL: "file:./e2e.db",

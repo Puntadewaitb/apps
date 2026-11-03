@@ -2,7 +2,7 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi, halaman publik, informasi, login admin, CRUD konten, dan PPDB (S1–S6). Donasi dan QA akhir dibangun bertahap (S7–S8).
+> Status: fondasi, halaman publik, informasi, login admin, CRUD konten, PPDB, dan donasi (S1–S7). QA akhir menyusul (S8).
 
 ## Menjalankan
 
@@ -55,6 +55,16 @@ Konten statis ada di `content/` (`sekolah.ts`, `profil.ts`, `program.ts`; divali
 - **Dokumen** (akta, KK, rapor, pas foto): PDF/PNG/JPG/WebP ≤ 2 MB, tipe dari magic bytes & harus cocok MIME; **semua divalidasi dulu** — satu gagal → tidak ada yang tersimpan (tanpa berkas yatim). Disimpan **privat** di `UPLOAD_DIR/dokumen/` (tidak terjangkau `/uploads`) dan hanya bisa dibuka admin lewat `/admin/ppdb/dokumen/<id>/<jenis>` (CSP sandbox, `nosniff`, `no-store`; PDF diunduh).
 - **Wizard**: tanpa JavaScript semua bagian tampil sekaligus dan tetap bisa dikirim; dengan JavaScript ada validasi per langkah, ringkasan sebelum kirim, dan isian + berkas tidak hilang saat server menolak.
 - **Admin**: daftar + filter status + cari, detail, ubah status + catatan (catatan terlihat pendaftar), ekspor CSV (sel berawalan `= + - @` dinetralkan). Status/catatan divalidasi ulang di server (nilai di luar daftar ditolak).
+
+## Donasi & infaq
+
+`/donasi` (rekening resmi + program) · `/donasi/<slug>` (progres, cara berdonasi, form konfirmasi, donatur terbaru) · admin `/admin/donasi` (verifikasi) dan `/admin/donasi/program` (kelola program) — hanya `ADMIN`. Rekening di `content/donasi.ts`.
+
+- **Progres hanya dari donasi `TERVERIFIKASI`**: konfirmasi baru berstatus `MENUNGGU` belum dihitung; admin memverifikasi/menolak/mengembalikan ke menunggu → progres (persen, total, jumlah donatur) berubah otomatis karena dihitung dari data, bukan disimpan (`lib/donasi.ts`). Bilah progres memakai `role="progressbar"`; persen > 100 tetap terlihat tetapi bilah dibatasi 100%.
+- **Nominal** (`lib/rupiah.ts`): bilangan bulat rupiah; menerima `150000`, `150.000`, `Rp 1.500.000`; menolak desimal, satuan ("1,5 juta"), negatif, di luar batas (min Rp 10.000, maks Rp 1 miliar).
+- **Bukti transfer** wajib (PDF/PNG/JPG/WebP ≤ 2 MB, magic bytes) dan **privat** (folder `dokumen/`, hanya admin lewat `/admin/donasi/bukti/<id>`, CSP sandbox). Satu berkas tidak valid → tidak ada yang tersimpan.
+- **Privasi donatur**: daftar publik hanya memuat donasi terverifikasi; yang memilih anonim tampil "Hamba Allah" dan **nama aslinya tidak pernah dikirim ke HTML publik**; nominal individual tidak ditampilkan.
+- **Anti-abuse**: honeypot, rate limit 5/jam/IP, program nonaktif/lewat batas waktu ditolak di server (juga bila formulir sudah terbuka), program nonaktif → 404 publik. Program tidak dihapus (riwayat donasi utuh) — dinonaktifkan.
 
 ## Data
 

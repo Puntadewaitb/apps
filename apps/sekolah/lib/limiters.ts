@@ -7,6 +7,7 @@ type Limiters = {
   daftarIp: Limiter;
   statusIp: Limiter;
   statusNomor: Limiter;
+  donasiIp: Limiter;
 };
 /** Bilangan bulat positif dari env; selain itu pakai bawaan. */
 const dariEnv = (nama: string, bawaan: number) => {
@@ -33,6 +34,8 @@ export function limiters(): Limiters {
       windowMs: 15 * 60_000,
     }),
     statusNomor: createRateLimiter({ limit: 8, windowMs: 15 * 60_000 }),
+    // konfirmasi donasi: 5 / jam / IP (formulir + unggah bukti)
+    donasiIp: createRateLimiter({ limit: dariEnv("DONASI_LIMIT", 5), windowMs: 60 * 60_000 }),
   };
   return g.__limiters;
 }

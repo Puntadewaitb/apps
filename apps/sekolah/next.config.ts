@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         source: "/admin/ppdb/dokumen/:path*",
         headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; sandbox" }],
       },
+      // Bukti transfer donasi (privat; hanya admin).
+      {
+        source: "/admin/donasi/bukti/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; sandbox" }],
+      },
       // Area admin & API sesi: jangan di-cache browser/proxy, dan jangan diindeks mesin pencari.
       ...["/admin/:path*", "/api/admin/:path*", "/api/auth/:path*"].map((source) => ({
         source,

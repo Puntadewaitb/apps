@@ -268,7 +268,7 @@ export const programs = [
 export const donations = [
   {
     program: "beasiswa-siswa-berprestasi",
-    donorName: "Hamba Allah",
+    donorName: "Rahmat Hidayat",
     anonymous: true,
     amount: 5_000_000,
     message: "Semoga bermanfaat.",

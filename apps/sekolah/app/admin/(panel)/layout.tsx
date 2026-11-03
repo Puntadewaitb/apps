@@ -11,6 +11,7 @@ const MENU: Array<{ href: string; label: string; area: Area }> = [
   { href: "/admin/galeri", label: "Galeri", area: "galeri" },
   { href: "/admin/guru", label: "Guru & Staf", area: "guru" },
   { href: "/admin/ppdb", label: "PPDB", area: "ppdb" },
+  { href: "/admin/donasi", label: "Donasi", area: "donasi" },
 ];
 
 /** Kerangka panel admin. Pemeriksaan sesi di sini hanya kenyamanan — setiap halaman & action memeriksa ulang. */
