@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "@tpl/config/theme.css";
+@import "@tpl/ui/theme.css";
+@source "../../../packages/ui/src";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Kata sangat panjang tanpa spasi (URL, data kotor) dipatahkan, bukan membuat halaman meluber horizontal. */
+  overflow-wrap: anywhere;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}

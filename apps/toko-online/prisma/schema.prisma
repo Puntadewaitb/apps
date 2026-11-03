@@ -1,0 +1,149 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Catatan desain:
+//  - SQLite tanpa enum → kolom status/tipe berupa String; nilai sahnya divalidasi di kode (lib/domain.ts) dan diuji.
+//  - Uang = Int rupiah (tanpa desimal). Order menyimpan SNAPSHOT harga/nama saat dibeli (OrderItem) — mengubah
+//    produk di kemudian hari tidak mengubah pesanan lama.
+//  - Stok per Variant (tiap produk minimal 1 varian, mis. "Standar").
+
+/// Akun admin/staf dashboard (login NextAuth credentials di T6).
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String
+  /// bcrypt hash — tidak pernah polos
+  passwordHash String
+  /// ADMIN | STAFF
+  role         String   @default("STAFF")
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  slug     String    @unique
+  name     String
+  sort     Int       @default(0)
+  products Product[]
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  slug        String      @unique
+  name        String
+  description String
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryId  Int
+  /// Harga dasar (rupiah); varian boleh menimpa dengan `price`
+  price       Int
+  /// Gambar utama (/img/… atau /uploads/…)
+  image       String
+  /// Galeri tambahan: JSON array path gambar
+  images      String      @default("[]")
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  variants    Variant[]
+  items       OrderItem[]
+
+  @@index([categoryId, active])
+  @@index([active, createdAt])
+}
+
+model Variant {
+  id        Int         @id @default(autoincrement())
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  /// mis. "Merah / M" atau "Standar"
+  name      String
+  sku       String      @unique
+  /// Menimpa harga produk bila diisi
+  price     Int?
+  stock     Int         @default(0)
+  active    Boolean     @default(true)
+  items     OrderItem[]
+
+  @@index([productId, active])
+}
+
+/// Pesanan. Total dihitung ULANG di server dari harga di DB (bukan dari klien).
+model Order {
+  id            Int         @id @default(autoincrement())
+  /// Kode acak yang dibagikan ke pembeli, mis. TKO-K7M2XQ4P (bukan urutan)
+  code          String      @unique
+  /// MENUNGGU_BAYAR | DIBAYAR | DIPROSES | DIKIRIM | SELESAI | DIBATALKAN
+  status        String      @default("MENUNGGU_BAYAR")
+  customerName  String
+  /// Format internasional tanpa plus, mis. 6281234567890
+  customerPhone String
+  customerEmail String      @default("")
+  address       String
+  city          String
+  note          String      @default("")
+  subtotal      Int
+  shippingCost  Int
+  discount      Int         @default(0)
+  total         Int
+  /// Snapshot kode voucher yang dipakai ("" bila tidak ada)
+  voucherCode   String      @default("")
+  /// Path bukti bayar (privat; upload tervalidasi di T5)
+  paymentProof  String      @default("")
+  adminNote     String      @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerPhone])
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     Int
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId   Int?
+  variant     Variant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  variantId   Int?
+  /// Snapshot nama & harga saat dibeli
+  productName String
+  variantName String
+  unitPrice   Int
+  qty         Int
+  lineTotal   Int
+
+  @@index([orderId])
+}
+
+model Voucher {
+  id          Int       @id @default(autoincrement())
+  /// Disimpan huruf besar
+  code        String    @unique
+  /// PERSEN | NOMINAL
+  type        String
+  /// PERSEN: 1–100; NOMINAL: rupiah
+  value       Int
+  minSubtotal Int       @default(0)
+  /// Batas diskon untuk tipe PERSEN (null = tanpa batas)
+  maxDiscount Int?
+  /// Kuota pemakaian (null = tanpa batas)
+  quota       Int?
+  used        Int       @default(0)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  active      Boolean   @default(true)
+}
+
+/// Pengaturan toko (kunci–nilai): nama, nomor WhatsApp, rekening, tabel ongkir, dll. (T7)
+model Setting {
+  key   String @id
+  value String
+}
