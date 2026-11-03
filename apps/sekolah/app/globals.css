@@ -8,6 +8,8 @@ html {
 }
 
 body {
+  /* Kata sangat panjang tanpa spasi (URL, data kotor) dipatahkan, bukan membuat halaman meluber horizontal. */
+  overflow-wrap: anywhere;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);

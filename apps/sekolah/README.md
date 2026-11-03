@@ -2,7 +2,19 @@
 
 Template website sekolah berbahasa Indonesia. Nama sekolah, alamat, kontak, dan seluruh data demo **fiktif**.
 
-> Status: fondasi, halaman publik, informasi, login admin, CRUD konten, PPDB, dan donasi (S1–S7). QA akhir menyusul (S8).
+> Status: **lengkap** (S1–S8) — halaman publik, informasi, login admin, CRUD konten, PPDB, donasi, dan QA.
+
+## Tampilan
+
+| Beranda | Mobile |
+|---|---|
+| ![Beranda](docs/screenshots/beranda.png) | ![Mobile](docs/screenshots/mobile-beranda.png) |
+| ![Struktur organisasi](docs/screenshots/struktur-organisasi.png) | ![Berita](docs/screenshots/berita.png) |
+| ![Kalender agenda](docs/screenshots/agenda-kalender.png) | ![Galeri](docs/screenshots/galeri.png) |
+| ![Formulir PPDB](docs/screenshots/ppdb-langkah-1.png) | ![Donasi](docs/screenshots/donasi.png) |
+| ![Dashboard admin](docs/screenshots/admin-dashboard.png) | ![Editor berita](docs/screenshots/admin-editor-berita.png) |
+
+Membuat ulang: `cd apps/sekolah && SCREENSHOTS=1 npx playwright test e2e/screenshots.spec.ts --project=fitur`.
 
 ## Menjalankan
 
@@ -85,6 +97,9 @@ Kolom status/peran bertipe `String` (SQLite tanpa enum); nilai sahnya ada di `li
 Konten statis (nama sekolah, kontak, navigasi) ada di `content/sekolah.ts`. Gambar demo = SVG placeholder di `public/img/`.
 
 ## Pengujian
+
+Playwright berjalan **bertahap berurutan** (`fitur → crud → ppdb → donasi`, lihat `playwright.config.mjs`) karena tes yang mengubah data/berkas bersama tidak boleh bersamaan dengan tes yang menghitungnya. Cakupan `qa.spec.ts`: semua halaman publik tanpa error konsol/CSP/aset rusak/permintaan domain luar, gambar termuat & anti layout-shift, overflow 360/768/1280, aksesibilitas (heading, landmark, label, nama tautan, keyboard + skip link, fokus terlihat, target sentuh, kontras), robots/sitemap, **matriks otorisasi** (anonim / EDITOR / ADMIN terhadap setiap halaman & route admin, termasuk metode tulis), dan header keamanan. Status PPDB tanpa token benar: lihat `crud-ppdb.spec.ts`.
+
 
 ```bash
 npm run test -w @tpl/sekolah        # unit (Vitest)
