@@ -373,13 +373,23 @@ test.describe("header & pertahanan umum", () => {
     }
   });
 
-  test("integritas data demo: setiap produk punya varian, harga > 0, gambar ada; kode pesanan unik", async () => {
-    const rows = query<{ n: number }>(
-      "SELECT count(*) n FROM Product p WHERE NOT EXISTS (SELECT 1 FROM Variant v WHERE v.productId = p.id)",
-    );
-    expect(rows[0]!.n).toBe(0);
-    expect(query<{ n: number }>("SELECT count(*) n FROM Product WHERE price <= 0")[0]!.n).toBe(0);
-    expect(query<{ n: number }>("SELECT count(*) n FROM Variant WHERE stock < 0")[0]!.n).toBe(0);
+  test("integritas data demo (hanya data SEED; tes lain sengaja menyisipkan data kotor): produk punya varian, harga > 0, stok ≥ 0, kode pesanan unik", async () => {
+    const slugs = products.map((p) => p.slug);
+    const marks = slugs.map(() => "?").join(",");
+    const n = (sql: string) => query<{ n: number }>(sql, ...slugs)[0]!.n;
+    expect(n(`SELECT count(*) n FROM Product WHERE slug IN (${marks})`)).toBe(products.length);
+    expect(
+      n(
+        `SELECT count(*) n FROM Product p WHERE p.slug IN (${marks}) AND NOT EXISTS (SELECT 1 FROM Variant v WHERE v.productId = p.id)`,
+      ),
+    ).toBe(0);
+    expect(n(`SELECT count(*) n FROM Product WHERE slug IN (${marks}) AND price <= 0`)).toBe(0);
+    expect(
+      n(
+        `SELECT count(*) n FROM Variant v JOIN Product p ON p.id = v.productId WHERE p.slug IN (${marks}) AND v.stock < 0`,
+      ),
+    ).toBe(0);
+    // kode pesanan unik (dijamin constraint UNIQUE; diperiksa juga lewat data)
     expect(
       query<{ n: number }>(
         'SELECT count(*) n FROM (SELECT code FROM "Order" GROUP BY code HAVING count(*) > 1)',
