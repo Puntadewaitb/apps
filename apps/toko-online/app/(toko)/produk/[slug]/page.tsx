@@ -100,7 +100,7 @@ export default async function DetailProduk({ params }: Props) {
             <p className="text-sm text-muted">{p.category.name}</p>
             <h1 className="mt-1 text-3xl font-bold text-fg">{p.name}</h1>
             <div className="mt-5">
-              <PilihVarian varian={varian} hargaDasar={p.price} />
+              <PilihVarian varian={varian} hargaDasar={p.price} nama={p.name} />
             </div>
             <h2 className="mt-8 text-lg font-semibold text-fg">Deskripsi</h2>
             <p className="mt-2 whitespace-pre-line text-muted" data-testid="deskripsi">

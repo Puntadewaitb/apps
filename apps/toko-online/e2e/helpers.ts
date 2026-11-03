@@ -110,3 +110,16 @@ export async function awasi(page: Page, base = "http://localhost:3005") {
 
 /** Angka rupiah dari teks "Rp 85.000" → 85000. */
 export const angka = (t: string) => Number((t.match(/[\d.]+/)?.[0] ?? "").replace(/\./g, ""));
+
+/** IP unik per tes (dipakai lewat X-Forwarded-For) agar rate limit antar tes paralel tidak saling mengganggu. */
+export const uniqueIp = () => {
+  const b = randomBytes(3);
+  return `10.${b[0]}.${b[1]}.${b[2]}`;
+};
+
+/** ID varian (urutan id) milik produk dengan slug tertentu. */
+export const varianIds = (slug: string) =>
+  query<{ id: number }>(
+    "SELECT v.id FROM Variant v JOIN Product p ON p.id = v.productId WHERE p.slug = ? ORDER BY v.id",
+    slug,
+  ).map((r) => r.id);

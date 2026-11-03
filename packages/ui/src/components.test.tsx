@@ -95,6 +95,17 @@ describe("render komponen", () => {
     ).toContain('aria-label="Footer links"');
   });
 
+  it("Navbar: `actions` tampil di bar (di luar menu) dan sebelum tombol hamburger; tanpa actions tidak ada pembungkus", () => {
+    const dengan = render(
+      <Navbar brand="X" links={[]} actions={<a href="/keranjang">Keranjang</a>} />,
+    );
+    expect(dengan).toContain('href="/keranjang"');
+    expect(dengan.indexOf("Keranjang")).toBeLessThan(dengan.indexOf('aria-label="Buka menu"'));
+    const tanpa = render(<Navbar brand="X" links={[]} />);
+    expect(tanpa).not.toContain("keranjang");
+    expect(tanpa).toContain('aria-label="Buka menu"');
+  });
+
   it("Footer", () => {
     const html = render(
       <Footer

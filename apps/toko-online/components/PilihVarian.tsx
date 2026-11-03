@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Badge } from "@tpl/ui";
 import { rupiah } from "../lib/format";
+import { TombolTambah } from "./TombolTambah";
 
 export type VarianTampil = { id: number; name: string; harga: number; stock: number };
 
@@ -10,9 +11,11 @@ export type VarianTampil = { id: number; name: string; harga: number; stock: num
 export function PilihVarian({
   varian,
   hargaDasar,
+  nama,
 }: {
   varian: VarianTampil[];
   hargaDasar: number;
+  nama: string;
 }) {
   const awal = varian.find((v) => v.stock > 0) ?? varian[0];
   const [id, setId] = useState(awal?.id);
@@ -73,6 +76,13 @@ export function PilihVarian({
         )}
         {!tunggal && <span className="sr-only"> untuk varian {v.name}</span>}
       </p>
+      {/* key = varian: jumlah & pesan di-reset saat berganti varian */}
+      <TombolTambah
+        key={v.id}
+        varianId={v.id}
+        stok={v.stock}
+        nama={`${nama}${tunggal ? "" : ` (${v.name})`}`}
+      />
     </div>
   );
 }

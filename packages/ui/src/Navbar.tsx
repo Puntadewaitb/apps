@@ -17,14 +17,28 @@ type Props = {
   brand: ReactNode;
   links: NavLink[];
   cta?: ReactNode;
+  /** Selalu tampil di bar (juga di layar kecil, di luar menu hamburger) — mis. ikon keranjang. */
+  actions?: ReactNode;
   /** Label aksesibilitas (default Bahasa Indonesia) — isi untuk situs multi-bahasa. */
   labels?: Partial<NavbarLabels>;
 };
 
 /** Navbar responsif: menu hamburger di layar kecil. */
-export function Navbar({ brand, links, cta, labels }: Props) {
+export function Navbar({ brand, links, cta, actions, labels }: Props) {
   const [open, setOpen] = useState(false);
   const L = { ...DEFAULT_LABELS, ...labels };
+  const toggle = (
+    <button
+      type="button"
+      className="rounded-md p-2 text-fg md:hidden"
+      aria-label={open ? L.close : L.open}
+      aria-expanded={open}
+      aria-controls="menu-mobile"
+      onClick={() => setOpen((v) => !v)}
+    >
+      <span aria-hidden="true">{open ? "✕" : "☰"}</span>
+    </button>
+  );
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
@@ -37,16 +51,14 @@ export function Navbar({ brand, links, cta, labels }: Props) {
           ))}
           {cta}
         </nav>
-        <button
-          type="button"
-          className="rounded-md p-2 text-fg md:hidden"
-          aria-label={open ? L.close : L.open}
-          aria-expanded={open}
-          aria-controls="menu-mobile"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span aria-hidden="true">{open ? "✕" : "☰"}</span>
-        </button>
+        {actions ? (
+          <div className="flex items-center gap-1">
+            {actions}
+            {toggle}
+          </div>
+        ) : (
+          toggle
+        )}
       </Container>
       {open && (
         <nav id="menu-mobile" aria-label={L.mobile} className="border-t border-border md:hidden">

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Footer, Navbar, WhatsAppButton } from "@tpl/ui";
+import { MiniCart } from "./MiniCart";
 import { toko } from "../content/toko";
 import { getPengaturan } from "../lib/setting";
 
@@ -15,7 +16,7 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       >
         Langsung ke konten utama
       </a>
-      <Navbar brand={<a href="/">{nama}</a>} links={toko.nav} />
+      <Navbar brand={<a href="/">{nama}</a>} links={toko.nav} actions={<MiniCart />} />
       {children}
       <Footer
         brand={nama}

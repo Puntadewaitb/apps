@@ -2,7 +2,7 @@
 
 Template toko online berbahasa Indonesia. Nama toko, produk, rekening, dan seluruh data demo **fiktif**.
 
-> Status: T1–T2 — skema + seed, **katalog** (beranda, daftar produk, detail). Keranjang, checkout, lacak pesanan, dan admin dibangun bertahap (T3–T8).
+> Status: T1–T3 — skema + seed, **katalog**, **keranjang**. Checkout, lacak pesanan, dan admin dibangun bertahap (T4–T8).
 
 ## Menjalankan
 
@@ -43,6 +43,15 @@ Keputusan desain:
 - Pencarian dan pengurutan dilakukan di aplikasi, bukan `contains` Prisma — `contains` **tidak meng-escape wildcard LIKE** (terbukti: `?q=%` mencocokkan semua produk). Cukup untuk katalog skala toko kecil (≤ ribuan produk); untuk katalog besar pindahkan ke FTS5/indeks.
 - Galeri: hanya path `/img/…` atau `/uploads/…` yang sah; entri lain (`javascript:`, URL luar) dibuang. Data JSON-LD meng-escape `<`.
 - Nama/deskripsi dirender sebagai teks (tidak ada HTML dari data).
+
+## Keranjang (T3)
+
+- Keranjang **client-side** (`localStorage`, kunci `toko.keranjang.v1`) yang hanya menyimpan `{varianId, qty}`. **Harga, nama, dan stok tidak pernah disimpan di klien**: halaman keranjang & mini-cart mengambilnya dari server lewat `POST /api/keranjang` (`{ ids: number[] }`), dan checkout (T4) menghitung ulang semuanya di server.
+- Isi `localStorage` dianggap **input tidak tepercaya**: JSON rusak, tipe salah, qty negatif/pecahan/raksasa, properti tambahan (mis. `harga`), duplikat, dan >50 baris dinormalkan/dibuang (`lib/keranjang.ts`, diuji unit).
+- Mini-cart di navbar (selalu tampil, termasuk di layar 360 px), badge jumlah, sinkron antar-tab (event `storage`). Penyimpanan diblokir (mode privat) → fallback memori selama tab terbuka.
+- Halaman `/keranjang`: ubah jumlah (+/−/ketik; dijepit 1…stok), hapus item, kosongkan (dengan konfirmasi). Produk yang dinonaktifkan / stok habis ditandai dan **tidak dihitung**; jumlah melebihi stok dijepit otomatis.
+- `POST /api/keranjang`: hanya `application/json` (415), maks. 4 KB (413), skema ketat (400), 120 permintaan/menit/IP (429 + `Retry-After`, env `KERANJANG_LIMIT`), `Cache-Control: no-store`. Produk/varian nonaktif dijawab `tersedia:false` **tanpa nama/harga**. Endpoint baca-saja.
+- `@tpl/ui` `Navbar` mendapat prop opsional `actions` (tampil di bar di luar menu hamburger); aplikasi lain tidak terpengaruh.
 
 ## Pengujian
 
