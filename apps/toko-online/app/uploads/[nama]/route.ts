@@ -7,7 +7,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ nama: s
   const { nama } = await params;
   const mime = NAMA_UPLOAD.test(nama) ? mimeDariNama(nama) : undefined;
   const data = mime ? await bacaUpload(nama) : null;
-  if (!mime || !data) return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  if (!mime || !data)
+    return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
   return new Response(new Uint8Array(data), {
     headers: {
       "Content-Type": mime,
