@@ -123,3 +123,29 @@ export const varianIds = (slug: string) =>
     "SELECT v.id FROM Variant v JOIN Product p ON p.id = v.productId WHERE p.slug = ? ORDER BY v.id",
     slug,
   ).map((r) => r.id);
+
+export const kunciBaru = () => randomBytes(16).toString("hex");
+/** Nomor HP seluler acak (08 + 10 digit) — unik per tes agar batas per-nomor tidak saling mengganggu. */
+export const teleponAcak = () =>
+  `08${[...randomBytes(5)].map((b) => String(b % 100).padStart(2, "0")).join("")}`;
+export const idVarian = (produkId: number) =>
+  tulis((d) =>
+    (
+      d.prepare("SELECT id FROM Variant WHERE productId = ? ORDER BY id").all(produkId) as {
+        id: number;
+      }[]
+    ).map((r) => r.id),
+  );
+export const ambilOrder = (kode: string) =>
+  query<
+    Record<string, unknown> & {
+      id: number;
+      total: number;
+      subtotal: number;
+      shippingCost: number;
+      discount: number;
+    }
+  >('SELECT * FROM "Order" WHERE code = ?', kode)[0];
+export const stokVarian = (id: number) =>
+  query<{ stock: number }>("SELECT stock FROM Variant WHERE id = ?", id)[0]!.stock;
+export const jumlahOrder = () => query<{ c: number }>('SELECT count(*) c FROM "Order"')[0]!.c;

@@ -42,13 +42,22 @@ test("produk terbaru dari DB: 8 kartu, harga berformat rupiah, stok habis ditand
 });
 
 test("seed e2e lengkap & idempotent: jumlah baris sesuai data demo; hash bcrypt (bukan teks polos)", async () => {
+  // Tes lain menyisipkan data sendiri secara paralel → periksa data SEED secara spesifik, bukan jumlah global.
   const n = (t: string) => query<{ c: number }>(`SELECT count(*) c FROM "${t}"`)[0]!.c;
   expect(n("Category")).toBe(categories.length);
-  expect(n("Product")).toBe(products.length);
-  expect(n("Variant")).toBe(products.reduce((a, p) => a + p.varian.length, 0));
-  expect(n("Voucher")).toBe(vouchers.length);
-  expect(n("Setting")).toBe(Object.keys(settings).length);
-  expect(n("Order")).toBe(0);
+  const slugs = query<{ slug: string }>("SELECT slug FROM Product").map((r) => r.slug);
+  for (const p of products) expect(slugs, p.slug).toContain(p.slug);
+  for (const p of products) {
+    const v = query<{ sku: string }>(
+      "SELECT v.sku FROM Variant v JOIN Product pr ON pr.id = v.productId WHERE pr.slug = ?",
+      p.slug,
+    ).map((r) => r.sku);
+    expect(v.sort(), p.slug).toEqual(p.varian.map((x) => x.sku).sort());
+  }
+  const kode = query<{ code: string }>("SELECT code FROM Voucher").map((r) => r.code);
+  for (const v of vouchers) expect(kode, v.code).toContain(v.code);
+  const kunci = query<{ key: string }>("SELECT key FROM Setting").map((r) => r.key);
+  expect(kunci.sort()).toEqual(Object.keys(settings).sort());
   const users = query<{ email: string; role: string; passwordHash: string }>(
     "SELECT email, role, passwordHash FROM User ORDER BY id",
   );

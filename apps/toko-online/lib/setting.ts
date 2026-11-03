@@ -11,6 +11,8 @@ export type PengaturanToko = {
   alamat: string;
   rekening: Rekening[];
   catatanBayar: string;
+  /** Path gambar QRIS (placeholder di demo); "" bila tidak ada */
+  qris: string;
   ongkir: Ongkir;
 };
 
@@ -21,8 +23,18 @@ export const BAWAAN: PengaturanToko = {
   alamat: "",
   rekening: [],
   catatanBayar: "",
+  qris: "",
   ongkir: { bawaan: 0, kota: {} },
 };
+
+/** Hanya path gambar lokal yang sah (/img/… atau /uploads/…); selain itu "" (mencegah javascript:/URL luar). */
+export const pathGambar = (v: string | undefined) =>
+  v &&
+  /^\/(?:img\/[\w.-]+\.(?:svg|png|jpe?g|webp)|uploads\/[A-Za-z0-9_-]{16,64}\.(?:png|jpg|webp))$/.test(
+    v,
+  )
+    ? v
+    : "";
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
@@ -73,6 +85,7 @@ export function dariBaris(rows: Array<{ key: string; value: string }>): Pengatur
     alamat: str(m.get("toko.alamat"), 300),
     rekening: parseRekening(m.get("toko.rekening")),
     catatanBayar: str(m.get("toko.catatanBayar"), 300),
+    qris: pathGambar(m.get("toko.qris")),
     ongkir: parseOngkir(m.get("toko.ongkir")),
   };
 }

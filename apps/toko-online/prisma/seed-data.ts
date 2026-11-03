@@ -302,6 +302,8 @@ export const settings: Record<string, string> = {
     { bank: "Bank Nusantara", nomor: "1234 5678 90", atasNama: "Toko Nusantara Craft" },
     { bank: "Bank Contoh Syariah", nomor: "7001 2345 678", atasNama: "Toko Nusantara Craft" },
   ]),
+  // Gambar QRIS = placeholder (bukan kode QR sungguhan)
+  "toko.qris": "/img/qris.svg",
   "toko.catatanBayar":
     "Transfer sesuai total pesanan, lalu kirim bukti bayar lewat halaman Lacak Pesanan.",
   // Ongkir manual: tarif per kota (huruf kecil) + tarif bawaan untuk kota lain
