@@ -24,6 +24,13 @@ Paket bersama: [`packages/config`](packages/config) (tsconfig, ESLint, Prettier,
 
 Screenshot lengkap tiap app ada di `apps/<app>/docs/screenshots/` dan ditampilkan di README masing-masing.
 
+## Sample statis (untuk calon klien)
+
+Setiap template punya **versi statis** yang bisa dirilis dari GitHub Pages (URL berbeda per template) sebagai contoh sebelum pemesanan:
+`https://<owner>.github.io/<repo>/<template>/`. Tampilan dan alurnya sama; database, panel admin, dan API tidak ada (form/transaksi
+disimulasikan di peramban). Dibangun dari kode app asli tanpa mengubahnya. Lihat [`demo/README.md`](demo/README.md) untuk cara kerja,
+perintah (`npm run demo:build -- all`), dan langkah publikasi.
+
 ## Memulai
 
 Prasyarat: Node 22 (`nvm use`), npm 10.

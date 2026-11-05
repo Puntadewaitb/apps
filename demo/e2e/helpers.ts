@@ -1,6 +1,8 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type APIRequestContext, type Page } from "@playwright/test";
 
-export const base = (slug: string) => `/apps/${slug}/`;
+/** Akar situs di hosting (GitHub Pages project site = /<nama-repo>); sama dengan DEMO_BASE_ROOT saat build. */
+export const BASE_ROOT = "/" + (process.env.DEMO_BASE_ROOT ?? "/apps").replace(/^\/+|\/+$/g, "");
+export const base = (slug: string) => `${BASE_ROOT}/${slug}/`;
 
 /**
  * Pantau galat yang HANYA muncul setelah deploy statis: error console (termasuk hydration mismatch),
@@ -66,4 +68,43 @@ export async function cekDasar(page: Page, judul: RegExp) {
     .evaluateAll((m) => m.map((e) => e.getAttribute("content")));
   expect(robots.length, "meta robots").toBeGreaterThan(0);
   for (const r of robots) expect(r, "semua meta robots harus noindex").toMatch(/noindex/);
+}
+
+/**
+ * Telusuri seluruh situs statis dari `mulai` lewat tautan <a> internal (BFS): setiap halaman harus 200 dan punya <h1>.
+ * Mengembalikan daftar masalah + jumlah halaman yang dikunjungi.
+ */
+export async function telusuri(request: APIRequestContext, mulai: string[], slug: string) {
+  const prefix = `${BASE_ROOT}/${slug}/`;
+  const masalah: string[] = [];
+  const antre = [...mulai];
+  const lihat = new Set<string>();
+  while (antre.length) {
+    const u = antre.shift()!;
+    if (lihat.has(u)) continue;
+    lihat.add(u);
+    const res = await request.get(u);
+    if (res.status() !== 200) masalah.push(`${res.status()} ${u}`);
+    const html = await res.text();
+    if (!/<h1[\s>]/.test(html)) masalah.push(`tanpa <h1>: ${u}`);
+    for (const m of html.matchAll(/<a [^>]*href="([^"#?]*)"/g)) {
+      const h = m[1]!;
+      if (h.startsWith(prefix) && !lihat.has(h)) antre.push(h);
+    }
+  }
+  return { masalah, jumlah: lihat.size };
+}
+
+/**
+ * Embed peta (iframe www.google.com) dijawab stub: tes tidak boleh bergantung pada internet, dan jawaban proxy/jaringan
+ * (404, ERR_FAILED) tidak boleh tercatat sebagai galat situs. Atribut iframe tetap diperiksa langsung di DOM.
+ */
+export async function tenang(page: Page) {
+  await page.route(/^https:\/\/(www\.)?google\.com\//, (r) =>
+    r.fulfill({
+      status: 200,
+      contentType: "text/html",
+      body: "<!doctype html><title>peta</title>",
+    }),
+  );
 }

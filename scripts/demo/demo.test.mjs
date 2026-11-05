@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { wrapUrlAttributes } from "./codemod.mjs";
+import { deriveModule } from "./derive.mjs";
 import { postProcessHtml } from "./postprocess.mjs";
 import { verify } from "./verify.mjs";
 
@@ -47,6 +48,52 @@ export const A = () => <a href="/x">x</a>;`);
     expect(code.indexOf("withBase } from")).toBeGreaterThan(code.indexOf("react"));
     const again = wrapUrlAttributes(code, "x.tsx");
     expect(again.code.match(/import \{ withBase \}/g)).toHaveLength(1);
+  });
+});
+
+describe("codemod <form action>", () => {
+  it("membungkus action literal, TIDAK menyentuh action={fungsi} (server action)", () => {
+    const r = wrapUrlAttributes(
+      `export const A = () => (<div><form action="/produk" /><form action={kirim} /><form action={x ? "/a" : "/b"} /></div>);`,
+      "x.tsx",
+    );
+    expect(r.wrapped).toBe(1);
+    expect(r.code).toContain('action={withBase("/produk")}');
+    expect(r.code).toContain("action={kirim}");
+  });
+});
+
+describe("deriveModule", () => {
+  const src = `import { cache } from "react";
+import { db } from "./db";
+import { sanitizeText } from "@tpl/core";
+
+/** Urutan halaman. */
+export const PER = 12;
+export type U = "a" | "b";
+/** Murni. */
+export function murni(x: string): string {
+  return sanitizeText(x) + PER;
+}
+export const semua = cache(() => db().x.findMany());
+export async function cari() {
+  return db().y.findMany();
+}
+`;
+  it("hanya mempertahankan deklarasi bernama + komentar JSDoc; membuang impor DB", () => {
+    const out = deriveModule(src, {
+      names: ["PER", "U", "murni"],
+      dropImports: ["react", "./db"],
+    });
+    expect(out).toContain("export function murni");
+    expect(out).toContain("/** Murni. */");
+    expect(out).toContain("export const PER = 12;");
+    expect(out).toContain("export type U");
+    expect(out).toContain('import { sanitizeText } from "@tpl/core";');
+    expect(out).not.toMatch(/db\(|cache|cari|semua|from "\.\/db"|from "react"/);
+  });
+  it("gagal keras bila nama yang diminta tidak ada di sumber", () => {
+    expect(() => deriveModule(src, { names: ["murni", "tidakAda"] })).toThrow(/tidakAda/);
   });
 });
 

@@ -23,6 +23,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { DEMO_APPS } from "../../demo/apps.mjs";
 import { wrapUrlAttributes } from "./codemod.mjs";
+import { deriveModule } from "./derive.mjs";
 import { postProcessHtml } from "./postprocess.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -131,6 +132,13 @@ export async function buildDemo(slug) {
     if (n > 1 && !pt.all)
       throw new Error(`${slug}: patch ambigu — ${n} kecocokan di ${pt.file}:\n${pt.find}`);
     writeFileSync(f, code.split(pt.find).join(pt.replace));
+  }
+
+  // 3a') Modul turunan (bagian murni dari modul yang bercampur dengan akses DB) — lihat scripts/demo/derive.mjs.
+  for (const d of cfg.derive ?? []) {
+    const from = join(dst, d.from);
+    if (!existsSync(from)) throw new Error(`${slug}: derive gagal — file tidak ada: ${d.from}`);
+    writeFileSync(join(dst, d.to), deriveModule(readFileSync(from, "utf8"), d));
   }
 
   // 3b) Banner demo dirender React (BUKAN HTML tempelan → akan memicu hydration mismatch #418).

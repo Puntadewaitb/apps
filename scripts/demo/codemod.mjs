@@ -16,7 +16,11 @@ export const URL_ATTRS = {
   video: ["src", "poster"],
   audio: ["src"],
   link: ["href"],
+  form: ["action"],
 };
+
+/** Elemen yang atributnya hanya boleh dibungkus bila berupa literal string (action={fungsi} = server action). */
+const HANYA_LITERAL = new Set(["form"]);
 
 function tagOf(node) {
   const n = node.tagName;
@@ -50,7 +54,7 @@ export function wrapUrlAttributes(source, fileName = "file.tsx") {
               end: init.getEnd(),
               text: `{withBase(${JSON.stringify(init.text)})}`,
             });
-          } else if (ts.isJsxExpression(init) && init.expression) {
+          } else if (!HANYA_LITERAL.has(tag) && ts.isJsxExpression(init) && init.expression) {
             const e = init.expression;
             if (ts.isStringLiteralLike(e) && !e.text.startsWith("/")) continue; // literal absolut/anchor
             edits.push({

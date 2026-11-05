@@ -1,13 +1,9 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { konten as id } from "../../apps/company-profile/content/id";
 import { konten as enKonten } from "../../apps/company-profile/content/en";
-import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow } from "./helpers";
+import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow, telusuri, tenang } from "./helpers";
 
 const URL = base("company-profile");
-
-async function tenang(page: Page) {
-  await page.route("https://www.google.com/**", (r) => r.abort()); // embed Maps: tidak perlu internet
-}
 
 test.describe("company-profile (sample statis)", () => {
   test("'/' mengalihkan ke /id/; beranda ID & EN termuat bersih, bahasa & judul benar", async ({
@@ -50,24 +46,13 @@ test.describe("company-profile (sample statis)", () => {
   test("seluruh halaman statis dapat dibuka (200, ada <h1>) di kedua bahasa", async ({
     request,
   }) => {
-    const hasil: string[] = [];
-    const antre = [`${URL}id/`, `${URL}en/`];
-    const lihat = new Set<string>();
-    while (antre.length) {
-      const u = antre.shift()!;
-      if (lihat.has(u)) continue;
-      lihat.add(u);
-      const res = await request.get(u);
-      if (res.status() !== 200) hasil.push(`${res.status()} ${u}`);
-      const html = await res.text();
-      if (!/<h1[\s>]/.test(html)) hasil.push(`tanpa <h1>: ${u}`);
-      for (const m of html.matchAll(
-        /<a [^>]*href="(\/apps\/company-profile\/(?:id|en)\/[^"#?]*)"/g,
-      ))
-        if (!lihat.has(m[1]!)) antre.push(m[1]!);
-    }
-    expect(hasil).toEqual([]);
-    expect(lihat.size).toBeGreaterThan(40);
+    const { masalah, jumlah } = await telusuri(
+      request,
+      [`${URL}id/`, `${URL}en/`],
+      "company-profile",
+    );
+    expect(masalah).toEqual([]);
+    expect(jumlah).toBeGreaterThan(40);
   });
 
   test("portofolio: filter kategori berupa halaman statis dengan aria-current & jumlah benar", async ({

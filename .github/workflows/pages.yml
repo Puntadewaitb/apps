@@ -1,0 +1,77 @@
+name: Pages (sample statis)
+
+# Sample statis kelima template di GitHub Pages: https://<owner>.github.io/<repo>/<template>/
+# Dibangun oleh scripts/demo/build.mjs (lihat demo/README.md). Deploy HANYA dari main; branch lain/PR hanya
+# membangun + memverifikasi (build, verify statis, e2e) tanpa mempublikasikan.
+# Prasyarat satu kali: Settings → Pages → Build and deployment → Source: GitHub Actions.
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths:
+      - "demo/**"
+      - "scripts/demo/**"
+      - "apps/**"
+      - "packages/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/pages.yml"
+  pull_request:
+    paths:
+      - "demo/**"
+      - "scripts/demo/**"
+      - "apps/**"
+      - "packages/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+  schedule:
+    # Harian: data seed (agenda sekolah, dsb.) bertanggal relatif waktu build → rebuild menjaganya tetap segar.
+    - cron: "17 19 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Opsional (Settings → Variables): tautan "Pesan versi lengkap" di banner demo, mis. https://wa.me/62…
+      DEMO_CONTACT_URL: ${{ vars.DEMO_CONTACT_URL }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run test:demo
+      # Project site: https://<owner>.github.io/<repo>/ → base path = /<repo>.
+      - name: Atur origin & base path dari nama repo
+        run: |
+          echo "DEMO_ORIGIN=https://${GITHUB_REPOSITORY_OWNER,,}.github.io" >> "$GITHUB_ENV"
+          echo "DEMO_BASE_ROOT=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
+      - run: npm run demo:build -- all
+      - run: npm run demo:verify
+      - run: npx playwright install --with-deps chromium
+      - run: npm run demo:e2e
+      - uses: actions/upload-pages-artifact@v4
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          path: dist-demo
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

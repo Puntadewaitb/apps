@@ -1,0 +1,6 @@
+{
+  "extends": "../packages/config/tsconfig.base.json",
+  "compilerOptions": { "allowJs": true, "checkJs": false, "types": ["node"] },
+  "include": ["e2e/**/*.ts"],
+  "exclude": ["overlay", "node_modules"]
+}

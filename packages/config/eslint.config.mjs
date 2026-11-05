@@ -11,6 +11,9 @@ const config = defineConfig([
     "**/node_modules/**",
     "**/.next/**",
     "**/dist/**",
+    // Keluaran build sample statis (scripts/demo/build.mjs): salinan app + hasil export, bukan kode sumber.
+    "**/.demo/**",
+    "**/dist-demo/**",
     "**/coverage/**",
     "**/generated/**",
     "**/playwright-report/**",

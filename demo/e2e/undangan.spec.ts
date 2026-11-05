@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow } from "./helpers";
+import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow, tenang } from "./helpers";
 
 const URL = base("undangan");
 
@@ -9,6 +9,8 @@ async function buka(page: import("@playwright/test").Page) {
 }
 
 test.describe("undangan (sample statis)", () => {
+  test.beforeEach(async ({ page }) => tenang(page));
+
   test("muat bersih; data acara dari seed; gambar & audio di bawah sub-path termuat", async ({
     page,
   }) => {
@@ -21,7 +23,7 @@ test.describe("undangan (sample statis)", () => {
     await gambarTermuat(page);
     await tanpaOverflow(page);
     const audio = await page.locator("audio").getAttribute("src");
-    expect(audio).toBe("/apps/undangan/audio/latar.wav");
+    expect(audio).toBe(`${URL}audio/latar.wav`);
     expect((await page.request.get(audio!)).status()).toBe(200);
     expect(p.galat).toEqual([]);
   });
@@ -102,7 +104,7 @@ test.describe("undangan (sample statis)", () => {
     await buka(page);
     const link = page.getByRole("link", { name: /Simpan ke Kalender/ });
     const href = await link.getAttribute("href");
-    expect(href).toBe("/apps/undangan/kalender.ics");
+    expect(href).toBe(`${URL}kalender.ics`);
     const res = await page.request.get(href!);
     expect(res.status()).toBe(200);
     expect(res.headers()["content-type"]).toMatch(/calendar|octet-stream/);
@@ -115,7 +117,7 @@ test.describe("undangan (sample statis)", () => {
   test("tanpa admin/API di hasil; 404 untuk /admin", async ({ page }) => {
     const res = await page.goto(`${URL}admin/`);
     expect(res?.status()).toBe(404);
-    const api = await page.request.get("/apps/undangan/api/rsvp/");
+    const api = await page.request.get(`${URL}api/rsvp/`);
     expect(api.status()).toBe(404);
   });
 });

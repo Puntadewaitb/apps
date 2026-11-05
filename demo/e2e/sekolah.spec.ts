@@ -1,5 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { base, cekDasar, gambarTermuat, pantau, tanpaOverflow, telusuri, tenang } from "./helpers";
 
 const URL = base("sekolah");
 const PNG = Buffer.from(
@@ -12,10 +12,6 @@ const pdf = (name = "dok.pdf") => ({
   mimeType: "application/pdf",
   buffer: Buffer.from("%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF\n"),
 });
-
-async function tenang(page: Page) {
-  await page.route("https://www.google.com/**", (r) => r.abort());
-}
 
 test.describe("sekolah (sample statis)", () => {
   test("semua halaman publik muat bersih: tanpa galat/404, gambar termuat, banner & noindex, tanpa overflow 360px", async ({
@@ -48,22 +44,9 @@ test.describe("sekolah (sample statis)", () => {
   test("seluruh halaman statis dapat dibuka (200, ada <h1>) dengan menelusuri tautan internal", async ({
     request,
   }) => {
-    const masalah: string[] = [];
-    const antre = [URL];
-    const lihat = new Set<string>();
-    while (antre.length) {
-      const u = antre.shift()!;
-      if (lihat.has(u)) continue;
-      lihat.add(u);
-      const res = await request.get(u);
-      if (res.status() !== 200) masalah.push(`${res.status()} ${u}`);
-      const html = await res.text();
-      if (!/<h1[\s>]/.test(html)) masalah.push(`tanpa <h1>: ${u}`);
-      for (const m of html.matchAll(/<a [^>]*href="(\/apps\/sekolah\/[^"#?]*)"/g))
-        if (!lihat.has(m[1]!)) antre.push(m[1]!);
-    }
+    const { masalah, jumlah } = await telusuri(request, [URL], "sekolah");
     expect(masalah).toEqual([]);
-    expect(lihat.size).toBeGreaterThan(25);
+    expect(jumlah).toBeGreaterThan(25);
   });
 
   test("berita: filter jenis (aria-current), detail, dan TIDAK ada paginasi (seed muat 1 halaman)", async ({

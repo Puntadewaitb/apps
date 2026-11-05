@@ -45,8 +45,46 @@ need(
   "PW_CHROMIUM_PATH tidak boleh di-set di CI",
 );
 
+// ---- pages.yml (sample statis GitHub Pages) ----
+const pagesDoc = parse(
+  readFileSync(new URL("../.github/workflows/pages.yml", import.meta.url), "utf8"),
+);
+const pagesJobs = pagesDoc.jobs ?? {};
+need(pagesJobs.build && pagesJobs.deploy, "pages.yml: job `build` dan `deploy` wajib ada");
+for (const [name, job] of Object.entries(pagesJobs)) {
+  need(job["runs-on"], `pages.yml job ${name}: runs-on kosong`);
+  for (const s of job.steps ?? [])
+    if (s.uses) need(/@v?\d/.test(s.uses), `pages.yml job ${name}: ${s.uses} tidak dipin versi`);
+}
+const pagesOn = pagesDoc.on ?? pagesDoc[true] ?? {};
+need(
+  "workflow_dispatch" in pagesOn && "schedule" in pagesOn,
+  "pages.yml: butuh workflow_dispatch & schedule",
+);
+need(
+  pagesJobs.deploy?.permissions?.pages === "write" &&
+    pagesJobs.deploy?.permissions?.["id-token"] === "write",
+  "pages.yml: job deploy butuh permissions pages:write dan id-token:write",
+);
+need(
+  !pagesDoc.permissions ||
+    (pagesDoc.permissions.pages !== "write" && pagesDoc.permissions["id-token"] !== "write"),
+  "pages.yml: izin pages/id-token hanya boleh di level job deploy (least privilege)",
+);
+need(
+  String(pagesJobs.deploy?.if ?? "").includes("refs/heads/main"),
+  "pages.yml: deploy harus dibatasi ke branch main",
+);
+need(
+  (pagesJobs.build?.steps ?? []).some((s) => String(s.run ?? "").includes("demo:verify")) &&
+    (pagesJobs.build?.steps ?? []).some((s) => String(s.run ?? "").includes("demo:e2e")),
+  "pages.yml: build harus menjalankan demo:verify dan demo:e2e sebelum publikasi",
+);
+
 if (errors.length) {
-  console.error("ci.yml TIDAK valid:\n- " + errors.join("\n- "));
+  console.error("ci.yml/pages.yml TIDAK valid:\n- " + errors.join("\n- "));
   process.exit(1);
 }
-console.log(`ci.yml valid: ${Object.keys(jobs).length} job, ${runs.length} perintah run`);
+console.log(
+  `ci.yml valid: ${Object.keys(jobs).length} job, ${runs.length} perintah run; pages.yml valid: ${Object.keys(pagesJobs).length} job`,
+);
