@@ -38,12 +38,20 @@ npm run test:demo                  # tes unit codemod / derive / verify
 Variabel opsional: `DEMO_ORIGIN` (default `https://puntadewaitb.github.io`), `DEMO_BASE_ROOT` (default `/apps`, = nama repo),
 `DEMO_CONTACT_URL` (tautan "Pesan versi lengkap" di banner dan galeri; di GitHub: Settings → Variables → `DEMO_CONTACT_URL`).
 
-## Publikasi (sekali saja)
+## Publikasi
 
-1. Repo harus **public**, atau akun/organisasi memakai plan yang mengizinkan Pages untuk repo privat.
-2. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-3. Workflow `.github/workflows/pages.yml` men-deploy **hanya dari `main`** (push, manual, dan jadwal harian untuk menyegarkan tanggal data seed). Branch lain/PR hanya build + verify + e2e. Bila deploy dari branch non-`main` diperlukan: Settings → Environments → `github-pages` → tambahkan aturan branch.
-4. Hasilnya: galeri di `https://<owner>.github.io/<repo>/` dan tiap template di `/<template>/`.
+Repo ini **privat** dan berisi source versi lengkap yang akan dijual, jadi **jangan dijadikan public** hanya demi Pages. Pilih salah satu:
+
+**Mode B — repo publik terpisah (disarankan; gratis; source tetap privat).** Hanya hasil statis (`dist-demo/`) yang didorong ke repo publik.
+
+1. Buat repo publik kosong (dengan README awal), mis. `<owner>/template-demo`. Di repo itu: **Settings → Pages → Deploy from a branch → `main` / `(root)`**.
+2. Buat *fine-grained personal access token* yang **hanya** mencakup repo itu, izin **Contents: Read and write**.
+3. Di repo ini: **Settings → Secrets and variables → Actions** → secret `DEMO_PUBLISH_TOKEN` (token tadi) dan variabel `DEMO_PUBLISH_REPO` = `<owner>/template-demo`. Opsional variabel `DEMO_CONTACT_URL` (mis. `https://wa.me/62…`).
+4. Merge ke `main` (atau jalankan workflow *Pages (sample statis)* secara manual dari `main`). Hasil: `https://<owner>.github.io/template-demo/` (galeri) dan `/<template>/`.
+
+**Mode A — Pages dari repo ini.** Hanya bila repo public atau akun memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team; situsnya tetap dapat diakses publik). **Settings → Pages → Source: GitHub Actions**; biarkan `DEMO_PUBLISH_REPO` kosong.
+
+Kedua mode: deploy **hanya dari `main`** (push, manual, dan jadwal harian untuk menyegarkan tanggal data seed). Branch lain/PR hanya build + verify + e2e. Base path otomatis mengikuti nama repo tujuan.
 
 ## Batasan yang disengaja
 

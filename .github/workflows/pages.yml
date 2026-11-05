@@ -3,7 +3,14 @@ name: Pages (sample statis)
 # Sample statis kelima template di GitHub Pages: https://<owner>.github.io/<repo>/<template>/
 # Dibangun oleh scripts/demo/build.mjs (lihat demo/README.md). Deploy HANYA dari main; branch lain/PR hanya
 # membangun + memverifikasi (build, verify statis, e2e) tanpa mempublikasikan.
-# Prasyarat satu kali: Settings → Pages → Build and deployment → Source: GitHub Actions.
+#
+# Dua mode publikasi (pilih salah satu):
+#  A) Pages dari repo INI (default). Prasyarat: Settings → Pages → Source: GitHub Actions, dan repo harus public atau
+#     memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team).
+#  B) Repo publik TERPISAH (disarankan bila repo ini privat/berisi source yang dijual): isi variabel repo
+#     DEMO_PUBLISH_REPO=<owner>/<repo-publik> dan secret DEMO_PUBLISH_TOKEN (fine-grained PAT, hanya repo itu,
+#     izin Contents: read/write). Hanya HASIL STATIS yang didorong ke repo publik; Pages repo itu: deploy dari
+#     branch default (root). Base path otomatis = /<repo-publik>.
 on:
   push:
     branches: [main, "claude/**"]
@@ -37,6 +44,7 @@ jobs:
     env:
       # Opsional (Settings → Variables): tautan "Pesan versi lengkap" di banner demo, mis. https://wa.me/62…
       DEMO_CONTACT_URL: ${{ vars.DEMO_CONTACT_URL }}
+      DEMO_PUBLISH_REPO: ${{ vars.DEMO_PUBLISH_REPO }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -45,23 +53,33 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:demo
-      # Project site: https://<owner>.github.io/<repo>/ → base path = /<repo>.
-      - name: Atur origin & base path dari nama repo
+      # Project site: https://<owner>.github.io/<repo>/ → base path = /<repo>. Repo = repo publik (mode B) atau repo ini.
+      - name: Atur origin & base path dari nama repo tujuan
         run: |
-          echo "DEMO_ORIGIN=https://${GITHUB_REPOSITORY_OWNER,,}.github.io" >> "$GITHUB_ENV"
-          echo "DEMO_BASE_ROOT=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
+          TARGET="${DEMO_PUBLISH_REPO:-$GITHUB_REPOSITORY}"
+          OWNER="${TARGET%%/*}"
+          echo "DEMO_ORIGIN=https://${OWNER,,}.github.io" >> "$GITHUB_ENV"
+          echo "DEMO_BASE_ROOT=/${TARGET#*/}" >> "$GITHUB_ENV"
       - run: npm run demo:build -- all
       - run: npm run demo:verify
       - run: npx playwright install --with-deps chromium
       - run: npm run demo:e2e
       - uses: actions/upload-pages-artifact@v4
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == ''
         with:
           path: dist-demo
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
+        with:
+          name: dist-demo
+          path: dist-demo
+          include-hidden-files: true # .nojekyll
+          if-no-files-found: error
 
+  # Mode A: Pages dari repo ini.
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == ''
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -75,3 +93,36 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Mode B: dorong HASIL STATIS ke repo publik terpisah (source versi lengkap tetap privat).
+  publish:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-publish
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-demo
+          path: dist-demo
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ vars.DEMO_PUBLISH_REPO }}
+          token: ${{ secrets.DEMO_PUBLISH_TOKEN }}
+          path: publik
+      - name: Salin hasil build ke repo publik lalu push
+        working-directory: publik
+        run: |
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$GITHUB_WORKSPACE/dist-demo/." .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan untuk dipublikasikan."
+          else
+            git commit -m "Sample statis dari ${GITHUB_REPOSITORY}@${GITHUB_SHA::7}"
+            git push
+          fi

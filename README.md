@@ -29,7 +29,7 @@ Screenshot lengkap tiap app ada di `apps/<app>/docs/screenshots/` dan ditampilka
 Setiap template punya **versi statis** yang bisa dirilis dari GitHub Pages (URL berbeda per template) sebagai contoh sebelum pemesanan:
 `https://<owner>.github.io/<repo>/<template>/`. Tampilan dan alurnya sama; database, panel admin, dan API tidak ada (form/transaksi
 disimulasikan di peramban). Dibangun dari kode app asli tanpa mengubahnya. Lihat [`demo/README.md`](demo/README.md) untuk cara kerja,
-perintah (`npm run demo:build -- all`), dan langkah publikasi.
+perintah (`npm run demo:build -- all`), dan langkah publikasi (repo ini privat → hasil statis dipublikasikan ke repo publik terpisah agar source tetap tertutup).
 
 ## Memulai
 

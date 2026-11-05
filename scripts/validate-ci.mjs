@@ -71,9 +71,15 @@ need(
     (pagesDoc.permissions.pages !== "write" && pagesDoc.permissions["id-token"] !== "write"),
   "pages.yml: izin pages/id-token hanya boleh di level job deploy (least privilege)",
 );
+for (const j of ["deploy", "publish"])
+  need(
+    String(pagesJobs[j]?.if ?? "").includes("refs/heads/main"),
+    `pages.yml: job ${j} harus dibatasi ke branch main`,
+  );
+need(pagesJobs.publish, "pages.yml: job `publish` (mode repo publik terpisah) wajib ada");
 need(
-  String(pagesJobs.deploy?.if ?? "").includes("refs/heads/main"),
-  "pages.yml: deploy harus dibatasi ke branch main",
+  !JSON.stringify(pagesJobs.publish ?? {}).includes('pages":"write'),
+  "pages.yml: job publish tidak boleh meminta izin pages:write",
 );
 need(
   (pagesJobs.build?.steps ?? []).some((s) => String(s.run ?? "").includes("demo:verify")) &&
