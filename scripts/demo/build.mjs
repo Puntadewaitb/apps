@@ -137,18 +137,16 @@ export async function buildDemo(slug) {
   const layouts = walk(join(dst, "app")).filter(
     (p) => /layout\.tsx$/.test(p) && /<body\b/.test(readFileSync(p, "utf8")),
   );
-  if (layouts.length !== 1)
-    throw new Error(
-      `${slug}: harus ada tepat satu layout dengan <body>, ditemukan ${layouts.length}`,
-    );
-  {
-    const f = layouts[0];
+  if (layouts.length === 0)
+    throw new Error(`${slug}: tidak ada layout dengan <body> untuk banner demo`);
+  for (const f of layouts) {
     let code = readFileSync(f, "utf8");
     code = code.replace(/<body\b[^>]*>/, (m) => `${m}<DemoBanner />`);
     const rel = relative(dirname(f), join(dst, "components/DemoBanner")).replace(/\\/g, "/");
+    const spec = rel.startsWith(".") ? rel : `./${rel}`;
     code = code.replace(
       /^((?:(?:"use [a-z]+";|'use [a-z]+';)\s*)?)/,
-      `$1import { DemoBanner } from "${rel.startsWith(".") ? rel : `./${rel}`}";\n`,
+      `$1import { DemoBanner } from "${spec}";\n`,
     );
     writeFileSync(f, code);
   }
@@ -229,7 +227,9 @@ export default nextConfig;
   // 7) Pasca-proses HTML (noindex + banner) lalu pindahkan ke dist-demo/<slug>
   const out = join(dst, "out");
   if (!existsSync(out)) throw new Error(`${slug}: folder out/ tidak terbentuk (export gagal?)`);
-  for (const junk of ["robots.txt", "sitemap.xml"]) rmSync(join(out, junk), { force: true });
+  // 404/_not-found per-template tidak pernah disajikan (GitHub Pages memakai SATU 404.html di akar situs).
+  for (const junk of ["robots.txt", "sitemap.xml", "404.html", "404", "_not-found"])
+    rmSync(join(out, junk), { recursive: true, force: true });
   let pages = 0;
   for (const f of walk(out).filter((p) => p.endsWith(".html"))) {
     writeFileSync(f, postProcessHtml(readFileSync(f, "utf8")));
