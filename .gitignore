@@ -33,3 +33,7 @@ test-results/
 generated/
 e2e-mail.jsonl
 e2e-uploads/
+
+# sample statis (GitHub Pages) — dihasilkan oleh scripts/demo/build.mjs
+.demo/
+dist-demo/

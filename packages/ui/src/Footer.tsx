@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { withBase } from "./base";
 import { Container } from "./Container";
 import type { NavLink } from "./Navbar";
 
@@ -28,7 +29,7 @@ export function Footer({
         {links.length > 0 && (
           <nav aria-label={navLabel} className="flex flex-wrap gap-x-6 gap-y-2">
             {links.map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-muted hover:text-fg">
+              <a key={l.href} href={withBase(l.href)} className="text-sm text-muted hover:text-fg">
                 {l.label}
               </a>
             ))}

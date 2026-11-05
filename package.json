@@ -31,6 +31,11 @@
     "dev:all": "node scripts/apps.mjs dev",
     "setup": "node scripts/apps.mjs setup",
     "build:all": "node scripts/apps.mjs build",
-    "test:all": "npm test && npm run test:e2e"
+    "test:all": "npm test && npm run test:e2e",
+    "test:demo": "vitest run scripts/demo",
+    "demo:build": "node scripts/demo/build.mjs",
+    "demo:verify": "node scripts/demo/verify.mjs",
+    "demo:serve": "node scripts/demo/serve.mjs",
+    "demo:e2e": "playwright test -c demo/playwright.config.mjs"
   }
 }

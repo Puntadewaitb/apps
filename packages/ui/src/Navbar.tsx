@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { withBase } from "./base";
 import { Container } from "./Container";
 
 export type NavLink = { label: string; href: string };
@@ -45,7 +46,7 @@ export function Navbar({ brand, links, cta, actions, labels }: Props) {
         <div className="text-lg font-bold text-fg">{brand}</div>
         <nav aria-label={L.nav} className="hidden items-center gap-6 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-muted hover:text-fg">
+            <a key={l.href} href={withBase(l.href)} className="text-sm text-muted hover:text-fg">
               {l.label}
             </a>
           ))}
@@ -66,7 +67,7 @@ export function Navbar({ brand, links, cta, actions, labels }: Props) {
             {links.map((l) => (
               <a
                 key={l.href}
-                href={l.href}
+                href={withBase(l.href)}
                 className="rounded-md px-2 py-2 text-fg hover:bg-surface"
                 onClick={() => setOpen(false)}
               >

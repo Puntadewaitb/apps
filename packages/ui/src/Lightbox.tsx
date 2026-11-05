@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { withBase } from "./base";
 
 export type LightboxImage = { src: string; alt: string };
 
@@ -62,7 +63,7 @@ export function Lightbox({ images, className }: Props) {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={img.src}
+                src={withBase(img.src)}
                 alt={img.alt}
                 loading="lazy"
                 decoding="async"
@@ -82,7 +83,11 @@ export function Lightbox({ images, className }: Props) {
         >
           <figure className="max-h-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.src} alt={current.alt} className="max-h-[80vh] rounded-lg" />
+            <img
+              src={withBase(current.src)}
+              alt={current.alt}
+              className="max-h-[80vh] rounded-lg"
+            />
             <figcaption className="mt-2 text-center text-sm text-white">{current.alt}</figcaption>
           </figure>
           <button

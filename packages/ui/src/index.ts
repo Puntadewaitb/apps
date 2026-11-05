@@ -1,3 +1,4 @@
+export { normalizeBase, withBase } from "./base";
 export { Accordion, type AccordionItem } from "./Accordion";
 export { Badge } from "./Badge";
 export { Button, ButtonLink } from "./Button";

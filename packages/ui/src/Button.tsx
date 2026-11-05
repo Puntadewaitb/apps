@@ -1,5 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 import { cn } from "./cn";
+import { withBase } from "./base";
 
 type Variant = "primary" | "secondary" | "ghost";
 type Size = "sm" | "md" | "lg";
@@ -41,7 +42,8 @@ export function ButtonLink({
   variant = "primary",
   size = "md",
   className,
+  href,
   ...rest
 }: Common & AnchorHTMLAttributes<HTMLAnchorElement>) {
-  return <a className={classes(variant, size, className)} {...rest} />;
+  return <a className={classes(variant, size, className)} href={withBase(href)} {...rest} />;
 }
