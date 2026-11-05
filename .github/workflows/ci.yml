@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -43,12 +43,12 @@ jobs:
     env:
       APP_DIR: apps/${{ matrix.app }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cek keberadaan app
         id: exists
         run: |
           if [ -f "$APP_DIR/package.json" ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "::notice::$APP_DIR belum ada, dilewati"; fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: steps.exists.outputs.present == 'true'
         with:
           node-version-file: .nvmrc
