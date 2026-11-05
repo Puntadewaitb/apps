@@ -70,13 +70,14 @@ export function verify(distRoot, slugs) {
           errors.push(`${where}: ${attr}="${v}" tujuan tidak ada`);
       }
     }
-    // Sisa pemanggilan API di JS klien
+    // Sisa pemanggilan server di JS klien: fetch("/api/...") sungguhan (nama `fetch` global tidak ikut di-minify).
+    // String "/api/..." biasa (mis. pencocok rute pada simulator demo) BUKAN panggilan jaringan.
     for (const f of files.filter((p) => p.endsWith(".js"))) {
       const js = readFileSync(f, "utf8");
-      const hit = js.match(/["'`]\/api\/[a-z][^"'`]{0,40}/);
+      const hit = js.match(/\bfetch\(\s*["'`](\/api\/[a-z][^"'`]{0,40})/);
       if (hit)
         errors.push(
-          `${slug}/${relative(dir, f)}: JS memanggil ${hit[0].slice(1)} (tidak ada server)`,
+          `${slug}/${relative(dir, f)}: JS memanggil fetch(${hit[1]}) (tidak ada server)`,
         );
     }
     stats[slug] = { halaman: htmls.length, tautan: links };

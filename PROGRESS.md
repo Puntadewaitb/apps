@@ -64,7 +64,7 @@ Aturan: banner demo dirender React (BUKAN HTML tempelan → hydration mismatch #
 | ID | Judul | Depends | Status | Selesai (WIB) | Catatan |
 |----|-------|---------|--------|---------------|---------|
 | D0 | Fondasi + landing-page | - | done | 2026-11-05 10:30 | withBase di @tpl/ui (+tes), codemod, build/verify/serve, smoke e2e, landing-page lolos (4 tes) |
-| D1 | Undangan | D0 | todo | | `?to=` jadi baca di klien; RSVP/ucapan → localStorage; .ics dibuat di klien |
+| D1 | Undangan | D0 | done | 2026-11-05 10:50 | halaman dirender dari DB seed saat build; ?to=/?kode= dibaca di klien (useSyncExternalStore, tanpa hydration error); RSVP & ucapan = demoFetch (skema validasi sama, localStorage); .ics statis; mekanisme baru build: keep/patches (gagal keras bila kode asli berubah)/db seed; 6 tes e2e |
 | D2 | Company profile | D0 | todo | | konten DB di-prerender saat build (seed); `[lang]` generateStaticParams; form kontak simulasi |
 | D3 | Sekolah | D0 | todo | | berita/agenda/galeri/guru dari seed; filter via klien; PPDB & donasi simulasi |
 | D4 | Toko online | D0 | todo | | katalog dari seed; keranjang/checkout/lacak simulasi di localStorage |

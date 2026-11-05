@@ -96,12 +96,20 @@ describe("verify", () => {
       "t/index.html": page(
         '<a href="/apps/t/hilang/">x</a><a href="/apps/t/admin/">y</a><a href="/apps/t/api/leads">z</a>',
       ),
-      "t/_next/a.js": 'fetch("/api/leads")',
+      "t/_next/a.js": 'x=await fetch("/api/leads",{method:"POST"})',
     });
     const e = verify(d, ["t"]).errors.join("\n");
     expect(e).toMatch(/tujuan tidak ada/);
     expect(e).toMatch(/menuju admin\/API/);
-    expect(e).toMatch(/JS memanggil \/api\/leads/);
+    expect(e).toMatch(/JS memanggil fetch\(\/api\/leads/);
+  });
+
+  it("string /api biasa (pencocok rute simulator) BUKAN panggilan jaringan", () => {
+    const d = dist({
+      "t/index.html": page(""),
+      "t/_next/a.js": 'if(u.pathname==="/api/rsvp"){return demo("/api/rsvp")}',
+    });
+    expect(verify(d, ["t"]).errors).toEqual([]);
   });
 
   it("mendeteksi halaman tanpa noindex atau tanpa banner", () => {

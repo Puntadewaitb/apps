@@ -33,13 +33,15 @@ export function pantau(page: Page) {
 export async function gambarTermuat(page: Page) {
   await page.waitForLoadState("load");
   const rusak = await page.evaluate(async () => {
-    const imgs = [...document.images].filter((i) => i.currentSrc || i.src);
+    const imgs = [...document.images];
+    imgs.forEach((i) => (i.loading = "eager")); // gambar lazy di luar layar ikut dimuat
     await Promise.all(
       imgs.map((i) =>
         i.complete
           ? null
           : new Promise((r) => {
               i.onload = i.onerror = () => r(null);
+              setTimeout(() => r(null), 8000);
             }),
       ),
     );

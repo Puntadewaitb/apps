@@ -19,7 +19,7 @@ export const DEMO_APPS = [
     slug: "undangan",
     nama: "Undangan Digital",
     deskripsi:
-      "Undangan pernikahan digital: hitung mundur, galeri, peta lokasi, RSVP, dan ucapan. Coba tambahkan ?to=Nama+Tamu pada URL.",
+      "Undangan pernikahan digital: hitung mundur, galeri, peta lokasi, RSVP, dan ucapan. Coba tambahkan ?to=Nama+Tamu atau ?kode=DEMO-0001 pada URL.",
     demo: "RSVP & ucapan hanya tersimpan di peramban Anda sendiri.",
   },
   {

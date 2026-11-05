@@ -38,6 +38,7 @@ const GENERIC_REMOVE = [
   "app/admin",
   "app/api",
   "app/(admin)",
+  "components/admin",
   "app/uploads",
   "app/robots.ts", // sample tidak boleh terindeks (noindex ditambahkan di pasca-proses)
   "app/sitemap.ts",
@@ -106,12 +107,29 @@ export async function buildDemo(slug) {
   });
 
   // 2) Buang bagian server (umum + khusus app)
-  for (const rel of [...GENERIC_REMOVE, ...(cfg.remove ?? [])])
+  const keep = new Set(cfg.keep ?? []);
+  for (const rel of [...GENERIC_REMOVE.filter((r) => !keep.has(r)), ...(cfg.remove ?? [])])
     rmSync(join(dst, rel), { recursive: true, force: true });
+  // `generated/` (klien Prisma) selalu dibuat ulang oleh `prisma generate`, bukan disalin dari disk.
+  rmSync(join(dst, "generated"), { recursive: true, force: true });
 
   // 3) Overlay (menimpa/menambah file)
   const overlay = join(root, "demo", slug, "overlay");
   if (existsSync(overlay)) cpSync(overlay, dst, { recursive: true });
+
+  // 3a) Patch string persis pada file hasil salinan. GAGAL KERAS bila kode asli berubah (find tidak ditemukan /
+  //     ambigu) — supaya divergensi antara app asli dan sample terdeteksi, bukan diam-diam rusak.
+  for (const pt of cfg.patches ?? []) {
+    const f = join(dst, pt.file);
+    if (!existsSync(f)) throw new Error(`${slug}: patch gagal — file tidak ada: ${pt.file}`);
+    const code = readFileSync(f, "utf8");
+    const n = code.split(pt.find).length - 1;
+    if (n === 0)
+      throw new Error(`${slug}: patch gagal — teks tidak ditemukan di ${pt.file}:\n${pt.find}`);
+    if (n > 1 && !pt.all)
+      throw new Error(`${slug}: patch ambigu — ${n} kecocokan di ${pt.file}:\n${pt.find}`);
+    writeFileSync(f, code.split(pt.find).join(pt.replace));
+  }
 
   // 3b) Banner demo dirender React (BUKAN HTML tempelan → akan memicu hydration mismatch #418).
   mkdirSync(join(dst, "components"), { recursive: true });
@@ -139,7 +157,10 @@ export async function buildDemo(slug) {
   //     sehingga tambalan HTML saja tidak cukup).
   for (const f of walk(join(dst, "app")).filter((p) => /\.tsx?$/.test(p))) {
     const code = readFileSync(f, "utf8");
-    const baru = code.replace(/(robots:\s*\{[^}]*?\bindex:\s*)true/g, "$1false");
+    // force-dynamic tidak didukung `output: "export"`; halaman dirender statis dari data seed saat build.
+    const baru = code
+      .replace(/(robots:\s*\{[^}]*?\bindex:\s*)true/g, "$1false")
+      .replace(/^export const dynamic = ["']force-dynamic["'];?\s*$/gm, "");
     if (baru !== code) writeFileSync(f, baru);
   }
 
@@ -192,6 +213,16 @@ export default nextConfig;
     ...(CONTACT ? { NEXT_PUBLIC_DEMO_CONTACT_URL: CONTACT } : {}),
     ...(cfg.env ?? {}),
   };
+  if (cfg.db) {
+    // Halaman dirender dari data SEED saat build: DB sementara (tidak ikut ke hasil akhir) → prisma generate,
+    // migrate deploy, seed. Kredensial seed di bawah hanya untuk DB sekali pakai ini (bukan rahasia).
+    const prismaBin = join(root, "node_modules/prisma/build/index.js");
+    env.DATABASE_URL = `file:${join(dst, "demo.db")}`;
+    const dbEnv = { ...env, ...(cfg.seedEnv ?? {}) };
+    run("node", [prismaBin, "generate"], { cwd: dst, env: dbEnv });
+    run("node", [prismaBin, "migrate", "deploy"], { cwd: dst, env: dbEnv });
+    if (cfg.seed) run("node", [...(cfg.seedFlags ?? []), cfg.seed], { cwd: dst, env: dbEnv });
+  }
   if (cfg.prepare) await cfg.prepare({ dst, env, run, root });
   run("node", [join(root, "node_modules/next/dist/bin/next"), "build"], { cwd: dst, env });
 
