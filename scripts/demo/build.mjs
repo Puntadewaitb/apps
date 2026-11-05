@@ -32,6 +32,8 @@ const BASE_ROOT = ("/" + (process.env.DEMO_BASE_ROOT ?? "/apps").replace(/^\/+|\
   "",
 );
 const CONTACT = process.env.DEMO_CONTACT_URL || "";
+// Satu waktu acuan untuk semua template (data seed & jendela bulan relatif terhadap ini).
+const BUILD_TIME = process.env.DEMO_BUILD_TIME || new Date().toISOString();
 
 /** Dibuang dari salinan untuk SEMUA app (bagian server/test/dokumentasi). */
 const GENERIC_REMOVE = [
@@ -208,6 +210,7 @@ export default nextConfig;
     NEXT_PUBLIC_BASE_PATH: base,
     NEXT_PUBLIC_SITE_URL: `${ORIGIN}${base}`,
     NEXT_PUBLIC_DEMO: "1",
+    DEMO_BUILD_TIME: BUILD_TIME,
     ...(CONTACT ? { NEXT_PUBLIC_DEMO_CONTACT_URL: CONTACT } : {}),
     ...(cfg.env ?? {}),
   };

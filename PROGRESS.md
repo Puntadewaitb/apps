@@ -66,7 +66,7 @@ Aturan: banner demo dirender React (BUKAN HTML tempelan → hydration mismatch #
 | D0 | Fondasi + landing-page | - | done | 2026-11-05 10:30 | withBase di @tpl/ui (+tes), codemod, build/verify/serve, smoke e2e, landing-page lolos (4 tes) |
 | D1 | Undangan | D0 | done | 2026-11-05 10:50 | halaman dirender dari DB seed saat build; ?to=/?kode= dibaca di klien (useSyncExternalStore, tanpa hydration error); RSVP & ucapan = demoFetch (skema validasi sama, localStorage); .ics statis; mekanisme baru build: keep/patches (gagal keras bila kode asli berubah)/db seed; 6 tes e2e |
 | D2 | Company profile | D0 | done | 2026-11-05 11:20 | konten berbasis file (tanpa DB); proxy i18n diganti: semua bahasa berawalan (/id, /en) + `/` → /id/ (route group root layout kedua); filter portofolio → halaman statis /portofolio/kategori/<id>/; tautan markdown ID diberi /id; form kontak = demoFetch (skema ID/EN sama); verifier menangkap tautan markdown putus; 7 tes e2e |
-| D3 | Sekolah | D0 | todo | | berita/agenda/galeri/guru dari seed; filter via klien; PPDB & donasi simulasi |
+| D3 | Sekolah | D0 | done | 2026-11-05 11:55 | prerender dari DB seed; ?bulan=/?jenis= → halaman statis (agenda: jendela -6..+12 bulan dari waktu build, tombol di tepi dinonaktifkan; verifier menangkap tautan putus di tepi); PPDB & donasi = aksi simulasi (skema zod + magic bytes sama, localStorage; contoh bawaan PPDB-2027-K7M2XQ/ABCD-EFGH-JKMN); paginasi tak dibuat (seed 6 berita, ada tes penjaga); 8 tes e2e |
 | D4 | Toko online | D0 | todo | | katalog dari seed; keranjang/checkout/lacak simulasi di localStorage |
 | D5 | Workflow Pages + docs | D1-D4 | todo | | `.github/workflows/pages.yml`, README, CI memuat test:demo; butuh Settings → Pages = GitHub Actions |
 
