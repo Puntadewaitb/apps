@@ -8,7 +8,7 @@
 // Hasil akhir: dist-demo/<app>/ (+ dist-demo/index.html sebagai galeri).
 //
 // Env: DEMO_ORIGIN (default https://puntadewaitb.github.io), DEMO_BASE_ROOT (default /apps),
-//      DEMO_CONTACT_URL (opsional; tautan "Pesan versi lengkap" di banner).
+//      DEMO_CONTACT_URL (opsional; tautan "Pesan versi lengkap" di banner), DEMO_CONTACT_LABEL (teks tautannya).
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
@@ -33,6 +33,7 @@ const BASE_ROOT = ("/" + (process.env.DEMO_BASE_ROOT ?? "/apps").replace(/^\/+|\
   "",
 );
 const CONTACT = process.env.DEMO_CONTACT_URL || "";
+const CONTACT_LABEL = process.env.DEMO_CONTACT_LABEL || "";
 // Satu waktu acuan untuk semua template (data seed & jendela bulan relatif terhadap ini).
 const BUILD_TIME = process.env.DEMO_BUILD_TIME || new Date().toISOString();
 
@@ -220,6 +221,7 @@ export default nextConfig;
     NEXT_PUBLIC_DEMO: "1",
     DEMO_BUILD_TIME: BUILD_TIME,
     ...(CONTACT ? { NEXT_PUBLIC_DEMO_CONTACT_URL: CONTACT } : {}),
+    ...(CONTACT_LABEL ? { NEXT_PUBLIC_DEMO_CONTACT_LABEL: CONTACT_LABEL } : {}),
     ...(cfg.env ?? {}),
   };
   if (cfg.db) {
@@ -284,7 +286,7 @@ footer{margin-top:32px;color:var(--muted);font-size:.875rem}
 <ul>
 ${kartu}
 </ul>
-<footer>Tertarik? Versi lengkap (database, panel admin, dan integrasi) dikembangkan setelah pemesanan.${CONTACT ? ` <a href="${esc(CONTACT)}">Hubungi kami</a>.` : ""}</footer>
+<footer>Tertarik? Versi lengkap (database, panel admin, dan integrasi) dikembangkan setelah pemesanan.${CONTACT ? ` <a href="${esc(CONTACT)}">${esc(CONTACT_LABEL || "Hubungi kami")}</a>.` : ""}</footer>
 </main></body></html>
 `;
   writeFileSync(join(root, "dist-demo", "index.html"), html);

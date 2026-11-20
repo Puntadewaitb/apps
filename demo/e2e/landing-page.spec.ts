@@ -46,6 +46,24 @@ test.describe("landing-page (sample statis)", () => {
     expect(p.request.filter((r) => r.startsWith("POST"))).toEqual([]);
   });
 
+  test("tombol WhatsApp dicegat di demo (nomor contoh): tidak membuka wa.me, muncul penjelasan", async ({
+    page,
+  }) => {
+    const p = pantau(page);
+    let keWa = false;
+    page.on("request", (r) => {
+      if (/wa\.me|whatsapp\.com/.test(r.url())) keWa = true;
+    });
+    await page.goto(URL);
+    const tombol = page.getByRole("link", { name: /WhatsApp/ }).last();
+    await expect(tombol).toHaveAttribute("href", /^https:\/\/wa\.me\//);
+    await tombol.click();
+    await expect(page.getByTestId("demo-info-wa")).toBeVisible();
+    expect(page.context().pages()).toHaveLength(1);
+    expect(keWa).toBe(false);
+    expect(p.galat).toEqual([]);
+  });
+
   test("halaman tidak ada → 404 dengan konten (404.html)", async ({ page }) => {
     const res = await page.goto(`${URL}tidak-ada/`);
     expect(res?.status()).toBe(404);

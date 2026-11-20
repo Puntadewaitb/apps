@@ -12,11 +12,11 @@
     "./playwright": "./playwright.config.base.mjs"
   },
   "dependencies": {
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
-    "next": "16.4.3",
+    "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },

@@ -46,6 +46,7 @@ jobs:
     env:
       # Opsional (Settings → Variables): tautan "Pesan versi lengkap" di banner demo, mis. https://wa.me/62…
       DEMO_CONTACT_URL: ${{ vars.DEMO_CONTACT_URL }}
+      DEMO_CONTACT_LABEL: ${{ vars.DEMO_CONTACT_LABEL }}
       DEMO_PUBLISH_REPO: ${{ vars.DEMO_PUBLISH_REPO }}
     steps:
       - uses: actions/checkout@v5
