@@ -49,7 +49,7 @@ Repo ini **privat** dan berisi source versi lengkap yang akan dijual, jadi **jan
 3. Di repo ini: **Settings → Secrets and variables → Actions** → secret `DEMO_PUBLISH_TOKEN` (token tadi) dan variabel `DEMO_PUBLISH_REPO` = `<owner>/template-demo`. Opsional variabel `DEMO_CONTACT_URL` (mis. `https://wa.me/62…`).
 4. Jalankan workflow *Pages (sample statis)* dari tab Actions (*Run workflow*) pada **branch default repo ini**, atau tunggu push/jadwal harian berikutnya. Hasil: `https://<owner>.github.io/template-demo/` (galeri) dan `/<template>/`.
 
-**Mode A — Pages dari repo ini.** Hanya bila repo public atau akun memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team; situsnya tetap dapat diakses publik). **Settings → Pages → Source: GitHub Actions**; isi variabel `DEMO_PAGES_SAME_REPO=true` dan biarkan `DEMO_PUBLISH_REPO` kosong.
+**Mode A — Pages dari repo ini.** Hanya bila repo public atau akun memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team; situsnya tetap dapat diakses publik). **Settings → Pages → Source: GitHub Actions**; aktif otomatis bila repo public (repo privat dengan plan berbayar: isi variabel `DEMO_PAGES_SAME_REPO=true`); biarkan `DEMO_PUBLISH_REPO` kosong.
 
 Kedua mode bersifat **opt-in** (tanpa variabel di atas workflow hanya build + verify, dan run terjadwal dilewati) dan deploy **hanya dari branch default repo** (`github.event.repository.default_branch`; saat ini `claude/determined-turing-qzp8w9` karena belum ada `main`). Pemicu: push, manual, dan jadwal harian untuk menyegarkan tanggal data seed. Branch lain/PR hanya build + verify + e2e. Base path otomatis mengikuti nama repo tujuan.
 
