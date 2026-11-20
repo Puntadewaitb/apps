@@ -5,7 +5,7 @@ name: Pages (sample statis)
 # membangun + memverifikasi (build, verify statis, e2e) tanpa mempublikasikan.
 #
 # Dua mode publikasi (pilih salah satu):
-#  A) Pages dari repo INI (default). Prasyarat: Settings → Pages → Source: GitHub Actions, dan repo harus public atau
+#  A) Pages dari repo INI. Aktifkan dengan variabel repo DEMO_PAGES_SAME_REPO=true. Prasyarat: Settings → Pages → Source: GitHub Actions, dan repo harus public atau
 #     memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team).
 #  B) Repo publik TERPISAH (disarankan bila repo ini privat/berisi source yang dijual): isi variabel repo
 #     DEMO_PUBLISH_REPO=<owner>/<repo-publik> dan secret DEMO_PUBLISH_TOKEN (fine-grained PAT, hanya repo itu,
@@ -39,6 +39,8 @@ permissions:
 
 jobs:
   build:
+    # Run terjadwal hanya berguna bila publikasi sudah dikonfigurasi (mode A atau B); selain itu dilewati.
+    if: github.event_name != 'schedule' || vars.DEMO_PUBLISH_REPO != '' || vars.DEMO_PAGES_SAME_REPO == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -65,11 +67,11 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run demo:e2e
       - uses: actions/upload-pages-artifact@v4
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == ''
+        if: github.ref_name == github.event.repository.default_branch && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == '' && vars.DEMO_PAGES_SAME_REPO == 'true'
         with:
           path: dist-demo
       - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
+        if: github.ref_name == github.event.repository.default_branch && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
         with:
           name: dist-demo
           path: dist-demo
@@ -79,7 +81,7 @@ jobs:
   # Mode A: Pages dari repo ini.
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == ''
+    if: github.ref_name == github.event.repository.default_branch && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO == '' && vars.DEMO_PAGES_SAME_REPO == 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -97,7 +99,7 @@ jobs:
   # Mode B: dorong HASIL STATIS ke repo publik terpisah (source versi lengkap tetap privat).
   publish:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
+    if: github.ref_name == github.event.repository.default_branch && github.event_name != 'pull_request' && vars.DEMO_PUBLISH_REPO != ''
     runs-on: ubuntu-latest
     concurrency:
       group: pages-publish

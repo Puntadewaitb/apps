@@ -44,14 +44,14 @@ Repo ini **privat** dan berisi source versi lengkap yang akan dijual, jadi **jan
 
 **Mode B — repo publik terpisah (disarankan; gratis; source tetap privat).** Hanya hasil statis (`dist-demo/`) yang didorong ke repo publik.
 
-1. Buat repo publik kosong (dengan README awal), mis. `<owner>/template-demo`. Di repo itu: **Settings → Pages → Deploy from a branch → `main` / `(root)`**.
+1. Buat repo publik kosong (dengan README awal), mis. `<owner>/template-demo`. Di repo itu: **Settings → Pages → Deploy from a branch → `main` / `(root)`** (ini branch di repo PUBLIK itu).
 2. Buat *fine-grained personal access token* yang **hanya** mencakup repo itu, izin **Contents: Read and write**.
 3. Di repo ini: **Settings → Secrets and variables → Actions** → secret `DEMO_PUBLISH_TOKEN` (token tadi) dan variabel `DEMO_PUBLISH_REPO` = `<owner>/template-demo`. Opsional variabel `DEMO_CONTACT_URL` (mis. `https://wa.me/62…`).
-4. Merge ke `main` (atau jalankan workflow *Pages (sample statis)* secara manual dari `main`). Hasil: `https://<owner>.github.io/template-demo/` (galeri) dan `/<template>/`.
+4. Jalankan workflow *Pages (sample statis)* dari tab Actions (*Run workflow*) pada **branch default repo ini**, atau tunggu push/jadwal harian berikutnya. Hasil: `https://<owner>.github.io/template-demo/` (galeri) dan `/<template>/`.
 
-**Mode A — Pages dari repo ini.** Hanya bila repo public atau akun memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team; situsnya tetap dapat diakses publik). **Settings → Pages → Source: GitHub Actions**; biarkan `DEMO_PUBLISH_REPO` kosong.
+**Mode A — Pages dari repo ini.** Hanya bila repo public atau akun memakai plan yang mengizinkan Pages untuk repo privat (Pro/Team; situsnya tetap dapat diakses publik). **Settings → Pages → Source: GitHub Actions**; isi variabel `DEMO_PAGES_SAME_REPO=true` dan biarkan `DEMO_PUBLISH_REPO` kosong.
 
-Kedua mode: deploy **hanya dari `main`** (push, manual, dan jadwal harian untuk menyegarkan tanggal data seed). Branch lain/PR hanya build + verify + e2e. Base path otomatis mengikuti nama repo tujuan.
+Kedua mode bersifat **opt-in** (tanpa variabel di atas workflow hanya build + verify, dan run terjadwal dilewati) dan deploy **hanya dari branch default repo** (`github.event.repository.default_branch`; saat ini `claude/determined-turing-qzp8w9` karena belum ada `main`). Pemicu: push, manual, dan jadwal harian untuk menyegarkan tanggal data seed. Branch lain/PR hanya build + verify + e2e. Base path otomatis mengikuti nama repo tujuan.
 
 ## Batasan yang disengaja
 

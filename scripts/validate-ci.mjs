@@ -73,8 +73,8 @@ need(
 );
 for (const j of ["deploy", "publish"])
   need(
-    String(pagesJobs[j]?.if ?? "").includes("refs/heads/main"),
-    `pages.yml: job ${j} harus dibatasi ke branch main`,
+    String(pagesJobs[j]?.if ?? "").includes("event.repository.default_branch"),
+    `pages.yml: job ${j} harus dibatasi ke branch default repo`,
   );
 need(pagesJobs.publish, "pages.yml: job `publish` (mode repo publik terpisah) wajib ada");
 need(
